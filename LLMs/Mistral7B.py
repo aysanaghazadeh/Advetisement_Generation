@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-class Mixtral7B(nn.Module):
+class Mistral7B(nn.Module):
     def __init__(self, args):
         super().__init__()
         self.args = args

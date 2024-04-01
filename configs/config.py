@@ -39,7 +39,7 @@ def parse_args():
                         type=str,
                         default=None,
                         help='The path to the config file if config_type is YAML')
-    parser.add_argument('--T2I-model',
+    parser.add_argument('--T2I_model',
                         type=str,
                         default='PixArt',
                         help='T2I generation model chosen from: PixArt, Expressive, ECLIPSE, Translate')
@@ -56,20 +56,20 @@ def parse_args():
                         default='../Data/PittAd',
                         help='Path to the root of the data'
                         )
-    parser.add_argument('--train-setQA',
+    parser.add_argument('--train_set_QA',
                         type=str,
                         default=None,
                         help='If the model is fine-tuned, relative path to the train-set QA from root path')
-    parser.add_argument('--train-setImages',
+    parser.add_argument('--train_set_Images',
                         type=str,
                         default=None,
                         help='If the model is fine-tuned, relative path to the train-set Images from root path')
-    parser.add_argument('--test-setQA',
+    parser.add_argument('--test_set_QA',
                         type=str,
                         default='train/large_combined_hard_QA_Combined_Action_Reason_train.json',
                         help='Relative path to the QA file for action-reasons from root path'
                         )
-    parser.add_argument('--test-setImages',
+    parser.add_argument('--test_set_Images',
                         type=str,
                         default='train_images',
                         help='Relative path to the original images for the test set from root')

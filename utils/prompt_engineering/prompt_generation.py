@@ -62,7 +62,7 @@ class PromptGenerator:
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
-        data = {'description': action_reason}
+        data = {'action_reason': action_reason}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))
         output = template.render(data)

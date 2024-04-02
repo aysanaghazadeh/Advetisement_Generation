@@ -97,7 +97,8 @@ def get_args():
     args = parse_args()
     if args.config_type == 'YAML':
         args = set_conf(args.config_path)
-    args['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    args.add('device', device)
     print("Arguments are:\n", '\n'.join(args), '\n', '-'*40)
     return args
 

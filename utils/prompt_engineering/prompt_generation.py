@@ -1,16 +1,15 @@
 import json
-
 from LLMs.LLM import LLM
-import torch
-from torch import nn
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
 
-class prompt_generator:
-    def __init__(self):
+class PromptGenerator:
+    def __init__(self, args):
         self.LLM_model = None
         self.descriptions = None
+        self.set_LLM(args)
+        self.set_descriptions(args)
 
     def set_LLM(self, args):
         if args.text_input_type == 'LLM':
@@ -58,5 +57,18 @@ class prompt_generator:
         output = template.render(data)
         return output
 
-    def process_prompt(self, args, image_filename):
-        pass
+    @staticmethod
+    def get_AR_prompt(args, image_filename):
+        QA_path = args.test_set_QA if not args.train else args.train_set_QA
+        QA = json.load(open(QA_path))
+        action_reason = QA[image_filename][0]
+        data = {'description': action_reason}
+        env = Environment(loader=FileSystemLoader(args.prompt_path))
+        template = env.get_template(''.join([args.text_input_type, '.jinja']))
+        output = template.render(data)
+        return output
+
+    def generate_prompt(self, args, image_filename):
+        prompt_generator_name = f'get_{args.text_input_type}_prompt'
+        prompt_generation_method = getattr(self, prompt_generator_name, self.get_AR_prompt)
+        return prompt_generation_method(args, image_filename)

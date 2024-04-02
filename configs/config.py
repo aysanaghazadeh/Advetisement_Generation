@@ -80,7 +80,8 @@ def parse_args():
     parser.add_argument('--text_input_type',
                         type=str,
                         default='AR',
-                        help='Type of the input text for T2I generation model. Choose from LLM, AR (for action-reason),'
+                        help='Type of the input text for T2I generation model. Choose from LLM_generated, '
+                             'AR (for action-reason),'
                              'original_description (for combine, VT, IN, and atypicality descriptions)')
     parser.add_argument('--description_file',
                         type=str,

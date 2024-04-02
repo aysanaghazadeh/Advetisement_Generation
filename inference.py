@@ -77,6 +77,8 @@ def evaluate(args, action_reason, filename, experiment_datetime):
     scores = get_scores(text_description, generated_image_path, real_image_path, args)
     return scores
 
+def process_action_reason(action_reasons):
+    return '\n'.join([f'({i}) {statement}' for i, statement in enumerate(action_reasons)])
 
 def generate_images(args):
     AdImageGeneration = AdvertisementImageGeneration(args)
@@ -89,6 +91,12 @@ def generate_images(args):
         save_image(args, filename, image, experiment_datetime)
         scores = evaluate(args, action_reasons, filename, experiment_datetime)
         save_results(args, prompt, action_reasons, filename, experiment_datetime, scores.values)
+        print(f'image url: {filename}')
+        print(f'action-reason statements: {process_action_reason(action_reasons)}')
+        print(f'scores: {scores}')
+        print('-' * 20)
+    finish_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+    print(f'experiment ended at {finish_datetime}')
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ def set_conf(config_file):
     return args
 
 
-def parse_args():
+def list_args():
     """ Parsing the Arguments for the Advertisement Generation Project"""
     parser = argparse.ArgumentParser(description="Configuration arguments for advertisement generation:")
     parser.add_argument('--config_type',
@@ -94,7 +94,7 @@ def parse_args():
 
 
 def get_args():
-    args = parse_args()
+    args = list_args()
     if args.config_type == 'YAML':
         args = set_conf(args.config_path)
     args['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'

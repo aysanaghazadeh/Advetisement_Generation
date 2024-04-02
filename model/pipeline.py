@@ -12,4 +12,4 @@ class AdvertisementImageGeneration(nn.Module):
     def forward(self, image_filename):
         prompt = self.prompt_generator(self.args, image_filename)
         image = self.T2I_model(prompt)
-        return image
+        return image, prompt

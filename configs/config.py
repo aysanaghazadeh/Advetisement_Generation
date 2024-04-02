@@ -92,11 +92,14 @@ def parse_args():
                         help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
     return parser.parse_args()
 
-args = parse_args()
-if args.config_type == 'YAML':
-    args = set_conf(args.config_path)
-args['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
-print("Arguments are:\n", '\n'.join(args), '\n', '-'*40)
+
+def get_args():
+    args = parse_args()
+    if args.config_type == 'YAML':
+        args = set_conf(args.config_path)
+    args['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print("Arguments are:\n", '\n'.join(args), '\n', '-'*40)
+    return args
 
 
 

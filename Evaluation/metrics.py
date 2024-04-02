@@ -47,3 +47,9 @@ def get_text_image_CLIP_score(generated_image_path, text_description, args):
     return similarity_score
 
 
+def get_scores(text_description, generated_image_path, real_image_path, args):
+    scores = {'image_image_CLIP_score': get_image_image_CLIP_score(generated_image_path, real_image_path, args),
+              'image_text_CLIP_score': get_text_image_CLIP_score(generated_image_path, text_description, args),
+              'FID_score': get_FID(generated_image_path, real_image_path, args)}
+
+    return scores

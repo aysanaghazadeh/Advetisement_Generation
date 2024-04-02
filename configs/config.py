@@ -26,7 +26,7 @@ def set_conf(config_file):
     return args
 
 
-def list_args():
+def parse_args():
     """ Parsing the Arguments for the Advertisement Generation Project"""
     parser = argparse.ArgumentParser(description="Configuration arguments for advertisement generation:")
     parser.add_argument('--config_type',
@@ -55,7 +55,7 @@ def list_args():
                         default=False,
                         help='True if the LLM is being fine-tuned')
     parser.add_argument('--data_path',
-                        type='str',
+                        type=str,
                         default='../Data/PittAd',
                         help='Path to the root of the data'
                         )
@@ -94,7 +94,7 @@ def list_args():
 
 
 def get_args():
-    args = list_args()
+    args = parse_args()
     if args.config_type == 'YAML':
         args = set_conf(args.config_path)
     args['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'

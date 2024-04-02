@@ -1,27 +1,62 @@
-from T2I_models.T2I_model import T2I_model
+import json
+
 from LLMs.LLM import LLM
 import torch
 from torch import nn
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-def get_all_descriptions(file_path, args):
-    if args.text_input_type in ['AR', 'LLM']:
-        return None
-    descriptions = pd.read_csv(file_path)
-    return descriptions
 
-def get_description(image_filename, descriptions):
-    return descriptions.loc[descriptions['ID'] == image_filename]
+class prompt_generator:
+    def __init__(self):
+        self.LLM_model = None
+        self.descriptions = None
 
+    def set_LLM(self, args):
+        if args.text_input_type == 'LLM':
+            self.LLM_model = LLM(args)
 
-def get_combine_prompt(args, image_filename, descriptions):
-    description = get_description(image_filename, descriptions)
-    env = Environment(loader=FileSystemLoader('path/to/your/templates/directory'))
-    template = env.get_template('prompt_template.jinja')
-    output = template.render(data)
+    def set_descriptions(self, args):
+        if args.text_input_type not in ['LLM', 'AR']:
+            self.descriptions = self.get_all_descriptions(args)
 
-def process_prompt(args, image_filename):
+    @staticmethod
+    def get_all_descriptions(args):
+        if args.text_input_type in ['AR', 'LLM']:
+            return None
+        descriptions = pd.read_csv(args.description_file)
+        return descriptions
 
+    @staticmethod
+    def get_description(image_filename, descriptions):
+        return descriptions.loc[descriptions['ID'] == image_filename]
 
+    @staticmethod
+    def get_LLM_input_prompt(args, action_reason):
+        data = {'action_reason': action_reason}
+        env = Environment(loader=FileSystemLoader(args.prompt_path))
+        template = env.get_template('LLM_input.jinja')
+        output = template.render(data)
+        return output
 
+    def get_original_description_prompt(self, args, image_filename):
+        data = {'description': self.get_description(image_filename, self.descriptions)}
+        env = Environment(loader=FileSystemLoader(args.prompt_path))
+        template = env.get_template(''.join([args.text_input_type, '.jinja']))
+        output = template.render(data)
+        return output
+
+    def get_LLM_generated_prompt(self, args, image_filename):
+        QA_path = args.test_set_QA if not args.train else args.train_set_QA
+        QA = json.load(open(QA_path))
+        action_reason = QA[image_filename][0]
+        LLM_prompt = self.get_LLM_input_prompt(args, action_reason)
+        description = self.LLM_model(LLM_prompt)
+        data = {'description': description}
+        env = Environment(loader=FileSystemLoader(args.prompt_path))
+        template = env.get_template(''.join([args.text_input_type, '.jinja']))
+        output = template.render(data)
+        return output
+
+    def process_prompt(self, args, image_filename):
+        pass

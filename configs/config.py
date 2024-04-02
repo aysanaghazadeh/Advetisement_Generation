@@ -81,7 +81,7 @@ def parse_args():
                         type=str,
                         default='AR',
                         help='Type of the input text for T2I generation model. Choose from LLM, AR (for action-reason),'
-                             ' combine, IN, VT, atypicality')
+                             'original_description (for combine, VT, IN, and atypicality descriptions)')
     parser.add_argument('--description_file',
                         type=str,
                         default=None,

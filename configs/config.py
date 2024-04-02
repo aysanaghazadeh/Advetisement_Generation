@@ -39,6 +39,10 @@ def parse_args():
                         type=str,
                         default=None,
                         help='The path to the config file if config_type is YAML')
+    parser.add_argument('--result_path',
+                        type=str,
+                        default='experiments',
+                        help='The path to the folder for saving the results')
     parser.add_argument('--T2I_model',
                         type=str,
                         default='PixArt',

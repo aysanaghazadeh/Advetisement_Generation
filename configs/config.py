@@ -77,7 +77,7 @@ def parse_args():
                         type=str,
                         default='train_images',
                         help='Relative path to the original images for the test set from root')
-    parser.add_argument('--text-input-type',
+    parser.add_argument('--text_input_type',
                         type=str,
                         default='AR',
                         help='Type of the input text for T2I generation model. Choose from LLM, AR (for action-reason),'
@@ -86,6 +86,10 @@ def parse_args():
                         type=str,
                         default=None,
                         help='Path to the description file for the T2I input.')
+    parser.add_argument('--prompt_path',
+                        type=str,
+                        default='utils/prompt_engineering/prompts',
+                        help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
     return parser.parse_args()
 
 args = parse_args()

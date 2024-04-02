@@ -77,8 +77,10 @@ def evaluate(args, action_reason, filename, experiment_datetime):
     scores = get_scores(text_description, generated_image_path, real_image_path, args)
     return scores
 
+
 def process_action_reason(action_reasons):
     return '\n'.join([f'({i}) {statement}' for i, statement in enumerate(action_reasons)])
+
 
 def generate_images(args):
     AdImageGeneration = AdvertisementImageGeneration(args)

@@ -1,7 +1,7 @@
 from torch import nn
-from Mistral7B import Mistral7B
-from Mixtral7B import Mixtral7B
-from Mistral7BInstruct import Mistral7BInstruct
+from LLMs.Mistral7B import Mistral7B
+from LLMs.Mixtral7B import Mixtral7B
+from LLMs.Mistral7BInstruct import Mistral7BInstruct
 
 
 class LLM(nn.Module):

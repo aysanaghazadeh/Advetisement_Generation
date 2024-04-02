@@ -1,5 +1,5 @@
 from torch import nn
-from PitxArt import PixArt
+from T2I_models.PitxArt import PixArt
 
 
 class T2IModel(nn.Module):

@@ -1,6 +1,5 @@
 import torch
 import yaml
-import sys
 import argparse
 
 

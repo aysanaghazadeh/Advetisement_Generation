@@ -1,3 +1,3 @@
 [submodule "PixArt-alpha"]
-	path = PixArt-alpha
+	path = T2I_models/PixArt-alpha
 	url = https://github.com/aysanaghazadeh/PixArt-alpha.git

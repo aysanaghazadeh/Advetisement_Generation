@@ -11,6 +11,6 @@ class AdvertisementImageGeneration(nn.Module):
         self.T2I_model = T2IModel(args)
 
     def forward(self, image_filename):
-        prompt = self.prompt_generator(self.args, image_filename)
+        prompt = self.prompt_generator.generate_prompt(self.args, image_filename)
         image = self.T2I_model(prompt)
         return image, prompt

@@ -1,4 +1,6 @@
 import json
+import os.path
+
 from LLMs.LLM import LLM
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
@@ -47,6 +49,7 @@ class PromptGenerator:
 
     def get_LLM_generated_prompt(self, args, image_filename):
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
+        QA_path = os.path.join(args.data_path, args.test_set_QA)
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
         LLM_prompt = self.get_LLM_input_prompt(args, action_reason)
@@ -60,6 +63,7 @@ class PromptGenerator:
     @staticmethod
     def get_AR_prompt(args, image_filename):
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
+        QA_path = os.path.join(args.data_path, args.test_set_QA)
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
         data = {'action_reason': action_reason}

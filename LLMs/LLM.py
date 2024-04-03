@@ -6,6 +6,7 @@ from LLMs.Mistral7BInstruct import Mistral7BInstruct
 
 class LLM(nn.Module):
     def __init__(self, args):
+        super(LLM, self).__init__()
         model_map = {
             'Mistral7B': Mistral7B,
             'Mixtral7B': Mixtral7B,

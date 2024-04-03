@@ -5,6 +5,7 @@ from torch import nn
 
 class AdvertisementImageGeneration(nn.Module):
     def __init__(self, args):
+        super(AdvertisementImageGeneration, self).__init__()
         self.args = args
         self.prompt_generator = PromptGenerator(self.args)
         self.T2I_model = T2IModel(args)

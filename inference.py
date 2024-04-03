@@ -8,7 +8,7 @@ import csv
 
 
 def get_QA(args):
-    QA = json(open(os.path.join(args.data_path, args.test_set_QA)))
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     return QA
 
 

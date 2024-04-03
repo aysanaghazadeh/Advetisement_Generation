@@ -7,7 +7,7 @@ class Mistral7BInstruct(nn.Module):
         self.args = args
         self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2",
                                                          device_map="auto")
-        self.model = self.model.to(device=self.config.device)
+        self.model = self.model.to(device=self.args.device)
         self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2")
 
     def forward(self, prompt):

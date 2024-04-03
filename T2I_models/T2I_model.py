@@ -4,6 +4,7 @@ from T2I_models.PitxArt import PixArt
 
 class T2IModel(nn.Module):
     def __init__(self, args):
+        super(T2IModel, self).__init__()
         model_map = {
             'PixArt': PixArt
         }

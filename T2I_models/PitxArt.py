@@ -8,7 +8,8 @@ class PixArt(nn.Module):
         super(PixArt, self).__init__()
         self.pipe = PixArtAlphaPipeline.from_pretrained("PixArt-alpha/PixArt-XL-2-1024-MS",
                                                         torch_dtype=torch.float16,
-                                                        device=args.device)
+                                                        device=args.device,
+                                                        device_map=[0, 1, 2])
 
     def forward(self, prompt):
         image = self.pipe(prompt).images[0]

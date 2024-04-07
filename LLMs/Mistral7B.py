@@ -8,7 +8,7 @@ class Mistral7B(nn.Module):
         self.pipe = pipeline("text-generation",
                              model="mistralai/Mistral-7B-v0.1",
                              device=args.device,
-                             device_map=[0, 1, 2, 3],
+                             device_map=auto,
                              max_length=150)
 
     def forward(self, prompt):

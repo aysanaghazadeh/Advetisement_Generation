@@ -7,7 +7,6 @@ class Mistral7B(nn.Module):
         self.args = args
         self.pipe = pipeline("text-generation",
                              model="mistralai/Mistral-7B-v0.1",
-                             device=args.device,
                              device_map='auto',
                              max_length=150)
 

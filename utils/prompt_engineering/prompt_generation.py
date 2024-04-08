@@ -37,7 +37,7 @@ class PromptGenerator:
         data = {'action_reason': action_reason}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template('LLM_input.jinja')
-        output = template.render(data)
+        output = template.render(**data)
         print(output)
         return output
 
@@ -45,7 +45,7 @@ class PromptGenerator:
         data = {'description': self.get_description(image_filename, self.descriptions)}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))
-        output = template.render(data)
+        output = template.render(**data)
         return output
 
     def get_LLM_generated_prompt(self, args, image_filename):
@@ -58,7 +58,7 @@ class PromptGenerator:
         data = {'description': description}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))
-        output = template.render(data)
+        output = template.render(**data)
         return output
 
     @staticmethod
@@ -70,7 +70,7 @@ class PromptGenerator:
         data = {'action_reason': action_reason}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))
-        output = template.render(data)
+        output = template.render(**data)
         return output
 
     def generate_prompt(self, args, image_filename):

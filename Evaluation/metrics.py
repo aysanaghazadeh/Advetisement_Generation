@@ -1,6 +1,5 @@
-from pytorch_fid.fid_score import calculate_fid_given_paths
+from torcheval.metrics import FrechetInceptionDistance
 from transformers import CLIPProcessor, CLIPModel
-import torch
 from PIL import Image
 import torch
 

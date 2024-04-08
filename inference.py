@@ -30,7 +30,7 @@ def save_image(args, filename, image, experiment_datetime):
         os.makedirs(directory)
 
     image.save(os.path.join(args.result_path,
-                            'generated_image',
+                            'generated_images',
                             experiment_datetime,
                             '_'.join([text_input, args.T2I_model]),
                             filename))
@@ -51,7 +51,7 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
     csv_file_name = f'{csv_file_name}.csv'
     csv_file = os.path.join(directory, csv_file_name)
     generated_image_url = os.path.join(args.result_path,
-                                       'generated_image',
+                                       'generated_images',
                                        experiment_datetime,
                                        '_'.join([text_input, args.T2I_model]),
                                        filename)
@@ -68,7 +68,7 @@ def evaluate(args, action_reason, filename, experiment_datetime):
     else:
         text_input = args.description_file.split('/')[-1]
     generated_image_path = os.path.join(args.result_path,
-                                        'generated_image',
+                                        'generated_images',
                                         experiment_datetime,
                                         '_'.join([text_input, args.T2I_model]),
                                         filename)

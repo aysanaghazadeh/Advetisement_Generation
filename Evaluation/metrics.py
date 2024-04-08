@@ -1,4 +1,4 @@
-from torcheval.metrics import FrechetInceptionDistance
+# from torcheval.metrics import FrechetInceptionDistance
 from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
 import torch

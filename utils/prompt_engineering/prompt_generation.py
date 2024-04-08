@@ -38,7 +38,7 @@ class PromptGenerator:
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template('LLM_input.jinja')
         output = template.render(**data)
-        print(output)
+        print('LLM input prompt:', output)
         return output
 
     def get_original_description_prompt(self, args, image_filename):
@@ -59,6 +59,7 @@ class PromptGenerator:
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))
         output = template.render(**data)
+        print('LLM generated prompt:', output)
         return output
 
     @staticmethod
@@ -71,9 +72,13 @@ class PromptGenerator:
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))
         output = template.render(**data)
+        print('AR prompt:', output)
         return output
 
     def generate_prompt(self, args, image_filename):
         prompt_generator_name = f'get_{args.text_input_type}_prompt'
+        print('method: ', prompt_generator_name)
         prompt_generation_method = getattr(self, prompt_generator_name, self.get_AR_prompt)
-        return prompt_generation_method(args, image_filename)
+        prompt = prompt_generation_method(args, image_filename)
+        print('prompt: ', prompt)
+        return prompt

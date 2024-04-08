@@ -71,7 +71,7 @@ def evaluate(metrics, args, action_reason, filename, experiment_datetime):
                                         experiment_datetime,
                                         '_'.join([text_input, args.T2I_model]),
                                         filename)
-    real_image_path = os.path.join(args.test_set_images, filename)
+    real_image_path = os.path.join(args.data_path, args.test_set_images, filename)
 
     text_description = action_reason
     scores = metrics.get_scores(text_description, generated_image_path, real_image_path, args)

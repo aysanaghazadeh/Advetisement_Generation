@@ -1,55 +1,52 @@
 from pytorch_fid.fid_score import calculate_fid_given_paths
-import clip
+from transformers import CLIPProcessor, CLIPModel
+import torch
 from PIL import Image
 import torch
 
 
-def get_FID(generated_image_path, real_image_path, args):
-    fid_value = calculate_fid_given_paths([[real_image_path], [generated_image_path]],
-                                          device=args.device)
-    return fid_value
+class Metrics:
+    def __init__(self, args):
+        self.clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device=args.device)
+        self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
+    @staticmethod
+    def get_FID(generated_image_path, real_image_path, args):
+        # fid_value = calculate_fid_given_paths([[real_image_path], [generated_image_path]],
+        #                                       device=args.device)
+        fid_value = 0
+        return fid_value
 
-def get_image_image_CLIP_score(generated_image_path, real_image_path, args):
-    model, preprocess = clip.load("ViT-B/32", device=args.device)
-    # Preprocess the images
-    image1 = preprocess(Image.open(generated_image_path)).unsqueeze(0).to(args.device)
-    image2 = preprocess(Image.open(real_image_path)).unsqueeze(0).to(args.device)
+    def get_image_image_CLIP_score(self, generated_image_path, real_image_path, args):
+        # Load images
+        image1 = Image.open(real_image_path).convert("RGB")
+        image2 = Image.open(generated_image_path).convert("RGB")
 
-    # Compute the features
-    with torch.no_grad():
-        image_features1 = model.encode_image(image1)
-        image_features2 = model.encode_image(image2)
+        # Process images
+        inputs = self.clip_processor(images=[image1, image2], return_tensors="pt", padding=True).to(device=args.device)
 
-    # Normalize the features
-    image_features1 = image_features1 / image_features1.norm(dim=-1, keepdim=True)
-    image_features2 = image_features2 / image_features2.norm(dim=-1, keepdim=True)
+        # Extract image features from the CLIP model
+        with torch.no_grad():
+            image_features = self.clip_model.get_image_features(**inputs)
 
-    # Compute the cosine similarity
-    cosine_similarity = (image_features1 @ image_features2.T).item()
+        # Normalize the feature vectors
+        image_features = torch.nn.functional.normalize(image_features, p=2, dim=1)
 
-    return cosine_similarity
+        # Calculate cosine similarity between the two images
+        cosine_similarity = torch.nn.functional.cosine_similarity(image_features[0].unsqueeze(0),
+                                                                  image_features[1].unsqueeze(0)).item()
 
+        return cosine_similarity
 
-def get_text_image_CLIP_score(generated_image_path, text_description, args):
-    model, preprocess = clip.load("ViT-B/32", device=args.device)
-    image = preprocess(Image.open(generated_image_path)).unsqueeze(0).to(args.device)
-    text_tokens = clip.tokenize([text_description]).to(args.device)
+    def get_text_image_CLIP_score(self, generated_image_path, text_description, args):
+        similarity_score = 0
 
-    # Compute the image and text features
-    with torch.no_grad():
-        image_features = model.encode_image(image)
-        text_features = model.encode_text(text_tokens)
+        return similarity_score
 
-    # Compute the similarity score (cosine similarity)
-    similarity_score = (image_features @ text_features.T).softmax(dim=-1)
+    def get_scores(self, text_description, generated_image_path, real_image_path, args):
+        scores = {
+            'image_image_CLIP_score': self.get_image_image_CLIP_score(generated_image_path, real_image_path, args),
+            'image_text_CLIP_score': self.get_text_image_CLIP_score(generated_image_path, text_description, args),
+            'FID_score': self.get_FID(generated_image_path, real_image_path, args)}
 
-    return similarity_score
-
-
-def get_scores(text_description, generated_image_path, real_image_path, args):
-    scores = {'image_image_CLIP_score': get_image_image_CLIP_score(generated_image_path, real_image_path, args),
-              'image_text_CLIP_score': get_text_image_CLIP_score(generated_image_path, text_description, args),
-              'FID_score': get_FID(generated_image_path, real_image_path, args)}
-
-    return scores
+        return scores

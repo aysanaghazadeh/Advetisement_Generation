@@ -1,6 +1,6 @@
 from configs.config import get_args
 from model.pipeline import AdvertisementImageGeneration
-from Evaluation.metrics import get_scores
+from Evaluation.metrics import Metrics
 import json
 import os
 from datetime import datetime
@@ -59,7 +59,7 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
         writer.writerow([filename, action_reason, prompt, generated_image_url] + scores)
 
 
-def evaluate(args, action_reason, filename, experiment_datetime):
+def evaluate(metrics, args, action_reason, filename, experiment_datetime):
     if args.text_input_type == 'AR':
         text_input = 'AR'
     elif args.text_input_type == 'LLM':
@@ -74,7 +74,7 @@ def evaluate(args, action_reason, filename, experiment_datetime):
     real_image_path = os.path.join(args.test_set_images, filename)
 
     text_description = action_reason
-    scores = get_scores(text_description, generated_image_path, real_image_path, args)
+    scores = metrics.get_scores(text_description, generated_image_path, real_image_path, args)
     return scores
 
 
@@ -86,12 +86,13 @@ def generate_images(args):
     AdImageGeneration = AdvertisementImageGeneration(args)
     QA = get_QA(args)
     experiment_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+    metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
     for filename, content in QA.items():
         action_reasons = content[0]
         image, prompt = AdImageGeneration(filename)
         save_image(args, filename, image, experiment_datetime)
-        scores = evaluate(args, action_reasons, filename, experiment_datetime)
+        scores = evaluate(metrics, args, action_reasons, filename, experiment_datetime)
         save_results(args, prompt, action_reasons, filename, experiment_datetime, scores.values)
         print(f'image url: {filename}')
         print(f'action-reason statements: {process_action_reason(action_reasons)}')

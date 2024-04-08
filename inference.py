@@ -25,6 +25,7 @@ def save_image(args, filename, image, experiment_datetime):
                              experiment_datetime,
                              '_'.join([text_input, args.T2I_model]),
                              subdirectory)
+    print(directory)
     if not os.path.exists(directory):
         os.makedirs(directory)
 

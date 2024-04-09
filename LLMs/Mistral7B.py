@@ -12,7 +12,7 @@ class Mistral7B(nn.Module):
 
     def forward(self, prompt):
         print('mistral print', prompt)
-        output = self.pipe(prompt)
+        output = self.pipe(prompt)[0]['generated_text']
         print('mistral output:', output)
         return output
 

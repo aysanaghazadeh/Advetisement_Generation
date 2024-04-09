@@ -1,6 +1,7 @@
 from torch import nn
 from transformers import pipeline
 
+
 class Mistral7B(nn.Module):
     def __init__(self, args):
         super().__init__()
@@ -15,5 +16,3 @@ class Mistral7B(nn.Module):
         output = self.pipe(prompt)[0]['generated_text']
         print('mistral output:', output)
         return output
-
-

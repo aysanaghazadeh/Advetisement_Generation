@@ -16,4 +16,6 @@ class LLM(nn.Module):
 
     def forward(self, prompt):
         print('llm file:', prompt)
-        self.model(prompt)
+        output = self.model(prompt)
+        return output
+

@@ -78,6 +78,8 @@ class PromptGenerator:
     def generate_prompt(self, args, image_filename):
         prompt_generator_name = f'get_{args.text_input_type}_prompt'
         print('method: ', prompt_generator_name)
+        if prompt_generator_name == 'get_LLM_prompt':
+            prompt_generator_name = 'get_LLM_generated_prompt'
         prompt_generation_method = getattr(self, prompt_generator_name)
         prompt = prompt_generation_method(args, image_filename)
         print('prompt: ', prompt)

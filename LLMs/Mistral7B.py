@@ -11,7 +11,6 @@ class Mistral7B(nn.Module):
                              max_length=150)
 
     def forward(self, prompt):
-        print(prompt)
         output = self.pipe(prompt)
         return output
 

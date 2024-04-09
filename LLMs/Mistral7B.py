@@ -9,10 +9,10 @@ class Mistral7B(nn.Module):
         self.pipe = pipeline("text-generation",
                              model="mistralai/Mistral-7B-v0.1",
                              device_map='auto',
-                             max_length=150)
+                             max_length=300)
 
     def forward(self, prompt):
         print('mistral print', prompt)
-        output = self.pipe(prompt)[0]['generated_text'].split('Description of image is: ')[1]
+        output = self.pipe(prompt)[0]['generated_text'].split('Description of image:')[-1]
         print('mistral output:', output)
         return output

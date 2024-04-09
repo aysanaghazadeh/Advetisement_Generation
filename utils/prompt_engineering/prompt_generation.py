@@ -52,7 +52,6 @@ class PromptGenerator:
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
-        print(self.LLM_model)
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason)
         description = self.LLM_model(LLM_input_prompt)
         print('LLM description: ', description)

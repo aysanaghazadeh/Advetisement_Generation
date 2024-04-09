@@ -15,4 +15,5 @@ class LLM(nn.Module):
         self.model = model_map[args.LLM](args)
 
     def forward(self, prompt):
+        print(prompt)
         self.model(prompt)

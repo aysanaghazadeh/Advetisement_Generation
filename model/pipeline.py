@@ -8,6 +8,8 @@ class AdvertisementImageGeneration(nn.Module):
         super(AdvertisementImageGeneration, self).__init__()
         self.args = args
         self.prompt_generator = PromptGenerator(self.args)
+        if args.text_input_type == 'LLM':
+            self.prompt_generator.set_LLM(args)
         self.T2I_model = T2IModel(args)
 
     def forward(self, image_filename):

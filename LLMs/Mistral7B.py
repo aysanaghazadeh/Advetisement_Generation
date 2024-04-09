@@ -12,7 +12,5 @@ class Mistral7B(nn.Module):
                              max_length=300)
 
     def forward(self, prompt):
-        print('mistral print', prompt)
         output = self.pipe(prompt)[0]['generated_text'].split('Description of image:')[-1]
-        print('mistral output:', output)
         return output

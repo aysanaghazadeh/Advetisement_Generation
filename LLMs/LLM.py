@@ -15,7 +15,6 @@ class LLM(nn.Module):
         self.model = model_map[args.LLM](args)
 
     def forward(self, prompt):
-        print('llm file:', prompt)
         output = self.model(prompt)
         return output
 

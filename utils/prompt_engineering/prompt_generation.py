@@ -80,5 +80,5 @@ class PromptGenerator:
             prompt_generator_name = 'get_LLM_generated_prompt'
         prompt_generation_method = getattr(self, prompt_generator_name)
         prompt = prompt_generation_method(args, image_filename)
-        print('prompt: ', prompt)
+        # print('prompt: ', prompt)
         return prompt

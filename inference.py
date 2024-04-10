@@ -88,7 +88,11 @@ def generate_images(args):
     experiment_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
     metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
+    count = 0
     for filename, content in QA.items():
+        if count == 100:
+            break
+        count += 1
         action_reasons = content[0]
         image, prompt = AdImageGeneration(filename)
         save_image(args, filename, image, experiment_datetime)

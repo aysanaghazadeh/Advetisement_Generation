@@ -1,7 +1,16 @@
-# from torcheval.metrics import FrechetInceptionDistance
 from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
 import torch
+from torchvision.transforms import functional as TF
+from pytorch_fid.fid_score import calculate_fid_given_paths
+import os
+import tempfile
+
+# Function to convert an image file to a tensor
+def image_to_tensor(image_path):
+    image = Image.open(image_path).convert('RGB')
+    tensor = TF.to_tensor(image).unsqueeze(0)  # Add batch dimension
+    return tensor
 
 
 class Metrics:
@@ -11,10 +20,29 @@ class Metrics:
 
     @staticmethod
     def get_FID(generated_image_path, real_image_path, args):
-        # fid_value = calculate_fid_given_paths([[real_image_path], [generated_image_path]],
-        #                                       device=args.device)
-        fid_value = 0
-        return fid_value
+        # Convert images to tensors
+        image_tensor_1 = image_to_tensor(generated_image_path)
+        image_tensor_2 = image_to_tensor(real_image_path)
+
+        # You need to save these tensors as images in a directory as `pytorch_fid` works with image paths
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            dataset_path_1 = os.path.join(tempdir, 'set1')
+            dataset_path_2 = os.path.join(tempdir, 'set2')
+
+            os.makedirs(dataset_path_1, exist_ok=True)
+            os.makedirs(dataset_path_2, exist_ok=True)
+
+            # Save the tensors as images
+            TF.to_pil_image(image_tensor_1.squeeze()).save(os.path.join(dataset_path_1, 'image1.png'))
+            TF.to_pil_image(image_tensor_2.squeeze()).save(os.path.join(dataset_path_2, 'image2.png'))
+
+            # Calculate FID score
+            fid_value = calculate_fid_given_paths([dataset_path_1, dataset_path_2], batch_size=1,
+                                                  device=torch.device(args.device),
+                                                  dims=2048)
+
+            return fid_value
 
     def get_image_image_CLIP_score(self, generated_image_path, real_image_path, args):
         # Load images

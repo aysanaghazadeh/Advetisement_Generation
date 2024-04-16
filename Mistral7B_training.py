@@ -17,7 +17,7 @@ def get_training_args(args):
         output_dir=args.model_path,
         evaluation_strategy="epoch",
         learning_rate=args.lr,
-        per_device_train_batch_size=args.batch_size,
+        per_device_train_batch_size=1,
         weight_decay=args.weight_decay,
         save_total_limit=3,
         num_train_epochs=args.epochs,

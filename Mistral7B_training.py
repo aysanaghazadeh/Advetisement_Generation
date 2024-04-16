@@ -23,7 +23,7 @@ def get_training_args(args):
         logging_dir=os.path.join(args.results, 'logs'),
     )
     if not os.path.exists(os.path.join(args.results, 'logs')):
-        os.makedirs(os.path.join(args.results, args.logs))
+        os.makedirs(os.path.join(args.results, 'logs'))
     return training_args
 
 if __name__ == '__main__':

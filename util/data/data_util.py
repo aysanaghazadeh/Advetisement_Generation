@@ -1,5 +1,5 @@
-from .utils.data.trian_test_split import get_train_data
-from .utils.data.dataset import *
+from util.data.trian_test_split import get_train_data
+from util.data.dataset import *
 from torch.utils.data import DataLoader
 
 

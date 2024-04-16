@@ -1,5 +1,5 @@
 import os.path
-from .utils.data.data_util import get_train_Mistral7B_Dataloader
+from util.data.data_util import get_train_Mistral7B_Dataloader
 from configs.training_config import get_args
 from LLMs.Mistral7B import Mistral7B
 from transformers import TrainingArguments, Trainer, AutoTokenizer

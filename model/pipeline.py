@@ -1,5 +1,5 @@
 from T2I_models.T2I_model import T2IModel
-from utils.prompt_engineering.prompt_generation import PromptGenerator
+from util.prompt_engineering.prompt_generation import PromptGenerator
 from torch import nn
 
 

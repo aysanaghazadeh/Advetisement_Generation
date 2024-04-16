@@ -33,7 +33,7 @@ if __name__ == '__main__':
     training_args = get_training_args(args)
     train_dataset = get_train_Mistral7B_Dataloader(args)
     if torch.cuda.device_count() > 1:
-        model = DataParallel(model, device_ids=[4, 5, 6, 7])
+        model = DataParallel(model, device_ids=[4, 5, 6])
         model.cuda()
     trainer = Trainer(
         model=model,

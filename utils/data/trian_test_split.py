@@ -69,7 +69,7 @@ def get_train_data(args):
         # Write the data
         for i, desc in train_images_urls:
             writer.writerow([i])
-    return train_images_urls
+    return pd.read_csv(train_file)
 
 
 def get_test_data(args):
@@ -82,7 +82,7 @@ def get_test_data(args):
     topic_counter = Counter(all_topics)
     most_common_topics = [topic for topic, count in topic_counter.most_common(10)]
     selected_files = defaultdict(list)
-    train_files = pd.read_csv(os.path.join(args.data_path, 'train/train_image.cvs')).values
+    train_files = get_train_data(args).values
     for file, topics in topics_data.items():
         if file in train_files:
             continue

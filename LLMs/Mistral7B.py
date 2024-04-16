@@ -6,9 +6,11 @@ class Mistral7B(nn.Module):
     def __init__(self, args):
         super(Mistral7B, self).__init__()
         self.args = args
-        self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1", device_map="auto")
         if not args.train:
+            self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1", device_map="auto")
             self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
+        else:
+            self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1")
 
     def forward(self, inputs):
         if not self.args.train:

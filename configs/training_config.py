@@ -117,6 +117,8 @@ def get_args():
     if args.config_type == 'YAML':
         args = set_conf(args.config_path)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if torch.cuda.is_available():
+        print(f"Number of GPUs available: {torch.cuda.device_count()}")
     args.device = device
     print("Arguments are:\n", args, '\n', '-'*40)
     return args

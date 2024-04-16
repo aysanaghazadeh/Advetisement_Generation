@@ -29,7 +29,7 @@ def get_training_args(args):
 if __name__ == '__main__':
     args = get_args()
     model, tokenizer = get_model(args)
-    training_args = get_training_args()
+    training_args = get_training_args(args)
     train_dataset = get_train_Mistral7B_Dataloader(args)
     trainer = Trainer(
         model=model,

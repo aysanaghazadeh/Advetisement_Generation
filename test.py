@@ -19,4 +19,5 @@ class Mistral7B(nn.Module):
 model = Mistral7B()
 prompt = 'hello mistral'
 output = model(prompt)
-print(output)
+print(type(output))
+# print(output)

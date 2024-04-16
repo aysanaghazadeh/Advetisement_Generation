@@ -94,7 +94,7 @@ def parse_args():
                         type=str,
                         default='utils/prompt_engineering/prompts',
                         help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
-    parser.add_argument('--num_epochs',
+    parser.add_argument('--epochs',
                         type=int,
                         default=100,
                         help='Defines the number of epochs if train is True')

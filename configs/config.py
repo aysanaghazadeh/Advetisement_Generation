@@ -34,6 +34,10 @@ def parse_args():
                         required=True,
                         help='Choose among ARGS for commandline arguments, DEFAULT for default values, or YAML for '
                              'config file')
+    parser.add_argument('--model_path',
+                        type=str,
+                        default='../models',
+                        help='The path to trained models')
     parser.add_argument('--config_path',
                         type=str,
                         default=None,

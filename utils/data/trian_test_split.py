@@ -54,20 +54,18 @@ def get_train_data(args):
     train_file = os.path.join(args.data_path, 'train/train_image.cvs')
     if os.path.exists(train_file):
         return pd.read_csv(train_file).values
-    description_file = os.path.join(args.data_path, args.description_file)
-    description_table = pd.read_csv(description_file)
-    image_urls = description_table['ID'].values
-    descriptions = description_table['description'].values
-    train_images_urls, _, train_descriptions, _ = train_test_split(image_urls, descriptions,
-                                                                   test_size=0.4, random_state=0)
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    image_urls = QA.keys()
+    QAs = QA.values()
+    train_images_urls, _, train_QA, _ = train_test_split(image_urls, str(QAs),
+                                                         test_size=0.4, random_state=0)
     with open(train_file, 'w', newline='') as file:
         writer = csv.writer(file)
-
         # Write the header
         writer.writerow(['ID'])
 
         # Write the data
-        for i, desc in train_images_urls:
+        for i in train_images_urls:
             writer.writerow([i])
     return pd.read_csv(train_file)
 
@@ -106,6 +104,3 @@ def get_test_data(args):
             for filename in files:
                 writer.writerow([filename, '-'.join(topic_map[int(topic)])])
     return pd.read_csv(test_file)
-
-
-

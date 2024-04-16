@@ -119,7 +119,7 @@ def get_args():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     if torch.cuda.is_available():
         print(f"Number of GPUs available: {torch.cuda.device_count()}")
-        print(f"devices: {torch.cuda.device}")
+        print(f"devices: {[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())]}")
     args.device = device
     print("Arguments are:\n", args, '\n', '-'*40)
     return args

@@ -42,7 +42,7 @@ def parse_args():
                         type=str,
                         default='../models',
                         help='The path to trained models')
-    parser.add_argument('--result_path',
+    parser.add_argument('--results',
                         type=str,
                         default='../experiments',
                         help='The path to the folder for saving the results')

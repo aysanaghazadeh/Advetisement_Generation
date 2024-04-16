@@ -5,7 +5,7 @@ import json
 import os
 from datetime import datetime
 import csv
-from utils.data.trian_test_split import get_test_data
+from .utils.data.trian_test_split import get_test_data
 
 
 def get_QA(args):

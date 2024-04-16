@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import csv
-import numpy as np
 import json
 from collections import Counter, defaultdict
 

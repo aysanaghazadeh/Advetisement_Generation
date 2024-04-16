@@ -10,6 +10,7 @@ class Mistral7B(nn.Module):
             self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1", device_map="auto")
             self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
         else:
+            print('Training model is: mistral7B')
             self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1")
 
     def forward(self, inputs):

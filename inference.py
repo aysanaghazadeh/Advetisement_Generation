@@ -1,4 +1,4 @@
-from configs.config import get_args
+from configs.inference_config import get_args
 from model.pipeline import AdvertisementImageGeneration
 from Evaluation.metrics import Metrics
 import json

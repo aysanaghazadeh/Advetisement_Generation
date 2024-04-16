@@ -55,8 +55,8 @@ def get_train_data(args):
     if os.path.exists(train_file):
         return pd.read_csv(train_file).values
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
-    image_urls = QA.keys()
-    QAs = QA.values()
+    image_urls = list(QA.keys())
+    QAs = list(QA.values())
     train_images_urls, _, train_QA, _ = train_test_split(image_urls, str(QAs),
                                                          test_size=0.4, random_state=0)
     with open(train_file, 'w', newline='') as file:

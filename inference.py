@@ -5,6 +5,7 @@ import json
 import os
 from datetime import datetime
 import csv
+from utils.data.trian_test_split import get_test_data
 
 
 def get_QA(args):
@@ -35,7 +36,7 @@ def save_image(args, filename, image, experiment_datetime):
                             filename))
 
 
-def save_results(args, prompt, action_reason, filename, experiment_datetime, scores):
+def save_results(args, prompt, action_reason, filename, experiment_datetime, scores, topics):
     if args.text_input_type == 'AR':
         text_input = 'AR'
     elif args.text_input_type == 'LLM':
@@ -56,7 +57,7 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
                                        filename)
     with open(csv_file, 'a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow([filename, action_reason, prompt, generated_image_url] + scores)
+        writer.writerow([filename, action_reason, prompt, generated_image_url, topics] + scores)
 
 
 def evaluate(metrics, args, action_reason, filename, experiment_datetime):
@@ -88,17 +89,18 @@ def generate_images(args):
     experiment_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
     metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
-    count = 0
+    test_set = get_test_data(args)
     for filename, content in QA.items():
-        if count == 100:
-            break
-        count += 1
+        if filename not in test_set['ID'].values:
+            continue
+        topics = test_set.loc[test_set['ID'] == filename]['topic'].values
         action_reasons = content[0]
         image, prompt = AdImageGeneration(filename)
         save_image(args, filename, image, experiment_datetime)
         scores = evaluate(metrics, args, action_reasons, filename, experiment_datetime)
-        save_results(args, prompt, action_reasons, filename, experiment_datetime, list(scores.values()))
+        save_results(args, prompt, action_reasons, filename, experiment_datetime, list(scores.values()), topics)
         print(f'image url: {filename}')
+        print(f'topics: {topics}')
         print(f'action-reason statements: {process_action_reason(action_reasons)}')
         print(f'scores: {scores}')
         print('-' * 20)

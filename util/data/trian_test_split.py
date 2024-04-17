@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import random
 import csv
 import json
 from collections import Counter, defaultdict
@@ -55,16 +55,18 @@ def get_train_data(args):
         return pd.read_csv(train_file).values
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     image_urls = list(QA.keys())
-    QAs = list(QA.values())
-    train_images_urls, _, train_QA, _ = train_test_split(image_urls, QAs,
-                                                         test_size=0.4, random_state=0)
+    # QAs = list(QA.values())
+    # train_images_urls, _, train_QA, _ = train_test_split(image_urls, QAs,
+    #                                                      test_size=0.4, random_state=0)
+    train_size = 0.6 * len(image_urls)
+    train_image_urls = random.sample(image_urls, train_size)
     with open(train_file, 'w', newline='') as file:
         writer = csv.writer(file)
         # Write the header
         writer.writerow(['ID'])
 
         # Write the data
-        for i in train_images_urls:
+        for i in train_image_urls:
             writer.writerow([i])
     return pd.read_csv(train_file)
 

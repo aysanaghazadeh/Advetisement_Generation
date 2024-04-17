@@ -71,7 +71,7 @@ def get_train_data(args):
     return pd.read_csv(train_file)
 
 
-def get_test_data(args):
+def get_test_train_data(args):
     topics_data_file = os.path.join(args.data_path, 'train/Topics_train.json')
     test_file = os.path.join(args.data_path, 'test_image.csv')
     if os.path.exists(test_file):
@@ -105,3 +105,14 @@ def get_test_data(args):
             for filename in files:
                 writer.writerow([filename, '-'.join(topic_map[int(topic)])])
     return pd.read_csv(test_file)
+
+def get_test_data(args):
+    image_urls = ['0/81460.jpg', '0/34360.jpg', '0/150500.jpg', '0/9950.jpg', '0/146370.jpg', '0/159060.jpg', '0/134110.jpg',
+     '0/149440.jpg', '0/149040.jpg', '0/108380.jpg', '0/165240.jpg', '0/11670.jpg', '0/92290.jpg', '0/143720.jpg',
+     '0/163080.jpg', '0/36970.jpg', '0/26550.jpg', '0/67250.jpg', '0/35880.jpg', '0/23280.jpg', '0/92450.jpg',
+     '0/130590.jpg', '0/7550.jpg', '2/15782.jpg', '2/92572.jpg', '2/19782.jpg', '2/158892.jpg', '2/81092.jpg',
+     '2/65192.jpg', '2/10062.jpg', '2/158182.jpg', '2/11852.jpg', '2/76572.jpg', '2/165102.jpg', '2/162692.jpg',
+     '2/149302.jpg', '2/70942.jpg', '1/145631.jpg', '1/102201.jpg', '1/33361.jpg', '1/66381.jpg', '1/97611.jpg',
+     '1/116181.jpg', '1/139441.jpg', '1/100101.jpg', '1/60771.jpg', '1/133691.jpg', '1/136821.jpg', '1/88491.jpg',
+     '1/147351.jpg']
+    return image_urls

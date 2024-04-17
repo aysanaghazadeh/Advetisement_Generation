@@ -52,7 +52,7 @@ class PromptGenerator:
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason)
-        description = self.LLM_model(LLM_input_prompt)
+        description = self.LLM_model(LLM_input_prompt).split('Description of the image:')[-1]
         data = {'description': description}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(''.join([args.text_input_type, '.jinja']))

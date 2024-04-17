@@ -1,22 +1,14 @@
 import torch
 from torch import nn
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 
 class Mistral7B(nn.Module):
     def __init__(self, args):
         super(Mistral7B, self).__init__()
-
-        nf4_config = BitsAndBytesConfig(
-            load_in_8bit=True,
-            bnb_8bit_quant_type="nf4",
-            bnb_8bit_use_double_quant=True,
-            bnb_8bit_compute_dtype=torch.bfloat16
-        )
         self.args = args
         self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
-                                                          device_map="auto",
-                                                          quantization_config=nf4_config)
+                                                          device_map="auto")
         if not args.train:
             self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
 

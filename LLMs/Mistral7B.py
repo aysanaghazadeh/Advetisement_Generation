@@ -1,7 +1,7 @@
 import torch
 from torch import nn
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from BitsAndBytes import BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
+
 
 class Mistral7B(nn.Module):
     def __init__(self, args):

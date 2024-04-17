@@ -5,6 +5,7 @@ from LLMs.Mistral7B import Mistral7B
 from transformers import TrainingArguments, Trainer, AutoTokenizer
 from torch.nn import DataParallel
 import torch
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
 def get_model(args):
     model = Mistral7B(args)
@@ -32,14 +33,22 @@ if __name__ == '__main__':
     model, tokenizer = get_model(args)
     training_args = get_training_args(args)
     train_dataset = get_train_Mistral7B_Dataloader(args)
-    if torch.cuda.device_count() > 1:
-        model = DataParallel(model, device_ids=[0, 1, 2, 3])
-        model.cuda()
+    peft_config = LoraConfig(
+        lora_alpha=16,
+        lora_dropout=0.1,
+        r=64,
+        bias="none",
+        task_type="CAUSAL_LM"
+    )
+    model = prepare_model_for_kbit_training(model)
+    model = get_peft_model(model, peft_config)
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         tokenizer=tokenizer,
+        peft_config=peft_config,
+        packing=True,
     )
     trainer.train()
     model.save_pretrained(args.model_path + '/my_mistral_model')

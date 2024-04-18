@@ -42,14 +42,14 @@ if __name__ == '__main__':
         loftq_config=loftq_config
     )
     model = get_peft_model(model, peft_config)
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        tokenizer=tokenizer,
-        peft_config=peft_config,
-        packing=True,
-    )
-    trainer.train()
+    # trainer = Trainer(
+    #     model=model,
+    #     args=training_args,
+    #     train_dataset=train_dataset,
+    #     tokenizer=tokenizer,
+    #     peft_config=peft_config,
+    #     packing=True,
+    # )
+    # trainer.train()
     model.save_pretrained(args.model_path + '/my_mistral_model')
     tokenizer.save_pretrained(args.model_path + '/my_mistral_tokenizer')

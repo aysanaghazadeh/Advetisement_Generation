@@ -1,6 +1,5 @@
-import torch
 from torch import nn
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 class Mistral7B(nn.Module):
@@ -22,15 +21,15 @@ class Mistral7B(nn.Module):
         return self.model(**inputs)
 
 
-class Mistral7BPipeline(nn.Module):
-    def __init__(self, args):
-        super().__init__()
-        self.args = args
-        self.pipe = pipeline("text-generation",
-                             model="mistralai/Mistral-7B-v0.1",
-                             device_map='auto',
-                             max_length=300)
-
-    def forward(self, prompt):
-        output = self.pipe(prompt)[0]['generated_text'].split('Description:')[-1]
-        return output
+# class Mistral7BPipeline(nn.Module):
+#     def __init__(self, args):
+#         super().__init__()
+#         self.args = args
+#         self.pipe = pipeline("text-generation",
+#                              model="mistralai/Mistral-7B-v0.1",
+#                              device_map='auto',
+#                              max_length=300)
+#
+#     def forward(self, prompt):
+#         output = self.pipe(prompt)[0]['generated_text'].split('Description:')[-1]
+#         return output

@@ -3,8 +3,6 @@ from util.data.data_util import get_train_Mistral7B_Dataloader
 from configs.training_config import get_args
 from LLMs.Mistral7B import Mistral7B
 from transformers import TrainingArguments, Trainer, AutoTokenizer
-from torch.nn import DataParallel
-import torch
 from peft import LoraConfig, get_peft_model, LoftQConfig
 
 

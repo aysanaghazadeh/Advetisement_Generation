@@ -1,4 +1,5 @@
 from torch import nn
+import transformers
 from transformers import AutoTokenizer
 import pandas as pd
 import os

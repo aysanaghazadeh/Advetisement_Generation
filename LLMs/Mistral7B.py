@@ -1,5 +1,6 @@
 from torch import nn
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
 
 
 class Mistral7B(nn.Module):
@@ -11,7 +12,15 @@ class Mistral7B(nn.Module):
             self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
                                                               device_map="auto")
         else:
-            self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1")
+            nf4_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True,
+                bnb_4bit_compute_dtype=torch.bfloat16
+            )
+            self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
+                                                              device_map='auto',
+                                                              quantization_config=nf4_config)
 
     def forward(self, inputs):
         if not self.args.train:

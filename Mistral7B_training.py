@@ -4,7 +4,7 @@ from configs.training_config import get_args
 from LLMs.Mistral7B import Mistral7B
 from transformers import TrainingArguments, AutoTokenizer, Trainer
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-
+from trl import SFTTrainer
 
 def get_model(args):
     model = Mistral7B(args).model
@@ -57,13 +57,24 @@ if __name__ == '__main__':
     )
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, peft_config)
-    trainer = Trainer(
+    # trainer = Trainer(
+    #     model=model,
+    #     args=training_args,
+    #     train_dataset=train_dataset,
+    #     tokenizer=tokenizer,
+    #     peft_config=peft_config,
+    #     packing=True,
+    # )
+    max_seq_length = 2048
+
+    trainer = SFTTrainer(
         model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        tokenizer=tokenizer,
         peft_config=peft_config,
+        max_seq_length=max_seq_length,
+        tokenizer=tokenizer,
         packing=True,
+        args=args,
+        train_dataset=train_dataset,
     )
     trainer.train()
     model.save_pretrained(args.model_path + '/my_mistral_model')

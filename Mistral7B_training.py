@@ -31,7 +31,7 @@ def get_training_args(args):
         warmup_steps=0.03,
         logging_steps=10,
         save_strategy="epoch",
-        evaluation_strategy="epochs",
+        evaluation_strategy="epoch",
         learning_rate=args.lr,
         bf16=True,
         lr_scheduler_type='constant',

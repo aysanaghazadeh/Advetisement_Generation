@@ -37,6 +37,7 @@ def get_training_args(args):
         lr_scheduler_type='constant',
         save_total_limit=3,
         logging_dir=os.path.join(args.results, 'logs'),
+        remove_unused_columns=True
     )
     if not os.path.exists(os.path.join(args.results, 'logs')):
         os.makedirs(os.path.join(args.results, 'logs'))
@@ -74,8 +75,7 @@ if __name__ == '__main__':
         tokenizer=tokenizer,
         packing=True,
         args=args,
-        train_dataset=train_dataset,
-        remove_unused_columns=True
+        train_dataset=train_dataset
     )
     trainer.train()
     model.save_pretrained(args.model_path + '/my_mistral_model')

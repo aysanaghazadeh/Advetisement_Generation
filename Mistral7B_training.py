@@ -75,6 +75,7 @@ if __name__ == '__main__':
         packing=True,
         args=args,
         train_dataset=train_dataset,
+        remove_unused_columns=True
     )
     trainer.train()
     model.save_pretrained(args.model_path + '/my_mistral_model')

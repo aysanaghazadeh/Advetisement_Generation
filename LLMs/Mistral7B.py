@@ -1,6 +1,8 @@
 from torch import nn
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
+from peft import PeftModel
+import os
 
 
 class Mistral7B(nn.Module):
@@ -11,6 +13,8 @@ class Mistral7B(nn.Module):
             self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
             self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
                                                               device_map="auto")
+            if args.from_pretrained:
+                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_mistral_model'))
         # else:
             # bnb_config = BitsAndBytesConfig(
             #     load_in_8bit=True,

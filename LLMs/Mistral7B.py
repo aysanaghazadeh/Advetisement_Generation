@@ -34,5 +34,5 @@ class Mistral7B(nn.Module):
         if not self.args.train:
             inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
             generated_ids = self.model.generate(**inputs, max_new_tokens=300)
-            return self.tokenizer.batch_decode(generated_ids)[0].split('Description of the image:')[-1]
+            return self.tokenizer.batch_decode(generated_ids)[0]
         # return self.model(**inputs)

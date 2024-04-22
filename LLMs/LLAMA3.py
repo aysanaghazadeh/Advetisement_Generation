@@ -12,6 +12,7 @@ class LLAMA3(nn.Module):
         if not args.train:
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B")
             self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                                              token='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',
                                                               device_map="auto")
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_llama'))

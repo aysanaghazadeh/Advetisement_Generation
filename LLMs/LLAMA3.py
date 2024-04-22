@@ -10,7 +10,8 @@ class LLAMA3(nn.Module):
         super(LLAMA3, self).__init__()
         self.args = args
         if not args.train:
-            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B")
+            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                                           token='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')
             self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                               token='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',
                                                               device_map="auto")

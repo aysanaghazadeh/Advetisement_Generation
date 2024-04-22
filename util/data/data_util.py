@@ -11,12 +11,13 @@ def get_LLM_training_data(args, image_urls):
     tokenizer.pad_token = tokenizer.eos_token
 
     def format_dataset(data_point):
+        print(data_point['QA'])
         action_reason = '\n-'.join(data_point['QA'])
         prompt = f"""Describe an advertisement image that conveys the following messages in detail:
                     {action_reason}
                     Description of the image: {data_point['description']}
                 """
-        tokens = self.tokenizer(prompt,
+        tokens = tokenizer(prompt,
                                 truncation=True,
                                 max_length=256,
                                 padding="max_length", )

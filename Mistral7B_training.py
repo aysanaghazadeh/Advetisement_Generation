@@ -1,7 +1,6 @@
 import os.path
 from util.data.data_util import get_train_Mistral7B_Dataloader
 from configs.training_config import get_args
-# from LLMs.Mistral7B import Mistral7B
 from transformers import TrainingArguments, Trainer, DataCollatorForLanguageModeling
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
@@ -19,6 +18,7 @@ def get_model():
                                                  device_map='auto',
                                                  quantization_config=bnb_config)
     model.gradient_checkpointing_enable()
+    model = prepare_model_for_kbit_training(model)
     if torch.cuda.device_count() > 1:
         model.is_parallelizable = True
         model.model_parallel = True

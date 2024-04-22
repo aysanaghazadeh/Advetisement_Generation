@@ -3,15 +3,30 @@ from transformers import AutoTokenizer
 import pandas as pd
 import os
 import json
+from datasets import Dataset
 
 
 class Mistral7BTrainingDataset(nn.Module):
     def __init__(self, args, image_urls):
         super(Mistral7BTrainingDataset, self).__init__()
-        self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
+        self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1", padding='right')
+        self.tokenizer.pad_token = self.tokenizer.eos_token
         self.descriptions = pd.read_csv(args.description_file)
         self.image_urls = image_urls
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+
+    def format_dataset(self, data_point):
+        action_reason = '\n-'.join(data_point['action_reason'])
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                    {action_reason}
+                    Description of the image: {data_point['description']}
+                """
+        tokens = self.tokenizer(prompt,
+                           truncation=True,
+                           max_length=256,
+                           padding="max_length", )
+        tokens["labels"] = tokens['input_ids'].copy()
+        return tokens
 
     def __getitem__(self, item):
         image_url = self.image_urls[item]
@@ -28,4 +43,10 @@ class Mistral7BTrainingDataset(nn.Module):
 
     def __len__(self):
         return len(self.image_urls)
+
+
+
+
+
+
 

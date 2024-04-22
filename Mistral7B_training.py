@@ -19,6 +19,13 @@ def get_model():
                                                  quantization_config=bnb_config)
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
+    peft_config = LoraConfig(inference_mode=False,
+                             r=8,
+                             lora_alpha=32,
+                             lora_dropout=0.1,
+                             peft_type=TaskType.CAUSAL_LM)
+    model = get_peft_model(model, peft_config)
+    print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
     if torch.cuda.device_count() > 1:
         model.is_parallelizable = True
         model.model_parallel = True
@@ -78,13 +85,6 @@ if __name__ == '__main__':
     train_dataset = tmp["train"]
     test_dataset = tmp["test"]
     data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
-    peft_config = LoraConfig(inference_mode=False,
-                             r=8,
-                             lora_alpha=32,
-                             lora_dropout=0.1,
-                             peft_type=TaskType.CAUSAL_LM)
-    model = get_peft_model(model, peft_config)
-    print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
     trainer = Trainer(
         model=model,
         train_dataset=train_dataset,

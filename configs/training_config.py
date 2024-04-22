@@ -100,7 +100,7 @@ def parse_args():
                         help='Defines the number of epochs if train is True')
     parser.add_argument('--lr',
                         type=int,
-                        default=2e-5,
+                        default=2e-4,
                         help='learning rate for training the model')
     parser.add_argument('--batch_size',
                         type=int,

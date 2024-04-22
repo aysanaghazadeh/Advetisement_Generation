@@ -91,9 +91,9 @@ def get_test_train_data(args):
                     if len(selected_files[topic]) < 200:
                         selected_files[topic].append(file)
 
-    # If you need to review the selected files:
-    for topic, files in selected_files.items():
-        print(f"Topic {topic} has {len(files)} files: {files}")
+    # # If you need to review the selected files:
+    # for topic, files in selected_files.items():
+    #     print(f"Topic {topic} has {len(files)} files: {files}")
 
     with open(test_file, 'w', newline='') as file:
         writer = csv.writer(file)

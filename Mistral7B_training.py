@@ -50,7 +50,7 @@ def get_training_args(args):
         save_strategy="steps",
         save_steps=50,
         evaluation_strategy="steps",
-        eval_steps=5,
+        eval_steps=10,
         do_eval=True,
         label_names=["input_ids", "labels", "attention_mask"],
         report_to="none",

@@ -26,10 +26,9 @@ def get_LLM_training_data(args, image_urls):
     descriptions = pd.read_csv(args.description_file)
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     dataset = {'QA': [], 'description': []}
-    print(image_urls)
     for image_url in image_urls:
         QA = QAs[image_url[0]]
-        description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
+        description = descriptions.loc[descriptions['ID'] == image_url[0]]['description'].values
         dataset['QA'].append(QA)
         dataset['description'].append(description)
 

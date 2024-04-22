@@ -1,12 +1,27 @@
 import os.path
 from util.data.data_util import get_train_Mistral7B_Dataloader
 from configs.training_config import get_args
-from LLMs.Mistral7B import Mistral7B
-from transformers import TrainingArguments, AutoTokenizer, Trainer, DataCollatorForLanguageModeling
+# from LLMs.Mistral7B import Mistral7B
+from transformers import TrainingArguments, Trainer, DataCollatorForLanguageModeling
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
 from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_training
 
-def get_model(args):
-    model = Mistral7B(args).model
+
+def get_model():
+    bnb_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+        # bnb_4bit_quant_type="nf4",
+        # bnb_4bit_use_double_quant=True,
+        bnb_8bit_compute_dtype=torch.bfloat16
+    )
+    model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
+                                                 device_map='auto',
+                                                 quantization_config=bnb_config)
+    model.gradient_checkpointing_enable()
+    if torch.cuda.device_count() > 1:
+        model.is_parallelizable = True
+        model.model_parallel = True
     tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
@@ -56,7 +71,7 @@ def get_training_args(args):
 
 if __name__ == '__main__':
     args = get_args()
-    model, tokenizer = get_model(args)
+    model, tokenizer = get_model()
     training_args = get_training_args(args)
     train_dataset = get_train_Mistral7B_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
@@ -73,7 +88,7 @@ if __name__ == '__main__':
     trainer = Trainer(
         model=model,
         train_dataset=train_dataset,
-        eval_dataset = test_dataset,
+        eval_dataset=test_dataset,
         tokenizer=tokenizer,
         data_collator=data_collator,
         args=training_args

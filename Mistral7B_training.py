@@ -59,6 +59,9 @@ if __name__ == '__main__':
     model, tokenizer = get_model(args)
     training_args = get_training_args(args)
     train_dataset = get_train_Mistral7B_Dataloader(args)
+    tmp = train_dataset.train_test_split(test_size=0.1)
+    train_dataset = tmp["train"]
+    test_dataset = tmp["test"]
     data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
     peft_config = LoraConfig(inference_mode=False,
                              r=8,
@@ -70,6 +73,7 @@ if __name__ == '__main__':
     trainer = Trainer(
         model=model,
         train_dataset=train_dataset,
+        eval_dataset = test_dataset,
         tokenizer=tokenizer,
         data_collator=data_collator,
         args=training_args

@@ -33,6 +33,6 @@ class Mistral7B(nn.Module):
     def forward(self, inputs):
         if not self.args.train:
             inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
-            generated_ids = self.model.generate(**inputs, eos_token_id=self.tokenizer.eos_token_id)
+            generated_ids = self.model.generate(**inputs, max_new_tokens=300)
             return self.tokenizer.batch_decode(generated_ids)[0]
         # return self.model(**inputs)

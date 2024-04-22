@@ -10,7 +10,7 @@ def get_LLM_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1", padding='right')
     tokenizer.pad_token = tokenizer.eos_token
 
-    def format_dataset(self, data_point):
+    def format_dataset(data_point):
         action_reason = '\n-'.join(data_point['QA'])
         prompt = f"""Describe an advertisement image that conveys the following messages in detail:
                     {action_reason}

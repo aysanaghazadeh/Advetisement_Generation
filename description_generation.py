@@ -1,4 +1,4 @@
-from transformers import AutoProcessor, AutoModelForCausalLM
+from transformers import AutoProcessor, LlavaForConditionalGeneration
 from util.data.trian_test_split import get_test_data
 from PIL import Image
 import os
@@ -9,8 +9,8 @@ from configs.inference_config import get_args
 
 def get_model():
     # Load model directly
-    processor = AutoProcessor.from_pretrained("liuhaotian/llava-v1.5-13b", device_map='auto')
-    model = AutoModelForCausalLM.from_pretrained("liuhaotian/llava-v1.5-13b", device_map='auto')
+    processor = AutoProcessor.from_pretrained("llava-hf/llava-1.5-13b-hf", device_map='auto')
+    model = LlavaForConditionalGeneration.from_pretrained("llava-hf/llava-1.5-13b-hf", device_map='auto')
     return processor, model
 
 
@@ -30,7 +30,7 @@ def get_descriptions(args):
         prompt = f"USER:<image>\nDescribe the image in detail.\nASSISTANT:"
         inputs = processor(text=prompt, images=image, return_tensors="pt")
         generate_ids = model.generate(**inputs, max_new_tokens=512)
-        description = processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+        description = processor.decode(generate_ids[0][2:], skip_special_tokens=True)
         pair = [image_url, description]
         with open(description_file, 'w', newline='') as file:
             writer = csv.writer(file)

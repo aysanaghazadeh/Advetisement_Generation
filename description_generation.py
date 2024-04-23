@@ -20,7 +20,7 @@ def get_descriptions(args):
     description_file = os.path.join(args.data_path, 'train/simple_llava_description_test_set.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
-    with open(description_file, 'w', newline='') as file:
+    with open(description_file, 'a', newline='') as file:
         writer = csv.writer(file)
         # Write the header
         writer.writerow(['ID', 'description'])

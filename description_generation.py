@@ -29,6 +29,7 @@ def get_descriptions(args):
         image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
         prompt = f"USER:<image>\nDescribe the image in detail.\nASSISTANT:"
         outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 512})
+        print(f'output of image {image_url} is {outputs}')
         description = outputs['generated_text']
         pair = [image_url, description]
         with open(description_file, 'w', newline='') as file:

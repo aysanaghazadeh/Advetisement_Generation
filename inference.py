@@ -90,11 +90,13 @@ def generate_images(args):
     metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
     test_set = get_test_data(args)
+    print(len(test_set['ID'].valuestest_set['ID'].values))
     for filename, content in QA.items():
         if filename not in test_set['ID'].values:
         # if filename not in test_set:
             continue
         topics = test_set.loc[test_set['ID'] == filename]['topic'].values
+        topics = '-'.join(topics)
         # topics = []
         action_reasons = content[0]
         image, prompt = AdImageGeneration(filename)

@@ -82,7 +82,7 @@ def get_test_data(args):
     most_common_topics = [topic for topic, count in topic_counter.most_common(10)]
     selected_files = defaultdict(list)
     train_files = get_train_data(args)
-    QA = json.load(open(os.join(args.data_path, args.test_set_QA)))
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     for file, topics in topics_data.items():
         if file in train_files or file not in QA:
             continue

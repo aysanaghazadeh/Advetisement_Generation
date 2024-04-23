@@ -69,7 +69,7 @@ def parse_args():
                         help='If the model is fine-tuned, relative path to the train-set QA from root path')
     parser.add_argument('--train_set_images',
                         type=str,
-                        default=None,
+                        default='train_images',
                         help='If the model is fine-tuned, relative path to the train-set Images from root path')
     parser.add_argument('--test_set_QA',
                         type=str,
@@ -78,7 +78,7 @@ def parse_args():
                         )
     parser.add_argument('--test_set_images',
                         type=str,
-                        default='train_images',
+                        default='test_set',
                         help='Relative path to the original images for the test set from root')
     parser.add_argument('--text_input_type',
                         type=str,

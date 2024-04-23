@@ -75,7 +75,7 @@ def get_test_data(args):
     topics_data_file = os.path.join(args.data_path, 'train/Topics_train.json')
     test_file = os.path.join(args.data_path, 'test_image.csv')
     if os.path.exists(test_file):
-        return pd.read_csv(test_file).values
+        return pd.read_csv(test_file)
     topics_data = json.load(open(topics_data_file))
     all_topics = [topic for topics in topics_data.values() for topic in set(topics)]
     topic_counter = Counter(all_topics)

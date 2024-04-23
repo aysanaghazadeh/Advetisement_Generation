@@ -28,7 +28,7 @@ def get_descriptions(args):
     for image_url in test_images:
         image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
         prompt = f"USER:<image>\nDescribe the image in detail.\nASSISTANT:"
-        inputs = processor(prompt, image, return_tensors="pt")
+        inputs = processor(prompt, image, return_tensors='pt').to(device=args.device)
         generate_ids = model.generate(**inputs, max_new_tokens=512)
         description = processor.decode(generate_ids[0][2:], skip_special_tokens=True)
         pair = [image_url, description]

@@ -73,7 +73,7 @@ def get_train_data(args):
 
 def get_test_data(args):
     topics_data_file = os.path.join(args.data_path, 'train/Topics_train.json')
-    test_file = os.path.join(args.data_path, 'test_image.csv')
+    test_file = os.path.join(args.data_path, 'train/test_image.csv')
     if os.path.exists(test_file):
         return pd.read_csv(test_file)
     topics_data = json.load(open(topics_data_file))
@@ -82,13 +82,14 @@ def get_test_data(args):
     most_common_topics = [topic for topic, count in topic_counter.most_common(10)]
     selected_files = defaultdict(list)
     train_files = get_train_data(args)
+    QA = json.load(open(os.join(args.data_path, args.test_set_QA)))
     for file, topics in topics_data.items():
-        if file in train_files:
+        if file in train_files or file not in QA:
             continue
         for topic in set(topics):
             if topic in most_common_topics:
                 if int(topic) in topic_map:
-                    if len(selected_files[topic]) < 200:
+                    if len(selected_files[topic]) < 300:
                         selected_files[topic].append(file)
 
     # # If you need to review the selected files:

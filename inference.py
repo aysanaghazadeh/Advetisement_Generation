@@ -84,20 +84,17 @@ def process_action_reason(action_reasons):
 
 
 def generate_images(args):
-    # AdImageGeneration = AdvertisementImageGeneration(args)
+    AdImageGeneration = AdvertisementImageGeneration(args)
     QA = get_QA(args)
     experiment_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
     metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
     test_set = get_test_data(args)
-    print(len(test_set['ID'].values))
-    AdImageGeneration = AdvertisementImageGeneration(args)
     for filename, content in QA.items():
         if filename not in test_set['ID'].values:
         # if filename not in test_set:
             continue
         topics = test_set.loc[test_set['ID'] == filename]['topic'].values
-        topics = '-'.join(topics)
         # topics = []
         action_reasons = content[0]
         image, prompt = AdImageGeneration(filename)

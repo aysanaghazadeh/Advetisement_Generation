@@ -16,6 +16,7 @@ def get_model():
 
 def get_descriptions(args):
     test_images = get_test_data(args)['ID'].values
+    print(test_images)
     description_file = os.path.join(args.data_path, 'train/simple_llava_description_test_set.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)

@@ -4,6 +4,7 @@ from PIL import Image
 import os
 import csv
 import pandas as pd
+from configs.inference_config import get_args
 
 
 def get_model():
@@ -36,8 +37,8 @@ def get_descriptions(args):
 
     return pd.read_csv(description_file)
 
-
-
-
+if __name__ == '__main__':
+    args = get_args()
+    descriptions = get_descriptions(args)
 
 

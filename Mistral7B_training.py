@@ -42,7 +42,7 @@ def get_training_args(args):
         per_device_train_batch_size=args.batch_size,
         gradient_checkpointing=True,
         gradient_accumulation_steps=4,
-        max_steps=1000,
+        max_steps=3000,
         learning_rate=args.lr,
         logging_steps=10,
         fp16=True,
@@ -94,5 +94,5 @@ if __name__ == '__main__':
         args=training_args
     )
     trainer.train()
-    model.save_pretrained(args.model_path + '/my_mistral_model')
-    tokenizer.save_pretrained(args.model_path + '/my_mistral_tokenizer')
+    model.save_pretrained(args.model_path + '/my_mistral_model_3000steps')
+    tokenizer.save_pretrained(args.model_path + '/my_mistral_tokenizer_3000steps')

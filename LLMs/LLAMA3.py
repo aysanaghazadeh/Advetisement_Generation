@@ -16,7 +16,7 @@ class LLAMA3(nn.Module):
                                                               token='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',
                                                               device_map="auto")
             if args.fine_tuned:
-                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_LLAMA3_tokenizer'))
+                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_LLAMA3_model'))
         # else:
             # bnb_config = BitsAndBytesConfig(
             #     load_in_8bit=True,

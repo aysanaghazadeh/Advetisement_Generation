@@ -29,7 +29,7 @@ class PromptGenerator:
 
     @staticmethod
     def get_description(image_filename, descriptions):
-        return descriptions.loc[descriptions['ID'] == image_filename]['description'].values
+        return descriptions.loc[descriptions['ID'] == image_filename]['description'].values[0]
 
     @staticmethod
     def get_LLM_input_prompt(args, action_reason):

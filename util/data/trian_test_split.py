@@ -68,7 +68,7 @@ def get_train_data(args):
         # Write the data
         for i in train_image_urls:
             writer.writerow([i])
-    return pd.read_csv(train_file)
+    return pd.read_csv(train_file).values
 
 
 def get_test_data(args):

@@ -42,7 +42,7 @@ def get_training_args(args):
         per_device_train_batch_size=args.batch_size,
         gradient_checkpointing=True,
         gradient_accumulation_steps=4,
-        max_steps=2000,
+        max_steps=1500,
         learning_rate=args.lr,
         logging_steps=10,
         fp16=True,
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     model, tokenizer = get_model()
     training_args = get_training_args(args)
     train_dataset = get_train_Mistral7B_Dataloader(args)
-    tmp = train_dataset.train_test_split(test_size=0.1)
+    tmp = train_dataset.train_test_split(test_size=0.03)
     train_dataset = tmp["train"]
     test_dataset = tmp["test"]
     data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
@@ -94,5 +94,5 @@ if __name__ == '__main__':
         args=training_args
     )
     trainer.train()
-    model.save_pretrained(args.model_path + '/my_mistral_model_3000steps')
-    tokenizer.save_pretrained(args.model_path + '/my_mistral_tokenizer_3000steps')
+    model.save_pretrained(args.model_path + '/my_mistral_model_1500steps')
+    tokenizer.save_pretrained(args.model_path + '/my_mistral_tokenizer_1500steps')

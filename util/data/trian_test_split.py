@@ -58,7 +58,7 @@ def get_train_data(args):
     # QAs = list(QA.values())
     # train_images_urls, _, train_QA, _ = train_test_split(image_urls, QAs,
     #                                                      test_size=0.4, random_state=0)
-    train_size = 0.6 * len(image_urls)
+    train_size = 1 * len(image_urls)
     train_image_urls = random.sample(image_urls, train_size)
     with open(train_file, 'w', newline='') as file:
         writer = csv.writer(file)

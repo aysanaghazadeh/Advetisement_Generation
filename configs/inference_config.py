@@ -96,7 +96,7 @@ def parse_args():
                         help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
     parser.add_argument('--fine_tuned',
                         type=bool,
-                        default=True,
+                        default=False,
                         help='True if you want to use the fine-tuned model')
     return parser.parse_args()
 

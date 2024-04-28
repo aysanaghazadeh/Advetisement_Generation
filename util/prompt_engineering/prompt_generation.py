@@ -33,15 +33,11 @@ class PromptGenerator:
 
     @staticmethod
     def get_LLM_input_prompt(args, action_reason):
-        # data = {'action_reason': action_reason}
-        # env = Environment(loader=FileSystemLoader(args.prompt_path))
-        # template = env.get_template('LLM_input.jinja')
-        # output = template.render(**data)
-        output = f"""
-        Describe an advertisement image that conveys the following message in 2 sentences:
-        {action_reason[0]}
-        Description of the image:
-        """
+        data = {'action_reason': action_reason}
+        env = Environment(loader=FileSystemLoader(args.prompt_path))
+        template = env.get_template('LLM_input.jinja')
+        output = template.render(**data)
+
         return output
 
     def get_original_description_prompt(self, args, image_filename):

@@ -38,7 +38,7 @@ class PromptGenerator:
         # template = env.get_template('LLM_input.jinja')
         # output = template.render(**data)
         output = f"""
-        Describe an advertisement image that conveys the following messages.
+        Describe an advertisement image that conveys the following message in 2 sentences:
         {action_reason[0]}
         Description of the image:
         """

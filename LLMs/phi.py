@@ -20,7 +20,6 @@ class Phi(nn.Module):
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_phi_model'))
 
-
     def forward(self, inputs):
         if not self.args.train:
             inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)

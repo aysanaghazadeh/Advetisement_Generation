@@ -37,7 +37,6 @@ class PromptGenerator:
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template('LLM_input.jinja')
         output = template.render(**data)
-
         return output
 
     def get_original_description_prompt(self, args, image_filename):

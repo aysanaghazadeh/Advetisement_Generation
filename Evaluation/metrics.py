@@ -71,7 +71,7 @@ class Metrics:
                              'action': 0,
                              'reason': 0}
         for AR in action_reason:
-            reason = AR.lower().split('because')[1]
+            reason = AR.lower().split('because')[-1]
             action = AR.lower().split('because')[0]
             inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True).to(device=args.device)  # Change to your text
             inputs_reason = self.clip_processor(text=AR, return_tensors="pt", padding=True).to(device=args.device)

@@ -77,6 +77,7 @@ def get_LLAMA3_training_data(args, image_urls):
     dataset = Dataset.from_dict(dataset)
     dataset = dataset.map(format_dataset)
     dataset = dataset.remove_columns(['QA', "description"])
+    print(dataset.keys())
     return dataset
 
 

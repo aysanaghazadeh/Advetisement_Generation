@@ -5,6 +5,36 @@ from transformers import TrainingArguments, Trainer, DataCollatorForLanguageMode
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
 from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_training
+import random
+from transformers import TrainerCallback, TrainerControl
+
+import random
+from transformers import TrainerCallback, TrainerControl
+
+
+class PrintRandomTestExampleCallback(TrainerCallback):
+    """A callback that prints a random test example and its prediction at the start of evaluation."""
+
+    def __init__(self, test_dataset, tokenizer, model):
+        self.test_dataset = test_dataset
+        self.tokenizer = tokenizer
+        self.model = model
+
+    def on_evaluate(self, args, state, control: TrainerControl, **kwargs):
+        # Randomly select an index
+        random_idx = random.randint(0, len(self.test_dataset) - 1)
+        # Retrieve the example at the selected index
+        example = self.test_dataset[random_idx]
+        # Tokenize the input (assuming text input for simplicity)
+        inputs = self.tokenizer(example["text"], return_tensors="pt")
+        # Make a prediction
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+        # You might need to process outputs depending on your model's output (e.g., logits to probabilities)
+        predictions = outputs.logits.argmax(-1)
+        # Print the example and its predicted output
+        print(f"Random test example: {example['text']}")
+        print(f"Model's prediction: {predictions}")
 
 
 def get_model():

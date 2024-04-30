@@ -65,15 +65,46 @@ class Metrics:
 
         return cosine_similarity
 
-    def get_text_image_CLIP_score(self, generated_image_path, text_description, args):
-        similarity_score = 0
+    def get_text_image_CLIP_score(self, generated_image_path, action_reason, args):
+        image = Image.open(generated_image_path).convert("RGB")
+        cosine_similarity = {}
+        for AR in action_reason:
+            reason = AR.lower().split('because')[1]
+            action = AR.lower().split('because')[0]
+            inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True)  # Change to your text
+            inputs_reason = self.clip_processor(text=AR, return_tensors="pt", padding=True)
+            inputs_action = self.clip_processor(text=reason, return_tensors="pt", padding=True)
+            inputs_text = self.clip_processor(text=action, return_tensors="pt", padding=True)
 
-        return similarity_score
+            # Process images
+            # inputs = processor(images=[image1, image2], return_tensors="pt", padding=True).to(device=args.device)
+
+            # Extract image features from the CLIP model
+            with torch.no_grad():
+                image_features = self.clip_model.get_image_features(**inputs_image)
+                text_features = self.clip_model.get_text_features(**inputs_text)
+                reason_features = self.clip_model.get_text_features(**inputs_reason)
+                action_features = self.clip_model.get_text_features(**inputs_action)
+            # Normalize the feature vectors
+            image_features = torch.nn.functional.normalize(image_features, p=2, dim=1)
+            text_features = torch.nn.functional.normalize(text_features, p=2, dim=1)
+            reason_features = torch.nn.functional.normalize(reason_features, p=2, dim=1)
+            action_features = torch.nn.functional.normalize(action_features, p=2, dim=1)
+
+            # Calculate cosine similarity between the two images
+            cosine_similarity['text'] = torch.nn.functional.cosine_similarity(image_features, text_features).item()
+            cosine_similarity['reason'] = torch.nn.functional.cosine_similarity(image_features, reason_features).item()
+            cosine_similarity['action'] = torch.nn.functional.cosine_similarity(image_features, action_features).item()
+
+        return cosine_similarity
 
     def get_scores(self, text_description, generated_image_path, real_image_path, args):
+        text_image_score = self.get_text_image_CLIP_score(generated_image_path, text_description, args)
         scores = {
             'image_image_CLIP_score': self.get_image_image_CLIP_score(generated_image_path, real_image_path, args),
-            'image_text_CLIP_score': self.get_text_image_CLIP_score(generated_image_path, text_description, args),
+            'image_text_CLIP_score': text_image_score['average'],
+            'image_action_CLIP_score': text_image_score['action'],
+            'image_reason_CLIP_score': text_image_score['reason'],
             'FID_score': self.get_FID(generated_image_path, real_image_path, args)}
 
         return scores

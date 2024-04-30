@@ -50,6 +50,21 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
     csv_file_name = '_'.join([text_input, args.T2I_model, experiment_datetime])
     csv_file_name = f'{csv_file_name}.csv'
     csv_file = os.path.join(directory, csv_file_name)
+    if not os.path.exists(csv_file):
+        with open(csv_file, 'w', newline='') as file:
+            writer = csv.writer(file)
+
+            # Write the header
+            writer.writerow(['image_url',
+                             'action_reason',
+                             'T2I_prompt',
+                             'generated_image_url',
+                             'topics',
+                             'clip_image_image_score',
+                             'clip_image_text_score',
+                             'clip_image_action_score',
+                             'clip_image_text_score',
+                             'FID_score'])
     generated_image_url = os.path.join(args.result_path,
                                        'generated_images',
                                        experiment_datetime,

@@ -67,7 +67,9 @@ class Metrics:
 
     def get_text_image_CLIP_score(self, generated_image_path, action_reason, args):
         image = Image.open(generated_image_path).convert("RGB")
-        cosine_similarity = {}
+        cosine_similarity = {'text': 0,
+                             'action': 0,
+                             'reason': 0}
         for AR in action_reason:
             reason = AR.lower().split('because')[1]
             action = AR.lower().split('because')[0]
@@ -92,10 +94,12 @@ class Metrics:
             action_features = torch.nn.functional.normalize(action_features, p=2, dim=1)
 
             # Calculate cosine similarity between the two images
-            cosine_similarity['text'] = torch.nn.functional.cosine_similarity(image_features, text_features).item()
-            cosine_similarity['reason'] = torch.nn.functional.cosine_similarity(image_features, reason_features).item()
-            cosine_similarity['action'] = torch.nn.functional.cosine_similarity(image_features, action_features).item()
-
+            cosine_similarity['text'] += torch.nn.functional.cosine_similarity(image_features, text_features).item()
+            cosine_similarity['reason'] += torch.nn.functional.cosine_similarity(image_features, reason_features).item()
+            cosine_similarity['action'] += torch.nn.functional.cosine_similarity(image_features, action_features).item()
+        cosine_similarity['text'] = cosine_similarity['text']/len(action_reason)
+        cosine_similarity['reason'] = cosine_similarity['reason']/len(action_reason)
+        cosine_similarity['action'] = cosine_similarity['action']/len(action_reason)
         return cosine_similarity
 
     def get_scores(self, text_description, generated_image_path, real_image_path, args):

@@ -39,10 +39,10 @@ class PrintRandomTestExampleCallback(TrainerCallback):
 
 def get_model():
     bnb_config = BitsAndBytesConfig(
-        load_in_16bit=True,
+        load_in_8bit=True,
         # bnb_4bit_quant_type="nf4",
         # bnb_4bit_use_double_quant=True,
-        bnb_16bit_compute_dtype=torch.bfloat16
+        bnb_8bit_compute_dtype=torch.bfloat16
     )
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                  token='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',

@@ -26,14 +26,11 @@ class PrintRandomTestExampleCallback(TrainerCallback):
         # Retrieve the example at the selected index
         example = self.test_dataset[random_idx]
         # Tokenize the input (assuming text input for simplicity)
-        inputs = self.tokenizer(example["text"], return_tensors="pt")
-        # Make a prediction
         with torch.no_grad():
-            outputs = self.model(**inputs)
+            generated_ids = self.model.generate(**example, max_new_tokens=200)
         # You might need to process outputs depending on your model's output (e.g., logits to probabilities)
-        predictions = outputs.logits.argmax(-1)
+        predictions = self.tokenizer.batch_decode(generated_ids)[0]
         # Print the example and its predicted output
-        print(f"Random test example: {example['text']}")
         print(f"Model's prediction: {predictions}")
 
 
@@ -123,7 +120,8 @@ if __name__ == '__main__':
         eval_dataset=test_dataset,
         tokenizer=tokenizer,
         data_collator=data_collator,
-        args=training_args
+        args=training_args,
+        callbacks=[PrintRandomTestExampleCallback(test_dataset, tokenizer, model)]
     )
     trainer.train()
     model.save_pretrained(args.model_path + '/my_LLAMA3_model')

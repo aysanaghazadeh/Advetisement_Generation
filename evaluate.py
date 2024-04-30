@@ -2,7 +2,7 @@ import os.path
 
 import pandas as pd
 import json
-from collections import Counter, defaultdict
+from collections import Counter
 from Evaluation.metrics import Metrics
 from configs.inference_config import get_args
 

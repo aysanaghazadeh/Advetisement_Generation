@@ -9,10 +9,10 @@ from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_tr
 
 def get_model():
     bnb_config = BitsAndBytesConfig(
-        load_in_8bit=True,
+        load_in_16bit=True,
         # bnb_4bit_quant_type="nf4",
         # bnb_4bit_use_double_quant=True,
-        bnb_8bit_compute_dtype=torch.bfloat16
+        bnb_16bit_compute_dtype=torch.bfloat16
     )
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                  token='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',
@@ -48,7 +48,7 @@ def get_training_args(args):
         learning_rate=args.lr,
         logging_steps=10,
         fp16=True,
-        optim="paged_adamw_8bit",
+        # optim="paged_adamw_8bit",
         save_strategy="steps",
         save_steps=50,
         evaluation_strategy="steps",

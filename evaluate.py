@@ -7,7 +7,7 @@ from Evaluation.metrics import Metrics
 from configs.inference_config import get_args
 
 TOPIC_FILE = '../Data/PittAd/train/Topics_train.json'
-RESULT_FILE = '../experiments/results/simple_llava_description_test_set.csv_PixArt_20240424_213628.csv'
+RESULT_FILE = '../experiments/results/AR_PixArt_20240424_093509.csv'
 topic_map = {'1': ["Restaurants", "cafe", "fast food"],
              '2': ["Chocolate", "cookies", "candy", "ice cream"],
              '3': ["Chips", "snacks", "nuts", "fruit", "gum", "cereal", "yogurt", "soups"],
@@ -96,7 +96,6 @@ def evaluate_results(metrics, args):
         if original_image_text_score > 0.25:
             FIDs.append(FID)
             CLIP_scores.append(CLIP_score)
-            print(original_image_text_score)
         else:
             print(f'Text image score for image {image_url} is {original_image_text_score}')
             print('-'*100)

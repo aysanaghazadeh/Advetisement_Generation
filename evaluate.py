@@ -91,6 +91,8 @@ def evaluate_results(metrics, args):
         image_url = row[0]
         FID = row[-1]
         CLIP_score = row[5]
+        print(FID)
+        print(CLIP_score)
         action_reason = QA[image_url]
         original_image_url = os.path.join(args.data_path, args.test_set_images, image_url)
         original_image_text_score = metrics.get_text_image_CLIP_score(original_image_url, action_reason, args)['text']
@@ -108,4 +110,4 @@ def evaluate_results(metrics, args):
 if __name__ == '__main__':
     args = get_args()
     metrics = Metrics(args)
-    get_topic_based_results()
+    # get_topic_based_results()

@@ -66,7 +66,6 @@ def get_topic_based_results():
         FID = row[7]
         CLIP_score = row[5]
         topics = image_topics[image_url]
-        print(topics)
         for topic in topics:
             if topic in topic_map and topic in most_common_topics:
                 topic_string = '-'.join(topic_map[topic])
@@ -101,14 +100,15 @@ def evaluate_results(metrics, args):
             CLIP_scores.append(CLIP_score)
             print(original_image_text_score)
         else:
-            # print(f'Text image score for image {image_url} is {original_image_text_score}')
+            print(f'Text image score for image {image_url} is {original_image_text_score}')
             print('-'*100)
-    # print(f'number of examples: {len(FIDs)}')
-    # print(f'Average FID is: {sum(FIDs) / len(FIDs)}')
-    # print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
+    print(f'number of examples: {len(FIDs)}')
+    print(f'Average FID is: {sum(FIDs) / len(FIDs)}')
+    print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
     print('*' * 80)
 
 if __name__ == '__main__':
     args = get_args()
     metrics = Metrics(args)
-    # get_topic_based_results()
+    evaluate_results()
+    get_topic_based_results()

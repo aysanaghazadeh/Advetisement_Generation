@@ -102,9 +102,9 @@ def evaluate_results(metrics, args):
         else:
             print(f'Text image score for image {image_url} is {original_image_text_score}')
             print('-'*100)
-    print(f'number of examples: {len(FIDs)}')
-    print(f'Average FID is: {sum(FIDs) / len(FIDs)}')
-    print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
+    # print(f'number of examples: {len(FIDs)}')
+    # print(f'Average FID is: {sum(FIDs) / len(FIDs)}')
+    # print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
     print('*' * 80)
 
 if __name__ == '__main__':

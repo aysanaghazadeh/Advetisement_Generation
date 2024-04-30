@@ -99,8 +99,9 @@ def evaluate_results(metrics, args):
         if original_image_text_score > 0.25:
             FIDs.append(FID)
             CLIP_scores.append(CLIP_score)
+            print(original_image_text_score)
         else:
-            print(f'Text image score for image {image_url} is {original_image_text_score}')
+            # print(f'Text image score for image {image_url} is {original_image_text_score}')
             print('-'*100)
     # print(f'number of examples: {len(FIDs)}')
     # print(f'Average FID is: {sum(FIDs) / len(FIDs)}')

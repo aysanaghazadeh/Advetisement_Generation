@@ -7,7 +7,7 @@ from Evaluation.metrics import Metrics
 from configs.inference_config import get_args
 
 TOPIC_FILE = '../Data/PittAd/train/Topics_train.json'
-RESULT_FILE = '/Users/aysanaghazadeh/experiments/results/simple_llava_description_test_set.csv_PixArt_20240424_213628.csv'
+RESULT_FILE = '../experiments/results/simple_llava_description_test_set.csv_PixArt_20240424_213628.csv'
 topic_map = {'1': ["Restaurants", "cafe", "fast food"],
              '2': ["Chocolate", "cookies", "candy", "ice cream"],
              '3': ["Chips", "snacks", "nuts", "fruit", "gum", "cereal", "yogurt", "soups"],

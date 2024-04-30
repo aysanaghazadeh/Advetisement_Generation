@@ -83,5 +83,5 @@ def get_LLAMA3_training_data(args, image_urls):
 
 def get_train_LLAMA3_Dataloader(args):
     image_urls = get_train_data(args)
-    dataset = get_Mistral7B_training_data(args, image_urls)
+    dataset = get_LLAMA3_training_data(args, image_urls)
     return dataset

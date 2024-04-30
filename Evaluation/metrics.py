@@ -102,7 +102,7 @@ class Metrics:
         text_image_score = self.get_text_image_CLIP_score(generated_image_path, text_description, args)
         scores = {
             'image_image_CLIP_score': self.get_image_image_CLIP_score(generated_image_path, real_image_path, args),
-            'image_text_CLIP_score': text_image_score['average'],
+            'image_text_CLIP_score': text_image_score['text'],
             'image_action_CLIP_score': text_image_score['action'],
             'image_reason_CLIP_score': text_image_score['reason'],
             'FID_score': self.get_FID(generated_image_path, real_image_path, args)}

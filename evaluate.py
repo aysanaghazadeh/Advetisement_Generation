@@ -1,6 +1,10 @@
+import os.path
+
 import pandas as pd
 import json
 from collections import Counter, defaultdict
+from Evaluation.metrics import Metrics
+from configs.inference_config import get_args
 
 TOPIC_FILE = '../Data/PittAd/train/Topics_train.json'
 RESULT_FILE = '/Users/aysanaghazadeh/experiments/results/simple_llava_description_test_set.csv_PixArt_20240424_213628.csv'
@@ -78,5 +82,30 @@ def get_topic_based_results():
         print(f'Average CLIP-score for {topic} is: {sum(CLIP_scores[topic])/len(CLIP_scores[topic])}')
         print('*'*80)
 
+def evaluate_results(metrics, args):
+    results = pd.read_csv(RESULT_FILE).values
+    FIDs = []
+    CLIP_scores = []
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    for row in results:
+        image_url = row[0]
+        FID = row[-1]
+        CLIP_score = row[5]
+        action_reason = QA[image_url]
+        original_image_url = os.path.join(args.data_path, args.test_set_images, image_url)
+        original_image_text_score = metrics.get_text_image_CLIP_score(original_image_url, action_reason, args)['text']
+        if original_image_text_score > 0.25:
+            FIDs.append(FID)
+            CLIP_scores.append(CLIP_score)
+        else:
+            print(f'Text image score for image {image_url} is {original_image_text_score}')
+            print('-'*100)
+
+    print(f'Average FID is: {sum(FIDs) / len(FIDs)}')
+    print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
+    print('*' * 80)
+
 if __name__ == '__main__':
+    args = get_args()
+    metrics = Metrics(args)
     get_topic_based_results()

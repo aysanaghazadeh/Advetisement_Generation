@@ -55,9 +55,6 @@ def get_train_data(args):
         return pd.read_csv(train_file).values
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     image_urls = list(QA.keys())
-    # QAs = list(QA.values())
-    # train_images_urls, _, train_QA, _ = train_test_split(image_urls, QAs,
-    #                                                      test_size=0.4, random_state=0)
     train_size = 1 * len(image_urls)
     train_image_urls = random.sample(image_urls, train_size)
     with open(train_file, 'w', newline='') as file:
@@ -91,14 +88,9 @@ def get_test_data(args):
                     if len(selected_files[topic]) < 300:
                         selected_files[topic].append(file)
 
-    # # If you need to review the selected files:
-    # for topic, files in selected_files.items():
-    #     print(f"Topic {topic} has {len(files)} files: {files}")
-
     with open(test_file, 'w', newline='') as file:
         writer = csv.writer(file)
 
-        # Write the header
         writer.writerow(['ID', 'topic'])
 
         for topic, files in selected_files.items():
@@ -106,13 +98,3 @@ def get_test_data(args):
                 writer.writerow([filename, '-'.join(topic_map[int(topic)])])
     return pd.read_csv(test_file)
 
-# def get_test_data(args):
-#     image_urls = ['0/81460.jpg', '0/34360.jpg', '0/150500.jpg', '0/9950.jpg', '0/146370.jpg', '0/159060.jpg', '0/134110.jpg',
-#      '0/149440.jpg', '0/149040.jpg', '0/108380.jpg', '0/165240.jpg', '0/11670.jpg', '0/92290.jpg', '0/143720.jpg',
-#      '0/163080.jpg', '0/36970.jpg', '0/26550.jpg', '0/67250.jpg', '0/35880.jpg', '0/23280.jpg', '0/92450.jpg',
-#      '0/130590.jpg', '0/7550.jpg', '2/15782.jpg', '2/92572.jpg', '2/19782.jpg', '2/158892.jpg', '2/81092.jpg',
-#      '2/65192.jpg', '2/10062.jpg', '2/158182.jpg', '2/11852.jpg', '2/76572.jpg', '2/165102.jpg', '2/162692.jpg',
-#      '2/149302.jpg', '2/70942.jpg', '1/145631.jpg', '1/102201.jpg', '1/33361.jpg', '1/66381.jpg', '1/97611.jpg',
-#      '1/116181.jpg', '1/139441.jpg', '1/100101.jpg', '1/60771.jpg', '1/133691.jpg', '1/136821.jpg', '1/88491.jpg',
-#      '1/147351.jpg']
-#     return image_urls

@@ -110,5 +110,5 @@ def evaluate_results(metrics, args):
 if __name__ == '__main__':
     args = get_args()
     metrics = Metrics(args)
-    evaluate_results()
-    get_topic_based_results()
+    evaluate_results(metrics, args)
+    # get_topic_based_results()

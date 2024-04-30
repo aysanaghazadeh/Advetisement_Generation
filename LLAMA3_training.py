@@ -121,7 +121,7 @@ if __name__ == '__main__':
         tokenizer=tokenizer,
         data_collator=data_collator,
         args=training_args,
-        callbacks=[PrintRandomTestExampleCallback(test_dataset, tokenizer, model)]
+        # callbacks=[PrintRandomTestExampleCallback(test_dataset, tokenizer, model)]
     )
     trainer.train()
     model.save_pretrained(args.model_path + '/my_LLAMA3_model')

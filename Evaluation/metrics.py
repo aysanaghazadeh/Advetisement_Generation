@@ -71,10 +71,10 @@ class Metrics:
         for AR in action_reason:
             reason = AR.lower().split('because')[1]
             action = AR.lower().split('because')[0]
-            inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True)  # Change to your text
-            inputs_reason = self.clip_processor(text=AR, return_tensors="pt", padding=True)
-            inputs_action = self.clip_processor(text=reason, return_tensors="pt", padding=True)
-            inputs_text = self.clip_processor(text=action, return_tensors="pt", padding=True)
+            inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True).to(device=args.device)  # Change to your text
+            inputs_reason = self.clip_processor(text=AR, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_action = self.clip_processor(text=reason, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_text = self.clip_processor(text=action, return_tensors="pt", padding=True).to(device=args.device)
 
             # Process images
             # inputs = processor(images=[image1, image2], return_tensors="pt", padding=True).to(device=args.device)

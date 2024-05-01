@@ -73,7 +73,7 @@ def parse_args():
                         help='If the model is fine-tuned, relative path to the train-set Images from root path')
     parser.add_argument('--test_set_QA',
                         type=str,
-                        default='train/large_combined_hard_QA_Combined_Action_Reason_train.json',
+                        default='train/Action_Reason_statements.json',
                         help='Relative path to the QA file for action-reasons from root path'
                         )
     parser.add_argument('--test_set_images',

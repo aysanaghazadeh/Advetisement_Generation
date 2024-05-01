@@ -94,5 +94,5 @@ if __name__ == '__main__':
         args=training_args
     )
     trainer.train()
-    model.save_pretrained(args.model_path + '/my_mistral_model_250steps')
-    tokenizer.save_pretrained(args.model_path + '/my_mistral_tokenizer_250steps')
+    model.save_pretrained(args.model_path + '/my_mistral_new_sample_model')
+    tokenizer.save_pretrained(args.model_path + '/my_mistral_new_sample_tokenizer')

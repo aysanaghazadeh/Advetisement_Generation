@@ -124,5 +124,5 @@ if __name__ == '__main__':
         # callbacks=[PrintRandomTestExampleCallback(test_dataset, tokenizer, model)]
     )
     trainer.train()
-    model.save_pretrained(args.model_path + '/my_LLAMA3_model')
-    tokenizer.save_pretrained(args.model_path + '/my_LLAMA3_tokenizer')
+    model.save_pretrained(args.model_path + '/my_LLAMA3_new_sample_model')
+    tokenizer.save_pretrained(args.model_path + '/my_LLAMA3_new_sample_tokenizer')

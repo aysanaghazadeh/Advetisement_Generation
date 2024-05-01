@@ -14,7 +14,8 @@ class Mistral7B(nn.Module):
             self.model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",
                                                               device_map="auto")
             if args.fine_tuned:
-                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_mistral_model_250steps'))
+                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path,
+                                                                                'my_mistral_new_sample_model'))
         # else:
             # bnb_config = BitsAndBytesConfig(
             #     load_in_8bit=True,

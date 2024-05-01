@@ -57,6 +57,7 @@ def get_train_data(args):
     image_urls = list(QA.keys())
     train_size = 0.33 * len(image_urls)
     train_image_urls = random.sample(image_urls, train_size)
+    print('saving train data')
     with open(train_file, 'w', newline='') as file:
         writer = csv.writer(file)
         # Write the header
@@ -88,7 +89,7 @@ def get_test_data(args):
                 if int(topic) in topic_map:
                     if len(selected_files[topic]) < 300:
                         selected_files[topic].append(file)
-
+    print('saving test files...')
     with open(test_file, 'w', newline='') as file:
         writer = csv.writer(file)
 

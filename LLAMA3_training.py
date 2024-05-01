@@ -71,7 +71,7 @@ def get_training_args(args):
         per_device_train_batch_size=args.batch_size,
         gradient_checkpointing=True,
         gradient_accumulation_steps=4,
-        max_steps=1000,
+        max_steps=800,
         learning_rate=args.lr,
         logging_steps=10,
         fp16=True,

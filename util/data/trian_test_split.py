@@ -55,7 +55,7 @@ def get_train_data(args):
         return pd.read_csv(train_file).values
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     image_urls = list(QA.keys())
-    train_size = 0.33 * len(image_urls)
+    train_size = int(0.33 * len(image_urls))
     train_image_urls = random.sample(image_urls, train_size)
     print('saving train data')
     with open(train_file, 'w', newline='') as file:

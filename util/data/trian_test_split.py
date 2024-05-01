@@ -56,7 +56,7 @@ def get_train_data(args):
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     image_urls = list(QA.keys())
     print(len(image_urls))
-    train_size = int(0.35 * len(image_urls))
+    train_size = int(0.4 * len(image_urls))
     train_image_urls = random.sample(image_urls, train_size)
     print('saving train data')
     with open(train_file, 'w', newline='') as file:

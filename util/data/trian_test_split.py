@@ -55,7 +55,7 @@ def get_train_data(args):
         return pd.read_csv(train_file).values
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     image_urls = list(QA.keys())
-    train_size = 1 * len(image_urls)
+    train_size = 0.33 * len(image_urls)
     train_image_urls = random.sample(image_urls, train_size)
     with open(train_file, 'w', newline='') as file:
         writer = csv.writer(file)
@@ -79,8 +79,9 @@ def get_test_data(args):
     most_common_topics = [topic for topic, count in topic_counter.most_common(10)]
     selected_files = defaultdict(list)
     train_files = get_train_data(args)
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     for file, topics in topics_data.items():
-        if file in train_files:
+        if file in train_files or file not in QA:
             continue
         for topic in set(topics):
             if topic in most_common_topics:

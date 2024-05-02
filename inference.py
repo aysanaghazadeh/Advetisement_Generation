@@ -106,10 +106,10 @@ def generate_images(args):
     experiment_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
     metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
-    test_set_image_url = test_set['ID'].values
-    test_set_image_url = random.sample(test_set_image_url, 1500)
+    test_set_image_url = list(test_set['ID'].values)
+    test_set_image_url = set(random.sample(test_set_image_url, 1500))
     for filename, content in QA.items():
-        if filename not in test_set['ID'].values:
+        if filename not in test_set_image_url:
         # if filename not in test_set:
             continue
         topics = test_set.loc[test_set['ID'] == filename]['topic'].values

@@ -50,7 +50,7 @@ class PromptGenerator:
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
-        action_reason = QA[image_filename][0]
+        action_reason = QA[image_filename][0][0]
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason)
         description = self.LLM_model(LLM_input_prompt)
         if 'objects:' in description:

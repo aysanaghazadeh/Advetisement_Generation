@@ -34,6 +34,14 @@ def parse_args():
                         required=True,
                         help='Choose among ARGS for commandline arguments, DEFAULT for default values, or YAML for '
                              'config file')
+    parser.add_arguement('--llm_prompt',
+                         type=str,
+                         default='LLM_input.jinja',
+                         help='LLM input prompt template file name.')
+    parser.add_arguement('--T2I_prompt',
+                         type=str,
+                         default='LLM.jinja',
+                         help='T2I input prompt template file name.')
     parser.add_argument('--model_path',
                         type=str,
                         default='../models',
@@ -53,7 +61,7 @@ def parse_args():
     parser.add_argument('--LLM',
                         type=str,
                         default='Mixtral7B',
-                        help='LLM chosen from: Mixtral7B, Mistral7B, Vicuna, LLaMA2')
+                        help='LLM chosen from: Mistral7B, phi, LLaMA3')
     parser.add_argument('--train',
                         type=bool,
                         default=False,
@@ -63,6 +71,15 @@ def parse_args():
                         default='../Data/PittAd',
                         help='Path to the root of the data'
                         )
+    parser.add_argument('--train_ratio',
+                        type=float,
+                        default=0.4,
+                        help='the ratio of the train size to the dataset in train test split.'
+                        )
+    parser.add_argument('--test_size',
+                        type=int,
+                        default=1500,
+                        help='number of example in the test-set, it must be smaller than the original test set')
     parser.add_argument('--train_set_QA',
                         type=str,
                         default='train/Action_Reason_statements.json',
@@ -82,7 +99,7 @@ def parse_args():
                         help='Relative path to the original images for the test set from root')
     parser.add_argument('--text_input_type',
                         type=str,
-                        default='AR',
+                        default='LLM',
                         help='Type of the input text for T2I generation model. Choose from LLM_generated, '
                              'AR (for action-reason),'
                              'original_description (for combine, VT, IN, and atypicality descriptions)')

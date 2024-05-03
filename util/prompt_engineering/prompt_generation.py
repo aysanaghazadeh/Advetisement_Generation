@@ -35,14 +35,14 @@ class PromptGenerator:
     def get_LLM_input_prompt(args, action_reason):
         data = {'action_reason': action_reason}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
-        template = env.get_template('LLM_input.jinja')
+        template = env.get_template(args.LLM_prompt)
         output = template.render(**data)
         return output
 
     def get_original_description_prompt(self, args, image_filename):
         data = {'description': self.get_description(image_filename, self.descriptions)}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
-        template = env.get_template(''.join([args.text_input_type, '.jinja']))
+        template = env.get_template(args.T2I_prompt)
         output = template.render(**data)
         return output
 
@@ -55,7 +55,7 @@ class PromptGenerator:
         description = self.LLM_model(LLM_input_prompt)
         data = {'description': description}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
-        template = env.get_template(''.join([args.text_input_type, '.jinja']))
+        template = env.get_template(args.T2I_prompt)
         output = template.render(**data)
         print('LLM generated prompt:', output)
         return output
@@ -68,7 +68,7 @@ class PromptGenerator:
         action_reason = QA[image_filename][0]
         data = {'action_reason': action_reason}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
-        template = env.get_template(''.join([args.text_input_type, '.jinja']))
+        template = env.get_template(args.T2I_prompt)
         output = template.render(**data)
         print('AR prompt:', output)
         return output

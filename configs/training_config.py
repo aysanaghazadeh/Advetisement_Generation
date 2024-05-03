@@ -63,6 +63,11 @@ def parse_args():
                         default='../Data/PittAd',
                         help='Path to the root of the data'
                         )
+    parser.add_argument('--train_ratio',
+                        type=float,
+                        default=0.4,
+                        help='the ratio of the train size to the dataset in train test split.'
+                        )
     parser.add_argument('--train_set_QA',
                         type=str,
                         default=None,
@@ -94,6 +99,14 @@ def parse_args():
                         type=str,
                         default='utils/prompt_engineering/prompts',
                         help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
+    parser.add_arguement('--llm_prompt',
+                         type=str,
+                         default='LLM_input.jinja',
+                         help='LLM input prompt template file name.')
+    parser.add_arguement('--T2I_prompt',
+                         type=str,
+                         default='LLM.jinja',
+                         help='T2I input prompt template file name.')
     parser.add_argument('--epochs',
                         type=int,
                         default=100,

@@ -53,7 +53,12 @@ class PromptGenerator:
         action_reason = QA[image_filename][0]
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason)
         description = self.LLM_model(LLM_input_prompt)
-        data = {'description': description}
+        if 'objects:' in description:
+            objects = description.split('objects:')[1]
+            description = description.split('objects:')[0]
+        else:
+            objects = None
+        data = {'description': description, 'action_reason': action_reason, 'objects': objects}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)
         output = template.render(**data)

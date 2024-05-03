@@ -39,6 +39,6 @@ class LLAMA3(nn.Module):
             generated_ids = self.model.generate(**inputs, max_new_tokens=512)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.replace('</s>', '')
-            output = output.split('Question:')[-1]
+            output = output.split('Description of the image:')[-1]
             return output
         # return self.model(**inputs)

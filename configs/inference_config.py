@@ -34,11 +34,11 @@ def parse_args():
                         required=True,
                         help='Choose among ARGS for commandline arguments, DEFAULT for default values, or YAML for '
                              'config file')
-    parser.add_arguement('--llm_prompt',
+    parser.add_argument('--llm_prompt',
                          type=str,
                          default='LLM_input.jinja',
                          help='LLM input prompt template file name.')
-    parser.add_arguement('--T2I_prompt',
+    parser.add_argument('--T2I_prompt',
                          type=str,
                          default='LLM.jinja',
                          help='T2I input prompt template file name.')

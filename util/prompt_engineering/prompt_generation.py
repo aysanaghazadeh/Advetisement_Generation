@@ -35,7 +35,7 @@ class PromptGenerator:
     def get_LLM_input_prompt(args, action_reason):
         data = {'action_reason': action_reason}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
-        template = env.get_template(args.LLM_prompt)
+        template = env.get_template(args.llm_prompt)
         output = template.render(**data)
         return output
 

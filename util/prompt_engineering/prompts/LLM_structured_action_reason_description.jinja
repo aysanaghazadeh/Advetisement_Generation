@@ -1,3 +1,6 @@
-Generate the described advertisement image with the message of {{action_reason}}
+Generate an advertisement image that includes the following messages:
+{% for statement in action_reason %}
+    - {{statement}}
+{% endfor %}
 {{description}}
 

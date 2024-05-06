@@ -106,7 +106,7 @@ def evaluate_results(metrics, args):
 
 def evaluate_persuasiveness():
     persuasiveness = PersuasivenessMetric()
-    saving_path = RESULT_FILE.split('.')[0] + '.json'
+    saving_path = RESULT_FILE.replace('.csv', '.json')
     print(saving_path)
     results = pd.read_csv(RESULT_FILE).values
     persuasiveness_scores = {}

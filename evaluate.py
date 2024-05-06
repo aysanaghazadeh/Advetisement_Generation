@@ -1,5 +1,4 @@
 import os.path
-
 import pandas as pd
 import json
 from collections import Counter
@@ -107,6 +106,8 @@ def evaluate_results(metrics, args):
 
 def evaluate_persuasiveness():
     persuasiveness = PersuasivenessMetric()
+    saving_path = RESULT_FILE.split('.')[0] + '.json'
+    print(saving_path)
     results = pd.read_csv(RESULT_FILE).values
     persuasiveness_scores = {}
     for row in results:
@@ -117,7 +118,8 @@ def evaluate_persuasiveness():
         print('*' * 80)
         persuasiveness_scores[image_url] = persuasiveness_score
     print(f'average persuasiveness is {sum(persuasiveness_scores)/len(persuasiveness_scores)}')
-
+    with open(saving_path, "w") as outfile:
+        json.dump(persuasiveness_scores, outfile)
 
 if __name__ == '__main__':
     args = get_args()

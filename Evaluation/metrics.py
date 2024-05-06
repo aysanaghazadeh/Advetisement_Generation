@@ -121,7 +121,7 @@ class PersuasivenessMetric:
         # model_id = "llava-hf/llava-1.5-13b-hf"
         # self.pipe = pipeline("image-to-text", model=model_id, device_map='auto')
         model_id = "llava-hf/llava-1.5-7b-hf"
-        self.model = LlavaForConditionalGeneration.from_pretrained(model_id).to('cuda')
+        self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
         self.processor = AutoProcessor.from_pretrained(model_id)
 
     def get_persuasiveness_score(self, generated_image_path):

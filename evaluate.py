@@ -22,18 +22,19 @@ topic_map = {'1': ["Restaurants", "cafe", "fast food"],
              '13': ["Education", "universities", "colleges", "kindergarten", "online degrees"],
              '14': ["Security and safety services", "anti-theft", "safety courses"],
              '15': ["Software", "internet radio", "streaming", "job search website", "grammar correction",
-                  "travel planning"],
+                    "travel planning"],
              '16': ["dating", "tax", "legal", "loan", "religious", "printing", "catering"],
              '17': ["Beauty products and cosmetics"],
-             '18': ["Healthcare and medications", "hospitals", "health insurance", "allergy", "cold remedy", "home tests",
-                  "vitamins"],
+             '18': ["Healthcare and medications", "hospitals", "health insurance", "allergy", "cold remedy",
+                    "home tests",
+                    "vitamins"],
              '19': ["Clothing and accessories", "jeans", "shoes", "eye glasses", "handbags", "watches", "jewelry"],
              '20': ["Baby products", "baby food", "sippy cups", "diapers"],
              '21': ["Games and toys", "including video and mobile games"],
              '22': ["Cleaning products", "detergents", "fabric softeners", "soap", "tissues", "paper towels"],
              '23': ["Home improvements and repairs", "furniture", "decoration", "lawn care", "plumbing"],
              '24': ["Home appliances", "coffee makers", "dishwashers", "cookware", "vacuum cleaners", "heaters",
-                  "music players"],
+                    "music players"],
              '25': ["Vacation and travel", "airlines", "cruises", "theme parks", "hotels", "travel agents"],
              '26': ["Media and arts", "TV shows", "movies", "musicals", "books", "audio books"],
              '27': ["Sports equipment and activities"],
@@ -76,9 +77,10 @@ def get_topic_based_results():
                     CLIP_scores[topic_string] = [CLIP_score]
 
     for topic in FIDs:
-        print(f'Average FID for {topic} is: {sum(FIDs[topic])/len(FIDs[topic])}')
-        print(f'Average CLIP-score for {topic} is: {sum(CLIP_scores[topic])/len(CLIP_scores[topic])}')
-        print('*'*80)
+        print(f'Average FID for {topic} is: {sum(FIDs[topic]) / len(FIDs[topic])}')
+        print(f'Average CLIP-score for {topic} is: {sum(CLIP_scores[topic]) / len(CLIP_scores[topic])}')
+        print('*' * 80)
+
 
 def evaluate_results(metrics, args):
     results = pd.read_csv(RESULT_FILE).values
@@ -97,7 +99,7 @@ def evaluate_results(metrics, args):
             CLIP_scores.append(CLIP_score)
         else:
             print(f'Text image score for image {image_url} is {original_image_text_score}')
-            print('-'*100)
+            print('-' * 100)
     print(f'number of examples: {len(FIDs)}')
     print(f'Average FID is: {sum(FIDs) / len(FIDs)}')
     print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
@@ -111,15 +113,20 @@ def evaluate_persuasiveness():
     results = pd.read_csv(RESULT_FILE).values
     persuasiveness_scores = {}
     for row in results:
-        image_url = row[0]
-        generated_image_path = row[3]
-        persuasiveness_score = persuasiveness.get_persuasiveness_score(generated_image_path)
-        print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 10')
-        print('*' * 80)
-        persuasiveness_scores[image_url] = persuasiveness_score
-    print(f'average persuasiveness is {sum(persuasiveness_scores)/len(persuasiveness_scores)}')
+        try:
+            image_url = row[0]
+            generated_image_path = row[3]
+            persuasiveness_score = persuasiveness.get_persuasiveness_score(generated_image_path)
+            print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 10')
+            print('*' * 80)
+            persuasiveness_scores[image_url] = persuasiveness_score
+        except:
+            pass
+
+    print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
     with open(saving_path, "w") as outfile:
         json.dump(persuasiveness_scores, outfile)
+
 
 if __name__ == '__main__':
     args = get_args()

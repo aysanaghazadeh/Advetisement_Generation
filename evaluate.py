@@ -3,7 +3,7 @@ import os.path
 import pandas as pd
 import json
 from collections import Counter
-from Evaluation.metrics import Metrics
+from Evaluation.metrics import Metrics, PersuasivenessMetric
 from configs.inference_config import get_args
 
 TOPIC_FILE = '../Data/PittAd/train/Topics_train.json'
@@ -104,8 +104,24 @@ def evaluate_results(metrics, args):
     print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
     print('*' * 80)
 
+
+def evaluate_persuasiveness():
+    persuasiveness = PersuasivenessMetric()
+    results = pd.read_csv(RESULT_FILE).values
+    persuasiveness_scores = {}
+    for row in results:
+        image_url = row[0]
+        generated_image_path = row[3]
+        persuasiveness_score = persuasiveness.get_persuasiveness_score(generated_image_path)
+        print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 10')
+        print('*' * 80)
+        persuasiveness_scores[image_url] = persuasiveness_score
+    print(f'average persuasiveness is {sum(persuasiveness_scores)/len(persuasiveness_scores)}')
+
+
 if __name__ == '__main__':
     args = get_args()
     metrics = Metrics(args)
-    evaluate_results(metrics, args)
+    # evaluate_results(metrics, args)
     # get_topic_based_results()
+    evaluate_persuasiveness()

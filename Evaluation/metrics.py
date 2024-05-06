@@ -5,6 +5,8 @@ from torchvision.transforms import functional as TF
 from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
 import tempfile
+from transformers import pipeline
+
 
 # Function to convert an image file to a tensor
 def image_to_tensor(image_path):
@@ -112,3 +114,22 @@ class Metrics:
             'FID_score': self.get_FID(generated_image_path, real_image_path, args)}
 
         return scores
+
+
+class PersuasivenessMetric:
+    def __init__(self):
+        model_id = "llava-hf/llava-1.5-13b-hf"
+        self.pipe = pipeline("image-to-text", model=model_id, device_map='auto')
+
+    def get_persuasiveness_score(self, generated_image_path):
+        image = Image.open(generated_image_path).convert("RGB")
+        prompt = """
+        <image>\n USER:
+        Context: If the image convinces the audience to take an action like buying a product, etc, then the image is considered persuasive.
+        Question: Based on the context score the persuasiveness of the image in range of 0 - 10.
+        Your output format is only Answer: score\n form, no other form. Empty is not allowed.
+        ASSISTANT:
+        """
+        outputs = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 100})
+        persuasiveness = outputs[0]['generated_text'].split('ASSISTANT: ')[-1]
+        return persuasiveness

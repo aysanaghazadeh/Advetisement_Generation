@@ -122,19 +122,19 @@ class PersuasivenessMetric:
         # self.pipe = pipeline("image-to-text", model=model_id, device_map='auto')
         model_id = "llava-hf/llava-1.5-7b-hf"
         self.model = LlavaForConditionalGeneration.from_pretrained(model_id)
-        self.processor = AutoProcessor.from_pretrained(model_id)
+        self.processor = AutoProcessor.from_pretrained(model_id).to('cuda')
 
     def get_persuasiveness_score(self, generated_image_path):
         image = Image.open(generated_image_path).convert("RGB")
         prompt = """
         <image>\n USER:
         Context: If the image convinces the audience to take an action like buying a product, etc, then the image is considered persuasive.
-        Question: Based on the context score the persuasiveness of the image from 0 to 10.
+        Question: Based on the context score the persuasiveness of the image in range 0-10.
         Your output format is only Answer: score\n form, no other form. Empty is not allowed.
         ASSISTANT:
         """
         # outputs = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 100})
-        inputs = self.processor(text=prompt, images=image, return_tensors="pt")
+        inputs = self.processor(text=prompt, images=image, return_tensors="pt").to(cuda)
         # Generate
         generate_ids = self.model.generate(**inputs, max_length=200)
         output = self.processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]

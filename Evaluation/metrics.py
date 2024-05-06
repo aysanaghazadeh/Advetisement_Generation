@@ -139,5 +139,9 @@ class PersuasivenessMetric:
         generate_ids = self.model.generate(**inputs, max_length=200)
         output = self.processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         output = output.strip().split(':')[-1]
-        persuasiveness = int(output)
+        if output.isnumeric():
+            persuasiveness = int(output)
+        else:
+            persuasiveness = 5
+            print(output)
         return persuasiveness

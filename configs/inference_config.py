@@ -42,6 +42,10 @@ def parse_args():
                          type=str,
                          default='LLM.jinja',
                          help='T2I input prompt template file name.')
+    parser.add_argument('--with_sentiment',
+                        type=bool,
+                        default=False,
+                        help='True if you want to include the ground truth sentiment in the prompt.')
     parser.add_argument('--model_path',
                         type=str,
                         default='../models',

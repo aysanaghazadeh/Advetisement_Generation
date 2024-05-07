@@ -3,14 +3,17 @@ import os.path
 from LLMs.LLM import LLM
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
-
+from util.data.mapping import SENTIMENT_MAP
+from collections import Counter
 
 class PromptGenerator:
     def __init__(self, args):
         self.LLM_model = None
         self.descriptions = None
+        self.sentiments = None
         self.set_LLM(args)
         self.set_descriptions(args)
+        self.set_sentiments(args)
 
     def set_LLM(self, args):
         if args.text_input_type == 'LLM':
@@ -19,6 +22,18 @@ class PromptGenerator:
     def set_descriptions(self, args):
         if args.text_input_type not in ['LLM', 'AR']:
             self.descriptions = self.get_all_descriptions(args)
+
+    def set_sentiments(self, args):
+        if args.with_sentiment:
+            self.sentiments = self.get_all_sentiments(args)
+
+    @staticmethod
+    def get_all_sentiments(args):
+        if args.with_sentiment:
+            return None
+        sentiment_file = os.path.join(args.data_path, 'train/Sentiments_train.json')
+        sentiments = json.load(open(sentiment_file))
+        return sentiments
 
     @staticmethod
     def get_all_descriptions(args):
@@ -39,6 +54,12 @@ class PromptGenerator:
         output = template.render(**data)
         return output
 
+    @staticmethod
+    def get_most_frequent(values):
+        counter = Counter(values)
+        most_freq, _ = counter.most_common(1)[0]
+        return most_freq
+
     def get_original_description_prompt(self, args, image_filename):
         data = {'description': self.get_description(image_filename, self.descriptions)}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
@@ -47,6 +68,12 @@ class PromptGenerator:
         return output
 
     def get_LLM_generated_prompt(self, args, image_filename):
+        sentiment = ''
+        if args.with_sentiment:
+            sentiment_ids = self.sentiments[image_filename]
+            sentiment_id = self.get_most_frequent(sentiment_ids)
+            if sentiment_id in SENTIMENT_MAP:
+                sentiment = SENTIMENT_MAP[sentiment_id]
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
@@ -58,7 +85,7 @@ class PromptGenerator:
             description = description.split('objects:')[0]
         else:
             objects = None
-        data = {'description': description, 'action_reason': action_reason, 'objects': objects}
+        data = {'description': description, 'action_reason': action_reason, 'objects': objects, 'sentiment': sentiment}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)
         output = template.render(**data)

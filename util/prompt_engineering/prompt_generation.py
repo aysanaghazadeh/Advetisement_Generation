@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from util.data.mapping import SENTIMENT_MAP
 from collections import Counter
 
+
 class PromptGenerator:
     def __init__(self, args):
         self.LLM_model = None
@@ -33,6 +34,7 @@ class PromptGenerator:
             return None
         sentiment_file = os.path.join(args.data_path, 'train/Sentiments_train.json')
         sentiments = json.load(open(sentiment_file))
+        print(sentiments)
         return sentiments
 
     @staticmethod

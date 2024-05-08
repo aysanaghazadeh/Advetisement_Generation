@@ -57,9 +57,13 @@ class PromptGenerator:
 
     @staticmethod
     def get_most_frequent(values):
-        counter = Counter(values)
-        most_freq, _ = counter.most_common(1)[0]
-        return most_freq
+        tuple_list = [tuple(inner_list) for inner_list in values]
+        # Create a Counter object from the tuple list
+        counter = Counter(tuple_list)
+        # Get the most common tuple
+        most_freq_tuple, _ = counter.most_common(1)[0]
+        # Convert tuple back to list if necessary
+        return list(most_freq_tuple)
 
     def get_original_description_prompt(self, args, image_filename):
         data = {'description': self.get_description(image_filename, self.descriptions)}

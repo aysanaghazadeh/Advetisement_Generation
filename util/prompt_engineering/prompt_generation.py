@@ -90,9 +90,9 @@ class PromptGenerator:
             else:
                 print(f'there is no sentiment for image: {image_filename}')
         topic = ''
-        if args.with_topic:
-            if image_filename in self.topic:
-                topic_ids = self.topic[image_filename]
+        if args.with_topics:
+            if image_filename in self.topics:
+                topic_ids = self.topics[image_filename]
                 topic_id = self.get_most_frequent([topic_ids])
                 if topic_id in TOPIC_MAP:
                     sentiment = TOPIC_MAP[topic_id]
@@ -117,9 +117,9 @@ class PromptGenerator:
             else:
                 print(f'there is no sentiment for image: {image_filename}')
         topic = ''
-        if args.with_topic:
-            if image_filename in self.topic:
-                topic_ids = self.topic[image_filename]
+        if args.with_topics:
+            if image_filename in self.topics:
+                topic_ids = self.topics[image_filename]
                 topic_id = self.get_most_frequent([topic_ids])
                 if topic_id in TOPIC_MAP:
                     sentiment = TOPIC_MAP[topic_id]
@@ -158,9 +158,9 @@ class PromptGenerator:
             else:
                 print(f'there is no sentiment for image: {image_filename}')
         topic = ''
-        if args.with_topic:
-            if image_filename in self.topic:
-                topic_ids = self.topic[image_filename]
+        if args.with_topics:
+            if image_filename in self.topics:
+                topic_ids = self.topics[image_filename]
                 topic_id = self.get_most_frequent([topic_ids])
                 if topic_id in TOPIC_MAP:
                     sentiment = TOPIC_MAP[topic_id]

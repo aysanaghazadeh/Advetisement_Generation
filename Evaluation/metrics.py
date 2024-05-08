@@ -75,15 +75,11 @@ class Metrics:
         for AR in action_reason:
             reason = AR.lower().split('because')[-1]
             action = AR.lower().split('because')[0]
-            inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True).to(device=args.device)  # Change to your text
-            inputs_reason = self.clip_processor(text=AR, return_tensors="pt", padding=True).to(device=args.device)
-            inputs_action = self.clip_processor(text=reason, return_tensors="pt", padding=True).to(device=args.device)
-            inputs_text = self.clip_processor(text=action, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_text = self.clip_processor(text=AR, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_reason = self.clip_processor(text=reason, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_action = self.clip_processor(text=action, return_tensors="pt", padding=True).to(device=args.device)
 
-            # Process images
-            # inputs = processor(images=[image1, image2], return_tensors="pt", padding=True).to(device=args.device)
-
-            # Extract image features from the CLIP model
             with torch.no_grad():
                 image_features = self.clip_model.get_image_features(**inputs_image)
                 text_features = self.clip_model.get_text_features(**inputs_text)
@@ -102,6 +98,29 @@ class Metrics:
         cosine_similarity['text'] = cosine_similarity['text']/len(action_reason)
         cosine_similarity['reason'] = cosine_similarity['reason']/len(action_reason)
         cosine_similarity['action'] = cosine_similarity['action']/len(action_reason)
+        return cosine_similarity
+
+    def get_action_reason_image_CLIP_score(self, generated_image_path, action_reason, args):
+        image = Image.open(generated_image_path).convert("RGB")
+        cosine_similarity = 0
+        for AR in action_reason:
+            inputs_image = self.clip_processor(images=image, return_tensors="pt", padding=True).to(device=args.device)
+            inputs_text = self.clip_processor(text=AR, return_tensors="pt", padding=True).to(device=args.device)
+
+            # Process images
+            # inputs = processor(images=[image1, image2], return_tensors="pt", padding=True).to(device=args.device)
+
+            # Extract image features from the CLIP model
+            with torch.no_grad():
+                image_features = self.clip_model.get_image_features(**inputs_image)
+                text_features = self.clip_model.get_text_features(**inputs_text)
+            # Normalize the feature vectors
+            image_features = torch.nn.functional.normalize(image_features, p=2, dim=1)
+            text_features = torch.nn.functional.normalize(text_features, p=2, dim=1)
+
+            # Calculate cosine similarity between the two images
+            cosine_similarity += torch.nn.functional.cosine_similarity(image_features, text_features).item()
+        cosine_similarity = cosine_similarity/len(action_reason)
         return cosine_similarity
 
     def get_scores(self, text_description, generated_image_path, real_image_path, args):

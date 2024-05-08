@@ -63,7 +63,7 @@ class PromptGenerator:
         # Get the most common tuple
         most_freq_tuple, _ = counter.most_common(1)[0]
         # Convert tuple back to list if necessary
-        return list(most_freq_tuple)
+        return list(most_freq_tuple)[0]
 
     def get_original_description_prompt(self, args, image_filename):
         data = {'description': self.get_description(image_filename, self.descriptions)}

@@ -48,8 +48,8 @@ class PromptGenerator:
         return descriptions.loc[descriptions['ID'] == image_filename]['description'].values[0]
 
     @staticmethod
-    def get_LLM_input_prompt(args, action_reason):
-        data = {'action_reason': action_reason}
+    def get_LLM_input_prompt(args, action_reason, sentiment):
+        data = {'action_reason': action_reason, 'sentiment': sentiment}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.llm_prompt)
         output = template.render(**data)
@@ -86,7 +86,7 @@ class PromptGenerator:
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
-        LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason)
+        LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment)
         description = self.LLM_model(LLM_input_prompt)
         if 'objects:' in description:
             objects = description.split('objects:')[1]

@@ -34,7 +34,6 @@ class PromptGenerator:
             return None
         sentiment_file = os.path.join(args.data_path, 'train/Sentiments_train.json')
         sentiments = json.load(open(sentiment_file))
-        print(sentiments)
         return sentiments
 
     @staticmethod
@@ -72,10 +71,13 @@ class PromptGenerator:
     def get_LLM_generated_prompt(self, args, image_filename):
         sentiment = ''
         if args.with_sentiment:
-            sentiment_ids = self.sentiments[image_filename]
-            sentiment_id = self.get_most_frequent(sentiment_ids)
-            if sentiment_id in SENTIMENT_MAP:
-                sentiment = SENTIMENT_MAP[sentiment_id]
+            if image_filename in self.sentiments:
+                sentiment_ids = self.sentiments[image_filename]
+                sentiment_id = self.get_most_frequent(sentiment_ids)
+                if sentiment_id in SENTIMENT_MAP:
+                    sentiment = SENTIMENT_MAP[sentiment_id]
+            else:
+                print(f'there is no sentiment for image: {image_filename}')
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))

@@ -46,6 +46,10 @@ def parse_args():
                         type=bool,
                         default=False,
                         help='True if you want to include the ground truth sentiment in the prompt.')
+    parser.add_argument('--with_topic',
+                        type=bool,
+                        default=False,
+                        help='True if you want to include the ground truth topic in the prompt.')
     parser.add_argument('--model_path',
                         type=str,
                         default='../models',

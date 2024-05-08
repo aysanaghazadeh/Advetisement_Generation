@@ -30,7 +30,7 @@ class PromptGenerator:
 
     @staticmethod
     def get_all_sentiments(args):
-        if args.with_sentiment:
+        if not args.with_sentiment:
             return None
         sentiment_file = os.path.join(args.data_path, 'train/Sentiments_train.json')
         sentiments = json.load(open(sentiment_file))
@@ -114,5 +114,4 @@ class PromptGenerator:
             prompt_generator_name = 'get_LLM_generated_prompt'
         prompt_generation_method = getattr(self, prompt_generator_name)
         prompt = prompt_generation_method(args, image_filename)
-        # print('prompt: ', prompt)
         return prompt

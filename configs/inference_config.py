@@ -46,7 +46,7 @@ def parse_args():
                         type=bool,
                         default=False,
                         help='True if you want to include the ground truth sentiment in the prompt.')
-    parser.add_argument('--with_topic',
+    parser.add_argument('--with_topics',
                         type=bool,
                         default=False,
                         help='True if you want to include the ground truth topic in the prompt.')

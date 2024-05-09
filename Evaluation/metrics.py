@@ -134,11 +134,18 @@ class Metrics:
 
         return scores
 
+    def get_creativity_scores(self, text_description, generated_image_path, product_image_paths, args):
+        image_scores = []
+        for product_image in product_image_paths:
+            image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))
+        avg_image_score = sum(image_scores)/len(image_scores)
+        text_score = self.get_action_reason_image_CLIP_score(generated_image_path, text_description, args)
+        creativity = text_score/(avg_image_score + 0.1)
+        return creativity
+
 
 class PersuasivenessMetric:
     def __init__(self):
-        # model_id = "llava-hf/llava-1.5-13b-hf"
-        # self.pipe = pipeline("image-to-text", model=model_id, device_map='auto')
         model_id = "llava-hf/llava-1.5-7b-hf"
         self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
         self.processor = AutoProcessor.from_pretrained(model_id)

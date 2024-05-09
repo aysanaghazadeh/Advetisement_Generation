@@ -64,6 +64,9 @@ def parse_args():
     parser.add_argument('--train',
                         type=bool,
                         default=False)
+    parser.add_argument('--fine_tuned',
+                        type=bool,
+                        default=False)
     parser.add_argument('--llm_prompt',
                         type=str,
                         default='LLM_input.jinja',

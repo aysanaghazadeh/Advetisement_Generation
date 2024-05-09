@@ -55,7 +55,7 @@ def parse_args():
     parser.add_argument('--with_sentiment',
                         type=bool,
                         default=False)
-    parser.add_argument('--with_topic',
+    parser.add_argument('--with_topics',
                         type=bool,
                         default=False)
     parser.add_argument('--LLM',

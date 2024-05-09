@@ -70,6 +70,10 @@ def parse_args():
     parser.add_argument('--T2I_model',
                         type=str,
                         default='PixArt')
+    parser.add_argument('--prompt_path',
+                        type=str,
+                        default='util/prompt_engineering/prompts',
+                        help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
     parser.add_argument('--llm_prompt',
                         type=str,
                         default='LLM_input.jinja',

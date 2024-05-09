@@ -96,7 +96,7 @@ class Evaluation:
             if os.path.exists(image_path):
                 continue
             for i in range(3):
-                image = self.image_generator(image_url)
+                image, prompt = self.image_generator(image_url)
                 image.save(os.path.join(image_path, str(i)+'.jpg'))
 
     def evaluate_creativity(self, args):

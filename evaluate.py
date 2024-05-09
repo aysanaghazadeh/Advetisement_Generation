@@ -5,11 +5,13 @@ from collections import Counter
 from Evaluation.metrics import *
 from configs.evaluation_config import get_args
 from util.data.mapping import TOPIC_MAP as topic_map
-
+from model.pipeline import AdvertisementImageGeneration
 
 class Evaluation:
-    def __init__(self, metrics):
+    def __init__(self, metrics, args):
         self.metrics = metrics
+        if args.evaluation_type == 'creativity':
+            self.image_generator = AdvertisementImageGeneration(args)
 
     @staticmethod
     def evaluate_topic_based(args):
@@ -87,11 +89,22 @@ class Evaluation:
         print(f'Average CLIP-score is: {sum(CLIP_scores) / len(CLIP_scores)}')
         print('*' * 80)
 
+    def generate_product_images(self, args, results):
+        for row in range(len(results.values)):
+            image_url = results.image_url.values[row]
+            image_path = os.path.join(args.data_path, args.product_images, image_url)
+            if os.path.exists(image_path):
+                continue
+            for i in range(3):
+                image = self.image_generator(image_url)
+                image.save(os.path.join(image_path, str(i)+'.jpg'))
+
     def evaluate_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '.json')
         creativity_scores = {}
-        for row in len(results.values):
+        for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             generated_image_path = results.generated_image_url.values[row]
             action_reason = results.action_reason.values[row]
@@ -117,5 +130,5 @@ class Evaluation:
 if __name__ == '__main__':
     args = get_args()
     metrics = Metrics(args)
-    evaluation = Evaluation(metrics)
+    evaluation = Evaluation(metrics, args)
     evaluation.evaluate(args)

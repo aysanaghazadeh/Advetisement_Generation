@@ -49,7 +49,14 @@ def parse_args():
                         type=str,
                         required=True,
                         help='the file path relative to the result_path')
-
+    parser.add_argument('--llm_prompt',
+                        type=str,
+                        default='LLM_input.jinja',
+                        help='LLM input prompt template file name.')
+    parser.add_argument('--T2I_prompt',
+                        type=str,
+                        default='LLM.jinja',
+                        help='T2I input prompt template file name.')
     parser.add_argument('--data_path',
                         type=str,
                         default='../Data/PittAd',

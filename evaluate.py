@@ -124,8 +124,7 @@ class Evaluation:
         evaluation_name = 'evaluate_' + args.evaluation_type
         print(f'evaluation method: {evaluation_name}')
         evaluation_method = getattr(self, evaluation_name)
-        prompt = evaluation_method(args)
-        return prompt
+        evaluation_method(args)
 
 
 if __name__ == '__main__':

@@ -122,6 +122,7 @@ class Evaluation:
 
     def evaluate(self, args):
         evaluation_name = 'evaluate_' + args.evaluation_type
+        print(f'evaluation method: {evaluation_name}')
         evaluation_method = getattr(self, evaluation_name)
         prompt = evaluation_method(args)
         return prompt

@@ -128,7 +128,7 @@ class Evaluation:
     def evaluate_action_reason_llava(self, args):
         results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0,
                    'p@1': 0, 'p@2': 0, 'p@3': 0}
-        fieldnames = ['id', 'acc@1', 'acc@2', 'acc@3', 'p@1', 'p@2', 'p@3']
+        fieldnames = ['acc@1', 'acc@2', 'acc@3', 'p@1', 'p@2', 'p@3', 'id']
         csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -140,7 +140,7 @@ class Evaluation:
                 writer = csv.writer(csvfile)
                 row = result
                 row['id'] = image_url
-                writer.writerow(row)
+                writer.writerow(list(row.values()))
 
             for metric in results:
                 results[metric] += result[metric]

@@ -50,7 +50,7 @@ def parse_args():
                         help='The path to the folder for saving the results')
     parser.add_argument('--result_file',
                         type=str,
-                        required=True,
+                        default=None,
                         help='the file path relative to the result_path')
     parser.add_argument('--text_input_type',
                         type=str,

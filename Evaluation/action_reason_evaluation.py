@@ -54,7 +54,6 @@ class ActionReasonLlava:
 
     def get_description(self, image_url):
         description = self.descriptions.loc[self.descriptions['ID'] == image_url].iloc[0]['description']
-        print(description)
         return description
 
     def get_image(self, image_url):
@@ -107,6 +106,7 @@ class ActionReasonLlava:
                 if answer in correct_options:
                     count += 1
             results[f'p@{i + 1}'] = min(1, count / (i + 1))
+        print(f'results for image {image_url} is {results}')
         return results
 
     def evaluate_image(self, image_url):

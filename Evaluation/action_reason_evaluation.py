@@ -94,12 +94,12 @@ class ActionReasonLlava:
             for answer in answers[:i]:
                 if answer in correct_options:
                     count += 1
-            results[f'acc@{i}'] = min(1, count / 1)
+            results[f'acc@{i + 1}'] = min(1, count / 1)
         for i in range(3):
             for answer in answers[:3]:
                 if answer in correct_options:
                     count += 1
-            results[f'p@{i}'] = min(1, count / i)
+            results[f'p@{i + 1}'] = min(1, count / (i + 1))
         return results
 
     def evaluate_image(self, image_url):

@@ -6,12 +6,17 @@ from Evaluation.metrics import *
 from configs.evaluation_config import get_args
 from util.data.mapping import TOPIC_MAP as topic_map
 from model.pipeline import AdvertisementImageGeneration
+from Evaluation.action_reason_evaluation import ActionReasonLlava
+import csv
+
 
 class Evaluation:
     def __init__(self, metrics, args):
         self.metrics = metrics
         if args.evaluation_type == 'creativity':
             self.image_generator = AdvertisementImageGeneration(args)
+        if args.evaluation_type == 'action_reason_llava':
+            self.ar_llava = ActionReasonLlava(args)
 
     @staticmethod
     def evaluate_topic_based(args):
@@ -119,6 +124,28 @@ class Evaluation:
             print(f'average creativity score is {sum(list(creativity_scores.values())) / len(creativity_scores.values())}')
             with open(saving_path, "w") as outfile:
                 json.dump(creativity_scores, outfile)
+
+    def evaluate_action_reason_llava(self, args):
+        results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0,
+                   'p@1': 0, 'p@2': 0, 'p@3': 0}
+        fieldnames = ['id', 'acc@1', 'acc@2', 'acc@3', 'p@1', 'p@2', 'p@3']
+        csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
+        with open(csv_file_path, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+        QAs = json.load(open(self.args.test_set_QA))
+        for image_url in QAs:
+            result = self.ar_llava.evaluate_image(image_url)
+            with open(csv_file_path, 'a', newline='') as csvfile:
+                row = [image_url]
+                for metric in result:
+                    row.append(result[metric])
+                writer.writerow(row)
+
+            for metric in result:
+                results[metric] += result[metric]
+        for metric in results:
+            print(f'average {metric} is: {results[metric]/len(list(QAs.keys()))}')
 
     def evaluate(self, args):
         evaluation_name = 'evaluate_' + args.evaluation_type

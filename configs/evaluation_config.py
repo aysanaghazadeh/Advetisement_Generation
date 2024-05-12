@@ -38,6 +38,9 @@ def parse_args():
                         type=str,
                         default=None,
                         help='The path to the config file if config_type is YAML')
+    parser.add_argument('--description_file',
+                        type=str,
+                        default=None)
     parser.add_argument('--evaluation_type',
                         type=str,
                         default='topic_based')
@@ -102,12 +105,12 @@ def parse_args():
                         help='If the model is fine-tuned, relative path to the train-set Images from root path')
     parser.add_argument('--test_set_QA',
                         type=str,
-                        default='train/Action_Reason_statements.json',
+                        default='train/large_combined_hard_QA_Combined_Action_Reason_train.json',
                         help='Relative path to the QA file for action-reasons from root path'
                         )
     parser.add_argument('--test_set_images',
                         type=str,
-                        default='train_images',
+                        default='../Data/PittAd/train_images',
                         help='Relative path to the original images for the test set from root')
     parser.add_argument('--description_file',
                         type=str,

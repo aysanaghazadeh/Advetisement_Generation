@@ -1,5 +1,6 @@
 import json
-from transformers import AutoProcessor, AutoModelForCausalLM
+from transformers import AutoProcessor, AutoModelForCausalLM, pipeline, BitsAndBytesConfig
+import torch
 import pandas as pd
 from PIL import Image
 import os
@@ -7,9 +8,15 @@ import os
 
 class ActionReasonLlava:
     def __init__(self, args):
-        self.processor = AutoProcessor.from_pretrained("liuhaotian/llava-v1.5-13b")
-        self.model = AutoModelForCausalLM.from_pretrained("liuhaotian/llava-v1.5-13b",
-                                                          device_map='auto')
+        # self.processor = AutoProcessor.from_pretrained("liuhaotian/llava-v1.5-13b")
+        # self.model = AutoModelForCausalLM.from_pretrained("liuhaotian/llava-v1.5-13b",
+        #                                                   device_map='auto')
+        quantization_config = BitsAndBytesConfig(
+            load_in_8bit=True,
+            bnb_8bit_compute_dtype=torch.float16
+        )
+        self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
+                             model_kwargs={"quantization_config": quantization_config})
         self.descriptions = None
         self.args = args
         self.QAs = json.load(open(self.args.test_set_QA))
@@ -59,11 +66,13 @@ class ActionReasonLlava:
         answer_format = self.get_answer_format()
         prompt = self.get_prompt(options, answer_format)
         image = self.get_image(image_url)
-        inputs = self.processor(text=prompt, images=image, return_tensors="pt").to(device=self.args.device)
-        generate_ids = self.model.generate(**inputs, max_new_tokens=15)
-        output = self.processor.batch_decode(generate_ids,
-                                             skip_special_tokens=True,
-                                             clean_up_tokenization_spaces=False)[0]
+        # inputs = self.processor(text=prompt, images=image, return_tensors="pt").to(device=self.args.device)
+        # generate_ids = self.model.generate(**inputs, max_new_tokens=15)
+        # output = self.processor.batch_decode(generate_ids,
+        #                                      skip_special_tokens=True,
+        #                                      clean_up_tokenization_spaces=False)[0]
+        output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
+        output = output[0]["generated_text"]
         options = self.QAs[image_url][1]
         predictions = output.split(',')
         answers = [int(''.join(i for i in output if i.isdigit())) for output in predictions]

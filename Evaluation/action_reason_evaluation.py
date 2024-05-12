@@ -94,15 +94,15 @@ class ActionReasonLlava:
 
     def evaluate_answers(self, image_url, answers):
         correct_options = self.QAs[image_url][0]
-        count = 0
         results = {}
         for i in range(3):
+            count = 0
             for answer in answers[:i]:
                 if answer in correct_options:
                     count += 1
             results[f'acc@{i + 1}'] = min(1, count / 1)
-        count = 0
         for i in range(3):
+            count = 0
             for answer in answers[:3]:
                 if answer in correct_options:
                     count += 1

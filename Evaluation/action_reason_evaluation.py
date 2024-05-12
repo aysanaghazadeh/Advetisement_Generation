@@ -54,7 +54,7 @@ class ActionReasonLlava:
 
     def get_description(self, image_url):
         print(self.descriptions)
-        description = self.descriptions.loc[self.descriptions['id'] == image_url].iloc[0]
+        description = self.descriptions.loc[self.descriptions['ID'] == image_url].iloc[0]
         print(description)
         return description
 

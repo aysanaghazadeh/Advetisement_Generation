@@ -137,6 +137,7 @@ class Evaluation:
         for image_url in QAs:
             result = self.ar_llava.evaluate_image(image_url)
             with open(csv_file_path, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
                 row = result
                 row['id'] = image_url
                 writer.writerow(row)

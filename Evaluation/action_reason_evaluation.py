@@ -48,7 +48,7 @@ class ActionReasonLlava:
         return prompt
 
     def set_descriptions(self):
-        if self.args.description_path is not None:
+        if self.args.description_file is not None:
             self.descriptions = pd.read_csv(os.path.join(self.args.data_path, 'train', self.args.description_file))
 
     def get_description(self, image_url):

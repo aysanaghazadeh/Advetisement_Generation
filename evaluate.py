@@ -142,7 +142,7 @@ class Evaluation:
                 row['id'] = image_url
                 writer.writerow(row)
 
-            for metric in result:
+            for metric in results:
                 results[metric] += result[metric]
         for metric in results:
             print(f'average {metric} is: {results[metric]/len(list(QAs.keys()))}')

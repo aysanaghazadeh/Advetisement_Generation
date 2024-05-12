@@ -112,10 +112,6 @@ def parse_args():
                         type=str,
                         default='../Data/PittAd/train_images',
                         help='Relative path to the original images for the test set from root')
-    parser.add_argument('--description_file',
-                        type=str,
-                        default=None,
-                        help='Path to the description file for the T2I input.')
     return parser.parse_args()
 
 

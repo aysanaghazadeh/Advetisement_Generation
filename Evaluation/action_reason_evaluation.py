@@ -82,7 +82,6 @@ class ActionReasonLlava:
             answer = ''.join(i for i in output if i.isdigit())
             if answer != '':
                 answers.append(int(answer))
-        print(f'predictions for image {image_url} is {answers}')
         predictions = set()
         for ind in answers:
             if ind < len(options):
@@ -90,6 +89,7 @@ class ActionReasonLlava:
                 if len(predictions) == 3:
                     break
         answers = list(predictions)
+        print(f'predictions for image {image_url} is {answers}')
         return answers
 
     def evaluate_answers(self, image_url, answers):
@@ -101,6 +101,7 @@ class ActionReasonLlava:
                 if answer in correct_options:
                     count += 1
             results[f'acc@{i + 1}'] = min(1, count / 1)
+        count = 0
         for i in range(3):
             for answer in answers[:3]:
                 if answer in correct_options:

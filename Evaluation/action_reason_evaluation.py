@@ -78,12 +78,11 @@ class ActionReasonLlava:
         output = output[0]["generated_text"]
         options = self.QAs[image_url][1]
         predictions = output.split(',')
-        print(f'predictions for image {image_url} is {predictions}')
         answers = []
         for output in predictions:
             answer = ''.join(i for i in output if i.isdigit())
             if answer != '':
-                answers.append(answer)
+                answers.append(int(answer))
         print(f'predictions for image {image_url} is {answers}')
         predictions = set()
         for ind in answers:

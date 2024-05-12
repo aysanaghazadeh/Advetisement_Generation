@@ -34,8 +34,9 @@ class ActionReasonLlava:
         return answer_format
 
     @staticmethod
-    def get_prompt(options, answer_format):
+    def get_prompt(options, answer_format, description):
         prompt = (f"USER:<image>\n"
+                  f"Context: {description}"
                   f"Question: Based on the image return the indices of the best 3 statements among the options in "
                   f"ranked form to interpret the described image.\n "
                   f"Separate the answers by comma and even without enough information return the 3 best indices among "
@@ -63,8 +64,9 @@ class ActionReasonLlava:
     def get_predictions(self, image_url):
         options = self.QAs[image_url][1]
         options = self.parse_options(options)
+        description = self.get_description(image_url)
         answer_format = self.get_answer_format()
-        prompt = self.get_prompt(options, answer_format)
+        prompt = self.get_prompt(options, answer_format, description)
         image = self.get_image(image_url)
         # inputs = self.processor(text=prompt, images=image, return_tensors="pt").to(device=self.args.device)
         # generate_ids = self.model.generate(**inputs, max_new_tokens=15)
@@ -75,6 +77,7 @@ class ActionReasonLlava:
         output = output[0]["generated_text"]
         options = self.QAs[image_url][1]
         predictions = output.split(',')
+        print(f'predictions for image {image_url} is {predictions}')
         answers = [int(''.join(i for i in output if i.isdigit())) for output in predictions]
         print(f'predictions for image {image_url} is {answers}')
         predictions = set()

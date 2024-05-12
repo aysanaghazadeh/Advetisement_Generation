@@ -133,7 +133,7 @@ class Evaluation:
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QAs = json.load(open(self.args.test_set_QA))
+        QAs = json.load(open(os.path.join(self.args.data_path, 'train', self.args.test_set_QA)))
         for image_url in QAs:
             result = self.ar_llava.evaluate_image(image_url)
             with open(csv_file_path, 'a', newline='') as csvfile:

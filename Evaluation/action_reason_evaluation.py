@@ -19,7 +19,7 @@ class ActionReasonLlava:
                              model_kwargs={"quantization_config": quantization_config})
         self.descriptions = None
         self.args = args
-        self.QAs = json.load(open(self.args.test_set_QA))
+        self.QAs = json.load(open(os.path.join(self.args.data_path, self.args.test_set_QA)))
         self.set_descriptions()
 
     @staticmethod

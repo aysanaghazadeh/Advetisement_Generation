@@ -53,7 +53,8 @@ class ActionReasonLlava:
             self.descriptions = pd.read_csv(os.path.join(self.args.data_path, 'train', self.args.description_file))
 
     def get_description(self, image_url):
-        description = self.descriptions.query(image_url)['id'].iloc.description.values[0]
+        description = self.descriptions.loc[self.descriptions['id'] == image_url].iloc[0]
+        print(description)
         return description
 
     def get_image(self, image_url):

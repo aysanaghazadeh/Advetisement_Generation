@@ -24,7 +24,7 @@ class ActionReasonLlava:
 
     @staticmethod
     def parse_options(options):
-        return '\n'.join([f'{str(i + 1)}. {option}' for i, option in enumerate(options)])
+        return '\n'.join([f'{str(i)}. {option}' for i, option in enumerate(options)])
 
     @staticmethod
     def get_answer_format():
@@ -81,7 +81,7 @@ class ActionReasonLlava:
         for output in predictions:
             answer = ''.join(i for i in output if i.isdigit())
             if answer != '':
-                answers.append(int(answer) - 1)
+                answers.append(int(answer))
         predictions = set()
         for ind in answers:
             if len(options) > ind >= 0:

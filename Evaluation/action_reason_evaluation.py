@@ -81,10 +81,10 @@ class ActionReasonLlava:
         for output in predictions:
             answer = ''.join(i for i in output if i.isdigit())
             if answer != '':
-                answers.append(int(answer))
+                answers.append(int(answer) - 1)
         predictions = set()
         for ind in answers:
-            if ind < len(options):
+            if len(options) > ind >= 0:
                 predictions.add(options[ind])
                 if len(predictions) == 3:
                     break

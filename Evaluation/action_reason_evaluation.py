@@ -97,7 +97,7 @@ class ActionReasonLlava:
         results = {}
         for i in range(3):
             count = 0
-            for answer in answers[:i]:
+            for answer in answers[:i+1]:
                 if answer in correct_options:
                     count += 1
             results[f'acc@{i + 1}'] = min(1, count / 1)

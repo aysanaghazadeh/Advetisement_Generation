@@ -36,7 +36,7 @@ class ActionReasonLlava:
     @staticmethod
     def get_prompt(options, answer_format, description):
         prompt = (f"USER:<image>\n"
-                  # f"Context: {description}"
+                  f"Context: {description}"
                   f"Question: Based on the image return the indices of the best 3 statements among the options in "
                   f"ranked form to interpret the described image.\n "
                   f"Separate the answers by comma and even without enough information return the 3 best indices among "

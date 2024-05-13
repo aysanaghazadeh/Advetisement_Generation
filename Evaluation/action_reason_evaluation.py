@@ -37,8 +37,8 @@ class ActionReasonLlava:
     def get_prompt(options, answer_format, description):
         prompt = (f"USER:<image>\n"
                   f"Context: {description}"
-                  f"Question: Based on the image return the indices of the best 3 statements among the options in "
-                  f"ranked form to interpret the described image.\n "
+                  f"Question: Based on the image return the indices of the best 3 statements among the options "
+                  f"to interpret the described image.\n "
                   f"Separate the answers by comma and even without enough information return the 3 best indices among "
                   f"the options.\n "
                   f"Options: {options}\n"
@@ -68,11 +68,6 @@ class ActionReasonLlava:
         answer_format = self.get_answer_format()
         prompt = self.get_prompt(options, answer_format, description)
         image = self.get_image(image_url)
-        # inputs = self.processor(text=prompt, images=image, return_tensors="pt").to(device=self.args.device)
-        # generate_ids = self.model.generate(**inputs, max_new_tokens=15)
-        # output = self.processor.batch_decode(generate_ids,
-        #                                      skip_special_tokens=True,
-        #                                      clean_up_tokenization_spaces=False)[0]
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"]
         print(output)

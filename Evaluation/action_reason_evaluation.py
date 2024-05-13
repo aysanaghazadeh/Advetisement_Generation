@@ -75,6 +75,7 @@ class ActionReasonLlava:
         #                                      clean_up_tokenization_spaces=False)[0]
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"]
+        print(output)
         options = self.QAs[image_url][1]
         predictions = output.split(',')
         answers = []

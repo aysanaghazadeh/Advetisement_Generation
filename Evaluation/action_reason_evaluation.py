@@ -85,7 +85,7 @@ class ActionReasonLlava:
                 answers.append(int(answer))
         predictions = set()
         for ind in answers:
-            if len(options) > ind >= 0:
+            if len(options) > ind:
                 predictions.add(options[ind])
                 if len(predictions) == 3:
                     break

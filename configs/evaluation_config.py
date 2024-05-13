@@ -40,7 +40,7 @@ def parse_args():
                         help='The path to the config file if config_type is YAML')
     parser.add_argument('--description_file',
                         type=str,
-                        default='unusual_llava_description.csv')
+                        default='concat_simple_llava_description.csv')
     parser.add_argument('--evaluation_type',
                         type=str,
                         default='action_reason_llava')

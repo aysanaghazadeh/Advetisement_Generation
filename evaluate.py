@@ -129,8 +129,8 @@ class Evaluation:
         results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0,
                    'p@1': 0, 'p@2': 0, 'p@3': 0}
         fieldnames = ['acc@1', 'acc@2', 'acc@3', 'p@1', 'p@2', 'p@3', 'id']
-        csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
-        # csv_file_path = 'action_reason_llava_without_description.csv'
+        # csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
+        csv_file_path = os.path.join(args.result_path, 'action_reason_llava_without_description.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()

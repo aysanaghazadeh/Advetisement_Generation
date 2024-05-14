@@ -1,6 +1,7 @@
 import torch
 import yaml
 import argparse
+from transformers import set_seed
 
 
 def read_yaml_config(file_path):
@@ -116,6 +117,7 @@ def parse_args():
 
 
 def get_args():
+    set_seed(0)
     args = parse_args()
     if args.config_type == 'YAML':
         args = set_conf(args.config_path)

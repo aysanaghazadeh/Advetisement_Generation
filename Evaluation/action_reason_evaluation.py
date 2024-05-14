@@ -35,17 +35,22 @@ class ActionReasonLlava:
 
     @staticmethod
     def get_prompt(options, answer_format, description):
+        # prompt = (f"USER:<image>\n"
+        #           # f"Context: {description}"
+        #           f"Question: Based on the image return the indices of the best 3 statements among the options "
+        #           f"to interpret the described image.\n "
+        #           f"Separate the answers by comma and even without enough information return the 3 best indices among "
+        #           f"the options.\n "
+        #           f"Options: {options}\n"
+        #           f"Your output format is only {answer_format} form, no other form.\n"
+        #           "None of the above is not allowed. Even without enough information choose the 3 best "
+        #           "interpretations.\n "
+        #           "Assistant:")
         prompt = (f"USER:<image>\n"
-                  # f"Context: {description}"
-                  f"Question: Based on the image return the indices of the best 3 statements among the options "
-                  f"to interpret the described image.\n "
-                  f"Separate the answers by comma and even without enough information return the 3 best indices among "
-                  f"the options.\n "
-                  f"Options: {options}\n"
-                  f"Your output format is only {answer_format} form, no other form.\n"
-                  "None of the above is not allowed. Even without enough information choose the 3 best "
-                  "interpretations.\n "
-                  "Assistant:")
+         f"Question: What are the indices of the 3 best interpretations among the options for this image? Separate them by comma.\n"
+         f"Options: {options}\n"
+         f"your answer must follow the format of {answer_format}\n"
+         f"Assistant: ")
         return prompt
 
     def set_descriptions(self):

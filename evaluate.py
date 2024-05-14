@@ -102,7 +102,7 @@ class Evaluation:
                 continue
             for i in range(3):
                 image, prompt = self.image_generator(image_url)
-                image.save(os.path.join(image_path, str(i)+'.jpg'))
+                image.save(os.path.join(image_path, str(i) + '.jpg'))
 
     def evaluate_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
@@ -118,10 +118,11 @@ class Evaluation:
             product_image_paths = [os.path.join(args.data_path, args.product_images, image_url, file)
                                    for file in product_image_files]
             creativity_scores[image_url] = self.metrics.get_creativity_scores(text_description=action_reason,
-                                          generated_image_path=generated_image_path,
-                                          product_image_paths=product_image_paths,
-                                          args=args)
-            print(f'average creativity score is {sum(list(creativity_scores.values())) / len(creativity_scores.values())}')
+                                                                              generated_image_path=generated_image_path,
+                                                                              product_image_paths=product_image_paths,
+                                                                              args=args)
+            print(
+                f'average creativity score is {sum(list(creativity_scores.values())) / len(creativity_scores.values())}')
             with open(saving_path, "w") as outfile:
                 json.dump(creativity_scores, outfile)
 
@@ -146,7 +147,7 @@ class Evaluation:
             for metric in results:
                 results[metric] += result[metric]
         for metric in results:
-            print(f'average {metric} is: {results[metric]/len(list(QAs.keys()))}')
+            print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 
     def evaluate(self, args):
         evaluation_name = 'evaluate_' + args.evaluation_type

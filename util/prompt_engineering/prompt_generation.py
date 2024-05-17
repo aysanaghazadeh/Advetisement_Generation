@@ -138,7 +138,7 @@ class PromptGenerator:
         else:
             objects = None
         data = {'description': description,
-                'action_reason': action_reason,
+                'action_reason': action_reason[0],
                 'objects': objects,
                 'sentiment': sentiment,
                 'topic': topic}

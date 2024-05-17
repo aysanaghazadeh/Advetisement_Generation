@@ -101,7 +101,8 @@ class Evaluation:
             if os.path.exists(image_path):
                 continue
             else:
-                os.mkdir(image_path)
+                print(image_path)
+                os.makedirs(image_path, exist_ok=True)
             for i in range(3):
                 image, prompt = self.image_generator(image_url)
                 image.save(os.path.join(image_path, str(i) + '.jpg'))

@@ -97,7 +97,7 @@ class Evaluation:
     def generate_product_images(self, args, results):
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
-            image_path = os.path.join(args.data_path, args.product_images, image_url)
+            image_path = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
             if os.path.exists(image_path):
                 continue
             for i in range(3):

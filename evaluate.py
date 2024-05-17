@@ -100,6 +100,8 @@ class Evaluation:
             image_path = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
             if os.path.exists(image_path):
                 continue
+            else:
+                os.mkdir(image_path)
             for i in range(3):
                 image, prompt = self.image_generator(image_url)
                 image.save(os.path.join(image_path, str(i) + '.jpg'))
@@ -113,9 +115,9 @@ class Evaluation:
             image_url = results.image_url.values[row]
             generated_image_path = results.generated_image_url.values[row]
             action_reason = results.action_reason.values[row]
-            directory = (args.data_path, args.product_images, image_url)
+            directory = (args.data_path, args.product_images, image_url.spilit('.')[0])
             product_image_files = os.listdir(directory)
-            product_image_paths = [os.path.join(args.data_path, args.product_images, image_url, file)
+            product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
                                    for file in product_image_files]
             creativity_scores[image_url] = self.metrics.get_creativity_scores(text_description=action_reason,
                                                                               generated_image_path=generated_image_path,

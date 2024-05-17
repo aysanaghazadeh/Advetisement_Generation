@@ -80,11 +80,11 @@ def parse_args():
                         help='Path to the folder of prompts. Set the name of prompt files as: {text_input_type}.jinja')
     parser.add_argument('--llm_prompt',
                         type=str,
-                        default='LLM_input.jinja',
+                        default='product_detector.jinja',
                         help='LLM input prompt template file name.')
     parser.add_argument('--T2I_prompt',
                         type=str,
-                        default='LLM.jinja',
+                        default='product_image_generation.jinja',
                         help='T2I input prompt template file name.')
     parser.add_argument('--data_path',
                         type=str,

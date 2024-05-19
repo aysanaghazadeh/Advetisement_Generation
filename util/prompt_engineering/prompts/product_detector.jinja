@@ -1,4 +1,6 @@
 Name the object that is being advertised in the following messages:
-- {{action_reason}}
-Just name the object.
+{% for statement in action_reason %}
+    - {{statement}}
+{% endfor %}
+Just name the objects.
 objects:

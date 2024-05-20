@@ -136,7 +136,7 @@ class Metrics:
 
     def get_creativity_scores(self, text_description, generated_image_path, product_image_paths, args):
         image_scores = []
-        for product_image in product_image_paths:
+        for product_image in product_image_paths[:1]:
             image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))
         avg_image_score = sum(image_scores)/len(image_scores)
         text_score = self.get_action_reason_image_CLIP_score(generated_image_path, text_description, args)

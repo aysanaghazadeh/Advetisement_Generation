@@ -146,7 +146,7 @@ class Metrics:
 
 class PersuasivenessMetric:
     def __init__(self):
-        model_id = "llava-hf/llava-1.5-13b-hf"
+        model_id = "llava-hf/llava-1.5-7b-hf"
         self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
         self.processor = AutoProcessor.from_pretrained(model_id)
 

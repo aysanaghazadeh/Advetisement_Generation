@@ -114,7 +114,7 @@ def parse_args():
                         )
     parser.add_argument('--test_set_images',
                         type=str,
-                        default='../Data/PittAd/train_images',
+                        default='test_set',
                         help='Relative path to the original images for the test set from root')
     return parser.parse_args()
 

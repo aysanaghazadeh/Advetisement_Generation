@@ -70,6 +70,24 @@ class Evaluation:
         with open(saving_path, "w") as outfile:
             json.dump(persuasiveness_scores, outfile)
 
+    @staticmethod
+    def evaluate_data_persuasiveness(args):
+        persuasiveness = PersuasivenessMetric()
+        saving_path = os.path.join(args.result_path, 'persuasiveness.json')
+        print(saving_path)
+        root_directory = os.path.join(args.data_path, args.test_set_images)
+        persuasiveness_scores = {}
+        for dirpath, _, filenames in os.walk(root_directory):
+            for filename in filenames:
+                filepath = os.path.join(dirpath, filename)
+                image_url = os.path.relpath(filepath, root_directory)
+                persuasiveness_score = persuasiveness.get_persuasiveness_score(filepath)
+                persuasiveness_scores[image_url] = persuasiveness_score
+                print(f'persuasiveness score for image {image_url} is {persuasiveness_score}')
+        print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
+        with open(saving_path, "w") as outfile:
+            json.dump(persuasiveness_scores, outfile)
+
     def evaluate_sampled_results(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         FIDs = []

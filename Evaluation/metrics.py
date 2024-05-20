@@ -155,7 +155,7 @@ class PersuasivenessMetric:
         prompt = """
         <image>\n USER:
         Context: If the image convinces the audience to take an action like buying a product, etc, then the image is considered persuasive.
-        Question: Based on the context score the persuasiveness of the image in range 0-10.
+        Question: Based on the context score the persuasiveness of the image in range of (-5, 5).
         Your output format is only Answer: score\n form, no other form. Empty is not allowed.
         ASSISTANT:
         """

@@ -113,10 +113,11 @@ class Evaluation:
         print('*' * 80)
 
     def generate_product_images(self, args, results):
+        baseline_results = pd.read_csv('LLAMA3_generated_prompt_PixArt_20240508_084149.csv').image_url.values
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             image_path = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
-            if os.path.exists(image_path):
+            if os.path.exists(image_path) or image_url not in baseline_results:
                 continue
             else:
                 print(image_path)
@@ -127,11 +128,14 @@ class Evaluation:
 
     def evaluate_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        baseline_results = pd.read_csv('LLAMA3_generated_prompt_PixArt_20240508_084149.csv').image_url.values
         self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '.json')
         creativity_scores = {}
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
+            if image_url not in baseline_results:
+                continue
             generated_image_path = results.generated_image_url.values[row]
             action_reason = results.action_reason.values[row]
             directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])

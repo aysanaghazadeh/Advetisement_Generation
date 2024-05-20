@@ -5,7 +5,7 @@ from torchvision.transforms import functional as TF
 from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
 import tempfile
-from transformers import pipeline, BitsAndBytesConfig
+from transformers import pipeline
 
 
 # Function to convert an image file to a tensor
@@ -146,15 +146,9 @@ class Metrics:
 
 class PersuasivenessMetric:
     def __init__(self):
-        # model_id = "llava-hf/llava-1.5-7b-hf"
-        # self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
-        # self.processor = AutoProcessor.from_pretrained(model_id)
-        quantization_config = BitsAndBytesConfig(
-            load_in_8bit=True,
-            bnb_8bit_compute_dtype=torch.float16
-        )
-        self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
-                             model_kwargs={"quantization_config": quantization_config})
+        model_id = "llava-hf/llava-1.5-13b-hf"
+        self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
+        self.processor = AutoProcessor.from_pretrained(model_id)
 
     def get_persuasiveness_score(self, generated_image_path):
         image = Image.open(generated_image_path).convert("RGB")
@@ -166,12 +160,10 @@ class PersuasivenessMetric:
         ASSISTANT:
         """
         # outputs = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 100})
-        # inputs = self.processor(text=prompt, images=image, return_tensors="pt").to('cuda')
-        # # Generate
-        # generate_ids = self.model.generate(**inputs, max_length=200)
-        # output = self.processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
-        output = output[0]["generated_text"]
+        inputs = self.processor(text=prompt, images=image, return_tensors="pt").to('cuda')
+        # Generate
+        generate_ids = self.model.generate(**inputs, max_length=200)
+        output = self.processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         output = output.strip().split(':')[-1]
         if output.strip().isnumeric():
             persuasiveness = int(output)

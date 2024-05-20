@@ -116,7 +116,7 @@ class Evaluation:
             image_url = results.image_url.values[row]
             generated_image_path = results.generated_image_url.values[row]
             action_reason = results.action_reason.values[row]
-            directory = (args.data_path, args.product_images, image_url.spilit('.')[0])
+            directory = (args.data_path, args.product_images, image_url.split('.')[0])
             product_image_files = os.listdir(directory)
             product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
                                    for file in product_image_files]

@@ -13,7 +13,7 @@ import csv
 class Evaluation:
     def __init__(self, metrics, args):
         self.metrics = metrics
-        if args.evaluation_type == 'creativity':
+        if args.evaluation_type == 'creativity' and args.image_generation:
             self.image_generator = AdvertisementImageGeneration(args)
         if args.evaluation_type == 'action_reason_llava':
             self.ar_llava = ActionReasonLlava(args)

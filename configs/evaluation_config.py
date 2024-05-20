@@ -71,6 +71,9 @@ def parse_args():
     parser.add_argument('--fine_tuned',
                         type=bool,
                         default=False)
+    parser.add_argument('--image_generation',
+                        type=bool,
+                        default=False)
     parser.add_argument('--T2I_model',
                         type=str,
                         default='PixArt')

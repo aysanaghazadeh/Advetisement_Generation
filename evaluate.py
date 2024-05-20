@@ -125,7 +125,7 @@ class Evaluation:
                                                                               product_image_paths=product_image_paths,
                                                                               args=args)
             print(
-                f'average creativity score is {sum(list(creativity_scores.values())) / len(creativity_scores.values())}')
+                f'creativity score for image {image_url} is {creativity_scores[image_url]}')
             with open(saving_path, "w") as outfile:
                 json.dump(creativity_scores, outfile)
 

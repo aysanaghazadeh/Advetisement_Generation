@@ -164,6 +164,8 @@ class Metrics:
         image = Image.open(generated_image_path)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         message = output[0]["generated_text"].split(':')[-1]
+        print(f'detected message is: {message}')
+        print(f'action_reason is: {action_reason}')
         inputs_message = self.clip_processor(text=message, return_tensors="pt", padding=True).to(device=args.device)
         inputs_AR = self.clip_processor(text=action_reason, return_tensors="pt", padding=True).to(device=args.device)
         message_features = self.clip_model.get_text_features(**inputs_message)

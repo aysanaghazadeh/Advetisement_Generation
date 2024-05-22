@@ -178,7 +178,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_image_text_alignment(args):
-        QA = json.load(open(args.data_path, args.test_set_QA))
+        QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_image_text_alignment.json')
         image_text_alignment_scores = {}

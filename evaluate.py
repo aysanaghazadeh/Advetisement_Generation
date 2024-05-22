@@ -176,6 +176,27 @@ class Evaluation:
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 
+    @staticmethod
+    def evaluate_image_text_alignment(args):
+        QA = json.load(open(args.data_path, args.test_set_QA))
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_image_text_alignment.json')
+        image_text_alignment_scores = {}
+        for row in range(len(results.values)):
+            image_url = results.image_url.values[row]
+            generated_image_path = results.generated_image_url.values[row]
+            action_reasons = QA[image_url][0]
+            image_text_alignment_scores[image_url] = 0
+            for AR in action_reasons:
+                image_text_alignment_scores[image_url] += metrics.get_image_text_alignment_scores(AR,
+                                                                                                  generated_image_path,
+                                                                                                  args)
+            image_text_alignment_scores[image_url] /= len(action_reasons)
+            print(
+                f'image text alignment score for image {image_url} is {image_text_alignment_scores[image_url]}')
+            with open(saving_path, "w") as outfile:
+                json.dump(image_text_alignment_scores, outfile)
+
     def evaluate(self, args):
         evaluation_name = 'evaluate_' + args.evaluation_type
         print(f'evaluation method: {evaluation_name}')

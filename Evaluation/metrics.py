@@ -5,7 +5,7 @@ from torchvision.transforms import functional as TF
 from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
 import tempfile
-from transformers import pipeline
+from transformers import pipeline, BitsAndBytesConfig
 
 
 # Function to convert an image file to a tensor
@@ -19,6 +19,13 @@ class Metrics:
     def __init__(self, args):
         self.clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device=args.device)
         self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        if args.evaluation_type == 'image_text_alignment':
+            quantization_config = BitsAndBytesConfig(
+                load_in_8bit=True,
+                bnb_8bit_compute_dtype=torch.float16
+            )
+            self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
+                                 model_kwargs={"quantization_config": quantization_config})
 
     @staticmethod
     def get_FID(generated_image_path, real_image_path, args):
@@ -142,6 +149,27 @@ class Metrics:
         text_score = self.get_action_reason_image_CLIP_score(generated_image_path, text_description, args)
         creativity = text_score/(avg_image_score + 0.1)
         return creativity
+
+    @staticmethod
+    def get_image_description_prompt():
+        answer_format = 'Answer: I should ${action} because {reason}'
+        prompt = (f'USER:<image>\n'
+                  f'This image is designed to convince the audience to take an action because of some reason. What is the action and reason in this image?'
+                  f'Your answer must follow the format of: {answer_format}'
+                  f'Assistant: ')
+        return prompt
+
+    def get_image_text_alignment_scores(self, action_reason, generated_image_path, args):
+        prompt = self.get_image_description_prompt()
+        image = Image.open(generated_image_path)
+        output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
+        message = output[0]["generated_text"].split(':')[-1]
+        inputs_message = self.clip_processor(text=message, return_tensors="pt", padding=True).to(device=args.device)
+        inputs_AR = self.clip_processor(text=action_reason, return_tensors="pt", padding=True).to(device=args.device)
+        message_features = self.clip_model.get_text_features(**inputs_message)
+        AR_features = self.clip_model.get_text_features(**inputs_AR)
+        text_text_similarity = torch.nn.functional.cosine_similarity(AR_features, message_features).item()
+        return text_text_similarity
 
 
 class PersuasivenessMetric:

@@ -184,16 +184,15 @@ class Evaluation:
         image_text_alignment_scores = {}
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
+            print(f'process on image {image_url} started:')
             generated_image_path = results.generated_image_url.values[row]
             action_reasons = QA[image_url][0]
-            image_text_alignment_scores[image_url] = 0
-            for AR in action_reasons:
-                image_text_alignment_scores[image_url] += metrics.get_image_text_alignment_scores(AR,
-                                                                                                  generated_image_path,
-                                                                                                  args)
-            image_text_alignment_scores[image_url] /= len(action_reasons)
+            image_text_alignment_scores[image_url] = metrics.get_image_text_alignment_scores(action_reasons,
+                                                                                             generated_image_path,
+                                                                                             args)
             print(
-                f'image text alignment score for image {image_url} is {image_text_alignment_scores[image_url]}')
+                f'image text alignment score is {image_text_alignment_scores[image_url]}')
+            print('-'*80)
             with open(saving_path, "w") as outfile:
                 json.dump(image_text_alignment_scores, outfile)
 

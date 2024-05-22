@@ -181,9 +181,14 @@ class Evaluation:
         QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_image_text_alignment.json')
-        image_text_alignment_scores = {}
+        if os.path.exists(saving_path):
+            image_text_alignment_scores = json.load(open(saving_path))
+        else:
+            image_text_alignment_scores = {}
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
+            if image_url in image_text_alignment_scores:
+                continue
             print(f'process on image {image_url} started:')
             generated_image_path = results.generated_image_url.values[row]
             action_reasons = QA[image_url][0]

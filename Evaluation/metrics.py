@@ -155,7 +155,7 @@ class Metrics:
         answer_format = 'Answer: I should ${action} because {reason}'
         prompt = (f'USER:<image>\n'
                   f'This image is designed to convince the audience to take an action because of some reason. What is the action and reason in this image?'
-                  f'Your answer must follow the format of: {answer_format}'
+                  f'Your answer must follow the format of: {answer_format} and must be meaningful in English.'
                   f'Assistant: ')
         return prompt
 

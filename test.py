@@ -12,3 +12,5 @@ print(len(ar_file))
 print(sum(values)/len(values))
 print(sum(ar_file.values())/len(ar_file))
 print(sum(list(llama_file.values())[664:])/len(list(llama_file.values())[664:]))
+
+

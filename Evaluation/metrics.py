@@ -192,7 +192,7 @@ class Metrics:
     @staticmethod
     def get_ranking_prompt(action_reason, first_message, second_message):
         answer_format = 'answer: ${index of the best answer}'
-        prompt = (f'Which of the following descriptions is a better conveys {action_reason}? The answer must in format of {answer_format}, and you must return one and only one index.'
+        prompt = (f'Which of the following descriptions better conveys {action_reason}? The answer must be in format of {answer_format} not any other form.'
                   f'0. {first_message}'
                   f'1. {second_message}'
                   f'Assistant:')

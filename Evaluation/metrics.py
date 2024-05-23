@@ -216,7 +216,8 @@ class Metrics:
             generated_ids = self.model.generate(**inputs, max_new_tokens=20)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.split('Assistant:')[-1]
-            if '0' in output:
+            print(output)
+            if '1' not in output:
                 first_image += 1
         return first_image/len(action_reasons)
 

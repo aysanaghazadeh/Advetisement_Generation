@@ -213,8 +213,8 @@ class Evaluation:
             image_text_ranking = {}
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
-            if image_url in image_text_ranking:
-                continue
+            # if image_url in image_text_ranking:
+            #     continue
             if image_url not in results_baseline.image_url.values:
                 continue
             print(f'process on image {image_url} started:')

@@ -14,3 +14,6 @@ print(sum(ar_file.values())/len(ar_file))
 print(sum(list(llama_file.values())[664:])/len(list(llama_file.values())[664:]))
 
 
+ranking = json.load(open('/Users/aysanaghazadeh/experiments/results/LLAMA3_generated_prompt_PixArt_20240508_084149_image_text_ranking.json'))
+
+print(sum(ranking.values())/len(ranking))

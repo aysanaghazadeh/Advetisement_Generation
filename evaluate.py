@@ -215,7 +215,7 @@ class Evaluation:
             image_url = results.image_url.values[row]
             if image_url in image_text_ranking:
                 continue
-            if image_url not in results_baseline.image_urls.values:
+            if image_url not in results_baseline.image_url.values:
                 continue
             print(f'process on image {image_url} started:')
             first_generated_image_path = results.generated_image_url.values[row]

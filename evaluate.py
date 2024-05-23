@@ -197,9 +197,40 @@ class Evaluation:
                                                                                              args)
             print(
                 f'image text alignment score is {image_text_alignment_scores[image_url]}')
-            print('-'*80)
+            print('-' * 80)
             with open(saving_path, "w") as outfile:
                 json.dump(image_text_alignment_scores, outfile)
+
+    @staticmethod
+    def evaluate_image_text_ranking(args):
+        QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        results_baseline = pd.read_csv(os.path.join(args.result_path, 'AR_PixArt_20240505_231631.csv'))
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_image_text_ranking.json')
+        if os.path.exists(saving_path):
+            image_text_ranking = json.load(open(saving_path))
+        else:
+            image_text_ranking = {}
+        for row in range(len(results.values)):
+            image_url = results.image_url.values[row]
+            if image_url in image_text_ranking:
+                continue
+            if image_url not in results_baseline.image_urls.values:
+                continue
+            print(f'process on image {image_url} started:')
+            first_generated_image_path = results.generated_image_url.values[row]
+            second_generated_image_path = results.generated_image_url.values[
+                results_baseline[results_baseline['image_url'] == image_url].index.tolist()][0]
+            action_reasons = QA[image_url][0]
+            image_text_ranking[image_url] = metrics.get_image_text_ranking(action_reasons,
+                                                                           first_generated_image_path,
+                                                                           second_generated_image_path,
+                                                                           args)
+            print(
+                f'image text ranking score is {image_text_ranking[image_url]}')
+            print('-' * 80)
+            with open(saving_path, "w") as outfile:
+                json.dump(image_text_ranking, outfile)
 
     def evaluate(self, args):
         evaluation_name = 'evaluate_' + args.evaluation_type

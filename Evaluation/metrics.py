@@ -1,4 +1,4 @@
-from transformers import CLIPProcessor, CLIPModel, LlavaForConditionalGeneration, AutoProcessor
+from transformers import CLIPProcessor, CLIPModel, LlavaForConditionalGeneration, AutoProcessor, AutoTokenizer, AutoModelForCausalLM
 from PIL import Image
 import torch
 from torchvision.transforms import functional as TF
@@ -19,13 +19,19 @@ class Metrics:
     def __init__(self, args):
         self.clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device=args.device)
         self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-        if args.evaluation_type == 'image_text_alignment':
+        if args.evaluation_type == 'image_text_alignment' or args.evaluation_type == 'image_text_ranking':
             quantization_config = BitsAndBytesConfig(
                 load_in_8bit=True,
                 bnb_8bit_compute_dtype=torch.float16
             )
             self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                                  model_kwargs={"quantization_config": quantization_config})
+        if args.evaluation_type == 'image_text_ranking':
+            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                                           token='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')
+            self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                                              token='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',
+                                                              device_map="auto")
 
     @staticmethod
     def get_FID(generated_image_path, real_image_path, args):
@@ -151,7 +157,7 @@ class Metrics:
         return creativity
 
     @staticmethod
-    def get_image_description_prompt():
+    def get_image_message_prompt():
         answer_format = 'Answer: I should ${action} because {reason}'
         prompt = (f'USER:<image>\n'
                   f'This image is designed to convince the audience to take an action because of some reason. What is the action and reason in this image?'
@@ -160,7 +166,7 @@ class Metrics:
         return prompt
 
     def get_image_text_alignment_scores(self, action_reasons, generated_image_path, args):
-        prompt = self.get_image_description_prompt()
+        prompt = self.get_image_message_prompt()
         image = Image.open(generated_image_path)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         message = output[0]["generated_text"].split(':')[-1]
@@ -174,6 +180,45 @@ class Metrics:
             AR_features = self.clip_model.get_text_features(**inputs_AR)
             text_text_similarity += torch.nn.functional.cosine_similarity(AR_features, message_features).item()
         return text_text_similarity/len(action_reasons)
+
+    @staticmethod
+    def get_image_description_prompt():
+        prompt = (f'USER:<image>\n'
+                  f'This image is designed to convince the audience to take an action because of some reason.'
+                  f'Describe the image.'
+                  f'Assistant: ')
+        return prompt
+
+    @staticmethod
+    def get_ranking_prompt(action_reason, first_message, second_message):
+        answer_format = 'answer: ${index of the best answer}'
+        prompt = (f'Which of the following descriptions is a better conveys {action_reason}? The answer must in format of {answer_format}, and you must return one and only one index.'
+                  f'0. {first_message}'
+                  f'1. {second_message}'
+                  f'Assistant:')
+        return prompt
+
+    def get_image_text_ranking(self, action_reasons, first_generated_image_path, second_generated_image_path, args):
+        prompt = self.get_image_description_prompt()
+        first_image = Image.open(first_generated_image_path)
+        second_image = Image.open(second_generated_image_path)
+        first_output = self.pipe(first_image, prompt=prompt, generate_kwargs={"max_new_tokens": 512})
+        first_message = first_output[0]["generated_text"].split(':')[-1]
+        print(f'detected message for first image is: {first_message}')
+
+        second_output = self.pipe(second_image, prompt=prompt, generate_kwargs={"max_new_tokens": 512})
+        second_message = second_output[0]["generated_text"].split(':')[-1]
+        print(f'detected message for first image is: {second_message}')
+        first_image = 0
+        for AR in action_reasons:
+            prompt = self.get_ranking_prompt(AR, first_message, second_message)
+            inputs = self.tokenizer(prompt, return_tensors="pt").to(device=self.args.device)
+            generated_ids = self.model.generate(**inputs, max_new_tokens=20)
+            output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
+            output = output.split('Assistant:')[-1]
+            if '0' in output:
+                first_image += 1
+        return first_image/len(action_reasons)
 
 
 class PersuasivenessMetric:

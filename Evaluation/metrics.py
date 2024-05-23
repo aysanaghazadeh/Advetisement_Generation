@@ -212,7 +212,7 @@ class Metrics:
         first_image = 0
         for AR in action_reasons:
             prompt = self.get_ranking_prompt(AR, first_message, second_message)
-            inputs = self.tokenizer(prompt, return_tensors="pt").to(device=self.args.device)
+            inputs = self.tokenizer(prompt, return_tensors="pt").to(device=args.device)
             generated_ids = self.model.generate(**inputs, max_new_tokens=20)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.split('Assistant:')[-1]

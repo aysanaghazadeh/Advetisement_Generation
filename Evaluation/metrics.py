@@ -27,11 +27,13 @@ class Metrics:
             self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                                  model_kwargs={"quantization_config": quantization_config})
         if args.evaluation_type == 'image_text_ranking':
-            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                           token='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')
-            self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
+            self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
+                                                           token='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',
+                                                           trust_remote_code=True)
+            self.model = AutoModelForCausalLM.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                               token='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',
-                                                              device_map="auto")
+                                                              device_map="auto",
+                                                              trust_remote_code=True)
 
     @staticmethod
     def get_FID(generated_image_path, real_image_path, args):

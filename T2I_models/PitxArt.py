@@ -16,10 +16,13 @@ class PixArt(nn.Module):
         # prompt = prompt.to(self.device)
         # image = self.pipe(prompt).images[0]
         # return image
+        # Ensure the prompt is on the correct device
         if isinstance(prompt, str):
             prompt = [prompt]
 
-            # Perform the forward pass with the pipeline
+        # Move prompt to the correct device
+        prompt = [p.to(self.device) if isinstance(p, torch.Tensor) else p for p in prompt]
+
+        # Generate the image using the pipeline
         output = self.pipe(prompt)
-        image = output[0].images[0]
-        return image
+        return output.images[0]

@@ -132,6 +132,7 @@ def get_args():
         args = set_conf(args.config_path)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     args.device = device
+    args.evaluation_type = None
     print("Arguments are:\n", args, '\n', '-'*40)
     return args
 

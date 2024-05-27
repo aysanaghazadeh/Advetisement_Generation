@@ -35,7 +35,8 @@ class LLAMA3(nn.Module):
 
     def forward(self, inputs):
         if not self.args.train:
-            inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
+            # inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
+            inputs = self.tokenizer(inputs, return_tensors="pt").to(device=f'cuda:{0}')
             generated_ids = self.model.generate(**inputs, max_new_tokens=20)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.replace('</s>', '')

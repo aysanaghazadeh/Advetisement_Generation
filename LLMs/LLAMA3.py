@@ -10,16 +10,17 @@ class LLAMA3(nn.Module):
         super(LLAMA3, self).__init__()
         self.args = args
         if not args.train:
-            device_map = {
-                "language_model": 1,
-                "language_projection": 2
-            }
+            # device_map = {
+            #     "language_model": 1,
+            #     "language_projection": 2
+            # }
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                            token='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')
             self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                              token='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',
+                                                              token='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',)
                                                               # device_map="auto")
-                                                              device_map=device_map)
+                                                              # device_map=device_map)
+            self.model = self.model.to(device='cuda:1')
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path,
                                                                                 'my_LLAMA3_new_sample_model'))

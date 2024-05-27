@@ -11,11 +11,8 @@ class LLAMA3(nn.Module):
         self.args = args
         if not args.train:
             device_map = {
-                "query_tokens": 1,
-                "vision_model": 1,
-                "language_model": 2,
-                "language_projection": 2,
-                "qformer": 3,
+                "language_model": 1,
+                "language_projection": 2
             }
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                            token='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')

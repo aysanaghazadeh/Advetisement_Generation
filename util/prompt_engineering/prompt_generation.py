@@ -131,6 +131,7 @@ class PromptGenerator:
         action_reason = QA[image_filename][0]
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment, topic)
         description = self.LLM_model(LLM_input_prompt)
+        description = f'{description}'
         print(description)
         if 'objects:' in description:
             objects = description.split('objects:')[1]

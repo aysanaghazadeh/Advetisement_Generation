@@ -17,10 +17,10 @@ class LLAMA3(nn.Module):
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                            token='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')
             self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                              token='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',)
-                                                              # device_map="auto")
+                                                              token='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',
+                                                              device_map="auto")
                                                               # device_map=device_map)
-            self.model = self.model.to(device='cuda:1')
+            # self.model = self.model.to(device='cuda:1')
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path,
                                                                                 'my_LLAMA3_new_sample_model'))
@@ -41,8 +41,8 @@ class LLAMA3(nn.Module):
 
     def forward(self, inputs):
         if not self.args.train:
-            # inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
-            inputs = self.tokenizer(inputs, return_tensors="pt").to(device='cuda:1')
+            inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
+            # inputs = self.tokenizer(inputs, return_tensors="pt").to(device='cuda:1')
             generated_ids = self.model.generate(**inputs, max_new_tokens=300)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.replace('</s>', '')

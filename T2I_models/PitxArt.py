@@ -12,6 +12,5 @@ class PixArt(nn.Module):
         self.pipe = self.pipe.to(device=args.device)
 
     def forward(self, prompt):
-        prompt = prompt.to(self.device)
         image = self.pipe(prompt).images[0]
         return image

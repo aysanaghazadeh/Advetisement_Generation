@@ -62,7 +62,7 @@ def get_llm_generated_prompt(args):
         writer = csv.writer(file)
         # Write the header
         writer.writerow(['ID', 'description'])
-    prompt_generator = get_llm_generated_prompt(args)
+    prompt_generator = get_llm(args)
     processed_images = set()
     for image_url in test_images:
         if image_url in processed_images:

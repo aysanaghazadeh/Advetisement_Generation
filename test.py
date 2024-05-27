@@ -11,9 +11,64 @@ for key in ar_file:
 print(len(ar_file))
 print(sum(values)/len(values))
 print(sum(ar_file.values())/len(ar_file))
-print(sum(list(llama_file.values())[664:])/len(list(llama_file.values())[664:]))
+print(sum(list(llama_file.values()))/len(list(llama_file.values())))
+max_key = max(llama_file, key=llama_file.get)
+print(max_key)
+max_key = max(ar_file, key=ar_file.get)
+print(max_key)
 
-
+print(llama_file[max_key])
+print(ar_file[max_key])
 ranking = json.load(open('/Users/aysanaghazadeh/experiments/results/LLAMA3_generated_prompt_PixArt_20240508_084149_image_text_ranking.json'))
 
 print(sum(ranking.values())/len(ranking))
+
+
+images = [
+    "160840.jpg",
+    "135670.jpg",
+    "132590.jpg",
+    "54690.jpg",
+    "119260.jpg",
+    "24230.jpg",
+    "66310.jpg",
+    "130250.jpg",
+    "84000.jpg",
+    "119350.jpg",
+    "89100.jpg",
+    "1130.jpg",
+    "100430.jpg",
+    "103430.jpg",
+    "22540.jpg",
+    "75950.jpg",
+    "29960.jpg",
+    "58210.jpg",
+    "101220.jpg",
+    "13530.jpg",
+    "121200.jpg",
+    "55630.jpg",
+    "130060.jpg",
+    "87020.jpg",
+    "99570.jpg",
+    "149830.jpg",
+    "111040.jpg",
+    "136200.jpg",
+    "136560.jpg",
+    "135640.jpg",
+    "94080.jpg",
+    "159800.jpg",
+    "57870.jpg",
+    "68540.jpg",
+    "67470.jpg",
+    "25260.jpg",
+    "81460.jpg"
+]
+
+# for image in images:
+#     image_url = '0/' + image
+#     if llama_file[image_url] > ar_file[image_url] and abs(llama_file[image_url] - ar_file[image_url]) >= 0.005:
+#         print(0, llama_file[image_url] - ar_file[image_url])
+#     if llama_file[image_url] == ar_file[image_url] or abs(llama_file[image_url] - ar_file[image_url]) < 0.005:
+#         print('-', llama_file[image_url] - ar_file[image_url])
+#     if llama_file[image_url] < ar_file[image_url] and abs(llama_file[image_url] - ar_file[image_url]) >= 0.005:
+#         print(1, ar_file[image_url] - llama_file[image_url])

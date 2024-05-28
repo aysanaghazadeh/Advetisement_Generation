@@ -243,6 +243,7 @@ class PersuasivenessMetric:
             if match:
                 return int(match.group(0))
             else:
+                return 0
                 raise ValueError("No numeric value found in the input string")
 
         image = Image.open(generated_image_path).convert("RGB")

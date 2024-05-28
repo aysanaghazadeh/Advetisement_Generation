@@ -7,8 +7,7 @@ class SDXL(nn.Module):
     def __init__(self, args):
         super(SDXL, self).__init__()
         self.device = args.device
-        pipe = StableDiffusionXLPipeline.from_pretrained("sd-community/sdxl-flash", torch_dtype=torch.float16,
-                                                         variant="fp16").to(device=args.device)
+        pipe = StableDiffusionXLPipeline.from_pretrained("sd-community/sdxl-flash", torch_dtype=torch.float16).to(device=args.device)
         # Ensure sampler uses "trailing" timesteps.
         pipe.scheduler = DPMSolverSinglestepScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 

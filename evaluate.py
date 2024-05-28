@@ -51,7 +51,7 @@ class Evaluation:
     @staticmethod
     def evaluate_persuasiveness(args):
         persuasiveness = PersuasivenessMetric()
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_persuasiveness.json')
         print(saving_path)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         persuasiveness_scores = {}
@@ -84,9 +84,9 @@ class Evaluation:
                 persuasiveness_score = persuasiveness.get_persuasiveness_score(filepath)
                 persuasiveness_scores[image_url] = persuasiveness_score
                 print(f'persuasiveness score for image {image_url} is {persuasiveness_score}')
-        print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
-        with open(saving_path, "w") as outfile:
-            json.dump(persuasiveness_scores, outfile)
+                # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
+                with open(saving_path, "w") as outfile:
+                    json.dump(persuasiveness_scores, outfile)
 
     def evaluate_sampled_results(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values

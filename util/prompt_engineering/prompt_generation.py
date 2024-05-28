@@ -80,6 +80,10 @@ class PromptGenerator:
         return list(most_freq_tuple)[0]
 
     def get_original_description_prompt(self, args, image_filename):
+        QA_path = args.test_set_QA if not args.train else args.train_set_QA
+        QA_path = os.path.join(args.data_path, QA_path)
+        QA = json.load(open(QA_path))
+        action_reason = QA[image_filename][0]
         sentiment = ''
         if args.with_sentiment:
             if image_filename in self.sentiments:
@@ -98,7 +102,8 @@ class PromptGenerator:
                     sentiment = TOPIC_MAP[topic_id]
             else:
                 print(f'there is no topic for image: {image_filename}')
-        data = {'description': self.get_description(image_filename, self.descriptions),
+        data = {'action_reason': action_reason,
+                'description': self.get_description(image_filename, self.descriptions),
                 'sentiment': sentiment,
                 'topic': topic}
         env = Environment(loader=FileSystemLoader(args.prompt_path))

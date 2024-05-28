@@ -6,6 +6,7 @@ from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig
+import re
 
 
 # Function to convert an image file to a tensor
@@ -226,11 +227,24 @@ class Metrics:
 
 class PersuasivenessMetric:
     def __init__(self):
-        model_id = "llava-hf/llava-1.5-7b-hf"
-        self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
-        self.processor = AutoProcessor.from_pretrained(model_id)
+        # model_id = "llava-hf/llava-1.5-7b-hf"
+        # self.model = LlavaForConditionalGeneration.from_pretrained(model_id, device_map='auto')
+        # self.processor = AutoProcessor.from_pretrained(model_id)
+        quantization_config = BitsAndBytesConfig(
+            load_in_8bit=True,
+            bnb_8bit_compute_dtype=torch.float16
+        )
+        self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
+                             model_kwargs={"quantization_config": quantization_config})
 
     def get_persuasiveness_score(self, generated_image_path):
+        def extract_number(string_number):
+            match = re.search(r'-?\d+', string_number)
+            if match:
+                return int(match.group(0))
+            else:
+                raise ValueError("No numeric value found in the input string")
+
         image = Image.open(generated_image_path).convert("RGB")
         prompt = """
         <image>\n USER:
@@ -240,14 +254,20 @@ class PersuasivenessMetric:
         ASSISTANT:
         """
         # outputs = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 100})
-        inputs = self.processor(text=prompt, images=image, return_tensors="pt").to('cuda')
+        # inputs = self.processor(text=prompt, images=image, return_tensors="pt").to('cuda')
         # Generate
-        generate_ids = self.model.generate(**inputs, max_length=200)
-        output = self.processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        output = output.strip().split(':')[-1]
-        if output.strip().isnumeric():
-            persuasiveness = int(output)
-        else:
-            persuasiveness = 5
-            print(output)
-        return persuasiveness
+        # generate_ids = self.model.generate(**inputs, max_length=200)
+        # output = self.processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+        # output = output.strip().split(':')[-1]
+        # if output.strip().isnumeric():
+        #     persuasiveness = int(output)
+        # else:
+        #     persuasiveness = 5
+        #     print(output)
+        # return persuasiveness
+        output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
+        output = output[0]["generated_text"].split(':')[-1]
+        print(output)
+        numeric_value = extract_number(output)
+        print(f'persuasiveness: {numeric_value}')
+        return numeric_value

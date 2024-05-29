@@ -56,19 +56,16 @@ class Evaluation:
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         persuasiveness_scores = {}
         for row in results:
-            try:
-                image_url = row[0]
-                generated_image_path = row[3]
-                persuasiveness_score = persuasiveness.get_persuasiveness_score(generated_image_path)
-                print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 10')
-                print('*' * 80)
-                persuasiveness_scores[image_url] = persuasiveness_score
-            except:
-                pass
+            image_url = row[0]
+            generated_image_path = row[3]
+            persuasiveness_score = persuasiveness.get_persuasiveness_score(generated_image_path)
+            print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 5')
+            print('*' * 80)
+            persuasiveness_scores[image_url] = persuasiveness_score
 
-        print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
-        with open(saving_path, "w") as outfile:
-            json.dump(persuasiveness_scores, outfile)
+            # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
+            with open(saving_path, "w") as outfile:
+                json.dump(persuasiveness_scores, outfile)
 
     @staticmethod
     def evaluate_data_persuasiveness(args):

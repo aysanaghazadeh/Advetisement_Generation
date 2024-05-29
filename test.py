@@ -72,3 +72,11 @@ images = [
 #         print('-', llama_file[image_url] - ar_file[image_url])
 #     if llama_file[image_url] < ar_file[image_url] and abs(llama_file[image_url] - ar_file[image_url]) >= 0.005:
 #         print(1, ar_file[image_url] - llama_file[image_url])
+
+
+persuasiveness = json.load(open('/Users/aysanaghazadeh/experiments/results/persuasiveness.json'))
+print(len(persuasiveness))
+print(sum(list(persuasiveness.values())[0:5000])/len(list(persuasiveness.values())[0:5000]))
+import os
+root_directory = '../Data/PittAd/test_set'
+count = 0

@@ -1,5 +1,5 @@
 from transformers import AutoProcessor, LlavaForConditionalGeneration, pipeline
-from util.data.trian_test_split import get_test_data
+from util.data.trian_test_split import get_test_data, get_train_data
 from PIL import Image
 import os
 import csv
@@ -21,10 +21,10 @@ def get_llm(args):
 
 
 def get_descriptions(args):
-    test_images = get_test_data(args)['ID'].values
-    print(f'number of images in test set: {len(test_images)}')
+    train_images = get_train_data(args)['ID'].values
+    print(f'number of images in train set: {len(train_images)}')
     print('*' * 100)
-    description_file = os.path.join(args.data_path, 'train/simple_llava_description_test_set.csv')
+    description_file = os.path.join(args.data_path, 'train/simple_llava_description_large_train_set.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:
@@ -33,13 +33,13 @@ def get_descriptions(args):
         writer.writerow(['ID', 'description'])
     pipe = get_model()
     processed_images = set()
-    for image_url in test_images:
+    for image_url in train_images:
         if image_url in processed_images:
             continue
         processed_images.add(image_url)
         image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
         prompt = f"USER:<image>\nDescribe the image in detail.\nASSISTANT:"
-        outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 512})
+        outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 300})
         description = outputs[0]['generated_text'].split('ASSISTANT: ')[-1]
         print(f'output of image {image_url} is {description}')
         print('-' * 80)
@@ -80,6 +80,6 @@ def get_llm_generated_prompt(args):
 
 if __name__ == '__main__':
     args = get_args()
-    # descriptions = get_descriptions(args)
-    descriptions = get_llm_generated_prompt(args)
+    descriptions = get_descriptions(args)
+    # descriptions = get_llm_generated_prompt(args)
 

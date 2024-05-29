@@ -81,7 +81,7 @@ def parse_args():
                         )
     parser.add_argument('--train_ratio',
                         type=float,
-                        default=0.4,
+                        default=0.7,
                         help='the ratio of the train size to the dataset in train test split.'
                         )
     parser.add_argument('--test_size',

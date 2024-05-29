@@ -29,6 +29,8 @@ def get_train_data(args):
     # train_size = int(args.train_ratio * len(image_urls))
     # train_image_urls = random.sample(image_urls, train_size)
     train_image_urls = train_QA.keys()
+    train_size = int(args.train_ratio * len(train_image_urls))
+    train_image_urls = random.sample(train_image_urls, train_size)
     print(f'train size is: {len(train_image_urls)}')
     print('saving train data')
     with open(train_file, 'w', newline='') as file:
@@ -39,7 +41,7 @@ def get_train_data(args):
         # Write the data
         for i in train_image_urls:
             writer.writerow([i])
-    return pd.read_csv(train_file).values
+    return pd.read_csv(train_file)
 
 
 def get_test_data(args):

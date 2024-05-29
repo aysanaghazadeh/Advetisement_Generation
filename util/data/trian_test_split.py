@@ -16,7 +16,7 @@ def get_train_data(args):
     else:
         QA_base = {}
     if os.path.exists(os.path.join(args.data_path, 'train/test_image.csv')):
-        test_files = set(list(pd.read_csv(os.path.join(args.data_path, 'train/test_image.csv')).ID.valeus))
+        test_files = set(list(pd.read_csv(os.path.join(args.data_path, 'train/test_image.csv')).ID.values))
     else:
         test_files = set()
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))

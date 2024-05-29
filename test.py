@@ -1,8 +1,8 @@
 import json
 import pandas as pd
 
-llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/LLAMA3_generated_prompt_PixArt_20240508_084149_image_text_alignment.json'))
-ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631_image_text_alignment.json'))
+llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llm_generated_description_test_set.json_PixArt_20240527_220415.json'))
+ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631.json'))
 
 values = []
 for key in ar_file:

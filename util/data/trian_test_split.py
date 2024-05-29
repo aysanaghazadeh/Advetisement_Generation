@@ -8,14 +8,28 @@ from util.data.mapping import TOPIC_MAP as topic_map
 
 
 def get_train_data(args):
-    train_file = os.path.join(args.data_path, 'train/train_image.csv')
+    train_file = os.path.join(args.data_path, 'train/train_image_large.csv')
     if os.path.exists(train_file):
         return pd.read_csv(train_file).values
+    if os.path.exists(os.path.join(args.data_path, 'Action_Reason_statements.json')):
+        QA_base = json.load(open(os.path.join(args.data_path, 'Action_Reason_statements.json')))
+    else:
+        QA_base = {}
+    if os.path.exists(os.path.join(args.data_path, 'train/test_image.csv')):
+        test_files = set(list(pd.read_csv(os.path.join(args.data_path, 'train/test_image.csv')).ID.valeus))
+    else:
+        test_files = set()
     QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
-    image_urls = list(QA.keys())
-    print(len(image_urls))
-    train_size = int(args.train_ratio * len(image_urls))
-    train_image_urls = random.sample(image_urls, train_size)
+    train_QA = {}
+    for image_url in QA:
+        if image_url not in test_files:
+            train_QA[image_url] = QA[image_url]
+    # image_urls = list(QA.keys())
+    # print(len(image_urls))
+    # train_size = int(args.train_ratio * len(image_urls))
+    # train_image_urls = random.sample(image_urls, train_size)
+    train_image_urls = train_QA.keys()
+    print(f'train size is: {len(train_image_urls)}')
     print('saving train data')
     with open(train_file, 'w', newline='') as file:
         writer = csv.writer(file)

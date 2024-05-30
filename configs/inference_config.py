@@ -101,9 +101,9 @@ def parse_args():
                         default='train/QA_Combined_Action_Reason_train.json',
                         help='Relative path to the QA file for action-reasons from root path'
                         )
-    parser.add_argument('--test_set_images_total',
+    parser.add_argument('--test_set_images',
                         type=str,
-                        default='train_images',
+                        default='train_images_total',
                         help='Relative path to the original images for the test set from root')
     parser.add_argument('--text_input_type',
                         type=str,

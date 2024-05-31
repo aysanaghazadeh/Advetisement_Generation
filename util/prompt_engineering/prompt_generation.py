@@ -137,7 +137,6 @@ class PromptGenerator:
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment, topic)
         description = self.LLM_model(LLM_input_prompt)
         # description = f'{description}'
-        print(description)
         if 'objects:' in description:
             objects = description.split('objects:')[1]
             description = description.split('objects:')[0]

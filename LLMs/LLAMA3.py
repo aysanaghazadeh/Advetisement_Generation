@@ -43,7 +43,7 @@ class LLAMA3(nn.Module):
         if not self.args.train:
             inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
             # inputs = self.tokenizer(inputs, return_tensors="pt").to(device='cuda:1')
-            generated_ids = self.model.generate(**inputs, max_new_tokens=100)
+            generated_ids = self.model.generate(**inputs, max_new_tokens=10)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.replace('</s>', '')
             output = output.replace("['", '')

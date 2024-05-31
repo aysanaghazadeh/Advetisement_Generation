@@ -143,9 +143,15 @@ class PromptGenerator:
             description = description.split('objects:')[0]
         else:
             objects = None
+        if 'Adjective:' in description:
+            adjective = description.split('Adjective:')[1]
+            description = description.split('Adjective:')[0]
+        else:
+            adjective = None
         data = {'description': description,
                 'action_reason': action_reason,
                 'objects': objects,
+                'adjective': adjective,
                 'sentiment': sentiment,
                 'topic': topic}
         env = Environment(loader=FileSystemLoader(args.prompt_path))

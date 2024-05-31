@@ -1,3 +1,5 @@
+import json
+
 from transformers import AutoProcessor, LlavaForConditionalGeneration, pipeline
 from util.data.trian_test_split import get_test_data, get_train_data
 from PIL import Image
@@ -6,7 +8,7 @@ import csv
 import pandas as pd
 from configs.inference_config import get_args
 from util.prompt_engineering.prompt_generation import PromptGenerator
-from torch import nn
+
 
 def get_model():
     # Load model directly
@@ -77,6 +79,47 @@ def get_llm_generated_prompt(args):
             writer.writerow(pair)
 
     return pd.read_csv(description_file)
+
+
+def get_negative_descriptions(args):
+    train_images = get_train_data(args)['ID'].values
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    print(f'number of images in train set: {len(train_images)}')
+    print('*' * 100)
+    product_file = os.path.join(args.data_path, 'train/product_name_train_set.csv')
+    if os.path.exists(product_file):
+        return pd.read_csv(product_file)
+    with open(product_file, 'w', newline='') as file:
+        writer = csv.writer(file)
+        # Write the header
+        writer.writerow(['ID', 'description'])
+    negative_file = os.path.join(args.data_path, 'train/negative_prompt_train_set.csv')
+    if os.path.exists(negative_file):
+        return pd.read_csv(negative_file)
+    with open(negative_file, 'w', newline='') as file:
+        writer = csv.writer(file)
+        # Write the header
+        writer.writerow(['ID', 'description'])
+    prompt_generator = get_llm(args)
+    for image_url in train_images:
+        action_reason = '\n'.join(QA[image_url][0])
+        print(f'action reason for image {image_url} is {action_reason}')
+        args.T2I_prompt = 'product_image_generation.jinja'
+        args.llm_prompt = 'product_detector.jinja'
+        product_names = prompt_generator(args, image_url)
+        print(f'products in image {image_url} is {product_names}')
+        pair = [image_url, product_names]
+        with open(product_file, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(pair)
+        args.T2I_prompt = 'adjective_only.jinja'
+        args.llm_prompt = 'negative_adjective_detector.jinja'
+        adjective = prompt_generator(args, image_url)
+        print(f'negative adjective in image {image_url} is {adjective}')
+        pair = [image_url, adjective]
+        with open(negative_file, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(pair)
 
 if __name__ == '__main__':
     args = get_args()

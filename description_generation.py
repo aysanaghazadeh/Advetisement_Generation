@@ -123,6 +123,7 @@ def get_negative_descriptions(args):
 
 if __name__ == '__main__':
     args = get_args()
-    descriptions = get_descriptions(args)
+    # descriptions = get_descriptions(args)
     # descriptions = get_llm_generated_prompt(args)
+    get_negative_descriptions(args)
 

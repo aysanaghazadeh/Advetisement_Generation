@@ -106,7 +106,7 @@ def get_negative_descriptions(args):
         print(f'action reason for image {image_url} is {action_reason}')
         args.T2I_prompt = 'product_image_generation.jinja'
         args.llm_prompt = 'product_detector.jinja'
-        product_names = prompt_generator(args, image_url)
+        product_names = prompt_generator.generate_prompt(args, image_url)
         print(f'products in image {image_url} is {product_names}')
         pair = [image_url, product_names]
         with open(product_file, 'a', newline='') as file:
@@ -114,7 +114,7 @@ def get_negative_descriptions(args):
             writer.writerow(pair)
         args.T2I_prompt = 'adjective_only.jinja'
         args.llm_prompt = 'negative_adjective_detector.jinja'
-        adjective = prompt_generator(args, image_url)
+        adjective = prompt_generator.generate_prompt(args, image_url)
         print(f'negative adjective in image {image_url} is {adjective}')
         pair = [image_url, adjective]
         with open(negative_file, 'a', newline='') as file:

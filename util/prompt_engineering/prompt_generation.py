@@ -143,9 +143,9 @@ class PromptGenerator:
             description = description.split('objects:')[0]
         else:
             objects = None
-        if 'Adjective:' in description:
-            adjective = description.split('Adjective:')[1]
-            description = description.split('Adjective:')[0]
+        if 'Adjective reversing the meaning of the statements is:' in description:
+            adjective = description.split('Adjective reversing the meaning of the statements is:')[1]
+            description = description.split('Adjective reversing the meaning of the statements is:')[0]
         else:
             adjective = None
         data = {'description': description,

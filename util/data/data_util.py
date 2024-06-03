@@ -124,9 +124,9 @@ def get_LLAMA3_RLHF_training_data(args, image_urls):
     dataset = {'QA': [], 'chosen': [], 'rejected': []}
     for image_url in image_urls:
         QA = QAs[image_url[0]]
-        chosen_description = chosen_descriptions.loc[chosen_descriptions['ID'] == image_url[0]]['description'].values
-        product_description = product_descriptions.loc[product_descriptions['ID'] == image_url[0]]['description'].values
-        negative_description = negative_descriptions.loc[negative_descriptions['ID'] == image_url[0]]['description'].values
+        chosen_description = chosen_descriptions.loc[chosen_descriptions['ID'] == image_url[0]]['description'].values[0]
+        product_description = product_descriptions.loc[product_descriptions['ID'] == image_url[0]]['description'].values[0]
+        negative_description = negative_descriptions.loc[negative_descriptions['ID'] == image_url[0]]['description'].values[0]
         action = QA[0][0].lower().split('because')[0]
         dataset['QA'].append(QA)
         dataset['chosen'].append(chosen_description)

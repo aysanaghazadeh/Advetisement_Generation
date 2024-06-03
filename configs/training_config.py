@@ -94,6 +94,14 @@ def parse_args():
     parser.add_argument('--description_file',
                         type=str,
                         default=None,
+                        help='Path to the description that includes only product name.')
+    parser.add_argument('--product_file',
+                        type=str,
+                        default=None,
+                        help='Path to the negative adjective for the action reason statements.')
+    parser.add_argument('--negative_file',
+                        type=str,
+                        default=None,
                         help='Path to the description file for the T2I input.')
     parser.add_argument('--prompt_path',
                         type=str,

@@ -140,6 +140,13 @@ def get_LLAMA3_RLHF_training_data(args, image_urls):
     print(dataset)
     return dataset
 
+
+def get_train_LLAMA3_Dataloader(args):
+    image_urls = get_train_data(args)
+    dataset = get_LLAMA3_training_data(args, image_urls)
+    return dataset
+
+
 def get_Phi3_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                               token='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',

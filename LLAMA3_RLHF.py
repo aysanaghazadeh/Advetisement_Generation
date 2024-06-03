@@ -1,5 +1,5 @@
 import os.path
-from util.data.data_util import get_train_LLAMA3_Dataloader
+from util.data.data_util import get_RLHF_train_LLAMA3_Dataloader
 from configs.training_config import get_args
 from transformers import TrainingArguments, Trainer, DataCollatorForLanguageModeling
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -109,7 +109,7 @@ def train_reward_model(args):
     model, tokenizer = get_model()
     print(model.config)
     training_args = get_RM_training_args(args)
-    train_dataset = get_train_LLAMA3_Dataloader(args)
+    train_dataset = get_RLHF_train_LLAMA3_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
     train_dataset = tmp["train"]
     test_dataset = tmp["test"]
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     )
     starcoder_model_ref = AutoModelForCausalLMWithValueHead.from_pretrained(args.model_path + '/rm_checkpoint')
 
-    train_dataset = get_train_LLAMA3_Dataloader(args)
+    train_dataset = get_RLHF_train_LLAMA3_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
     train_dataset = tmp["train"]
     test_dataset = tmp["test"]

@@ -141,9 +141,9 @@ def get_LLAMA3_RLHF_training_data(args, image_urls):
     return dataset
 
 
-def get_train_LLAMA3_Dataloader(args):
+def get_RLHF_train_LLAMA3_Dataloader(args):
     image_urls = get_train_data(args)
-    dataset = get_LLAMA3_training_data(args, image_urls)
+    dataset = get_LLAMA3_RLHF_training_data(args, image_urls)
     return dataset
 
 

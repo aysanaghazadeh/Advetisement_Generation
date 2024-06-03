@@ -133,7 +133,7 @@ def get_LLAMA3_RLHF_training_data(args, image_urls):
         dataset['rejected'].append(product_description + action)
         dataset['QA'].append(QA)
         dataset['chosen'].append(chosen_description)
-        dataset['rejected'].append('image of ' + negative_description + product_description.spilit('image of')[-1] + action)
+        dataset['rejected'].append('image of ' + negative_description + product_description.split('image of')[-1] + action)
 
     dataset = Dataset.from_dict(dataset)
     dataset = dataset.map(format_dataset)

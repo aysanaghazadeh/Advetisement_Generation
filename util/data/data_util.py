@@ -87,6 +87,59 @@ def get_train_LLAMA3_Dataloader(args):
     return dataset
 
 
+def get_LLAMA3_RLHF_training_data(args, image_urls):
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                              token='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',
+                                              padding='right')
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
+    def format_dataset(data_point):
+        # print(data_point['QA'])
+        kwargs = {"padding": "max_length",
+                  "truncation": True,
+                  "max_length": 256,
+                  "return_tensors": "pt"
+                  }
+        action_reason = '\n-'.join(data_point['QA'][0])
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                    {action_reason}
+                    Description of the image:
+                """
+        prompt_plus_chosen_response = prompt + data_point['chosen']
+        prompt_plus_rejected_response = prompt + data_point['rejected']
+        tokens_chosen = tokenizer.encode_plus(prompt_plus_chosen_response, **kwargs)
+        tokens_rejected = tokenizer.encode_plus(prompt_plus_rejected_response, **kwargs)
+        return {
+            "input_ids_chosen": tokens_chosen["input_ids"][0],
+            "attention_mask_chosen": tokens_chosen["attention_mask"][0],
+            "input_ids_rejected": tokens_rejected["input_ids"][0],
+            "attention_mask_rejected": tokens_rejected["attention_mask"][0]
+        }
+
+    chosen_descriptions = pd.read_csv(args.description_file)
+    product_descriptions = pd.read_csv(args.product_file)
+    negative_descriptions = pd.read_csv(args.negative_file)
+    QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    dataset = {'QA': [], 'chosen': [], 'rejected': []}
+    for image_url in image_urls:
+        QA = QAs[image_url[0]]
+        chosen_description = chosen_descriptions.loc[chosen_descriptions['ID'] == image_url[0]]['description'].values
+        product_description = product_descriptions.loc[product_descriptions['ID'] == image_url[0]]['description'].values
+        negative_description = negative_descriptions.loc[negative_descriptions['ID'] == image_url[0]]['description'].values
+        action = QA[0][0].lower().split('because')[0]
+        dataset['QA'].append(QA)
+        dataset['chosen'].append(chosen_description)
+        dataset['rejected'].append(product_description + action)
+        dataset['QA'].append(QA)
+        dataset['chosen'].append(chosen_description)
+        dataset['rejected'].append('image of ' + negative_description + product_description.spilit('image of')[-1] + action)
+
+    dataset = Dataset.from_dict(dataset)
+    dataset = dataset.map(format_dataset)
+    print(dataset)
+    return dataset
+
 def get_Phi3_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                               token='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',

@@ -8,9 +8,6 @@ from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_tr
 import random
 from transformers import TrainerCallback, TrainerControl
 
-import random
-from transformers import TrainerCallback, TrainerControl
-
 
 class PrintRandomTestExampleCallback(TrainerCallback):
     """A callback that prints a random test example and its prediction at the start of evaluation."""

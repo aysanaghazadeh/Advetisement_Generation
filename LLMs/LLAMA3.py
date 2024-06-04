@@ -17,8 +17,7 @@ class LLAMA3(nn.Module):
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                            token='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')
             self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                              token='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',
-                                                              device_map="auto")
+                                                              token='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').to(device=args.device)
                                                               # device_map=device_map)
             # self.model = self.model.to(device='cuda:1')
             if args.fine_tuned:

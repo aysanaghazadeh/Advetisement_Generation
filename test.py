@@ -1,27 +1,27 @@
 import json
 import pandas as pd
 
-llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llm_generated_description_test_set.json_PixArt_20240527_220415.json'))
-ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631.json'))
+llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631_persuasiveness.json'))
+# ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631.json'))
 
 values = []
-for key in ar_file:
-    if key in llama_file:
-        values.append(llama_file[key])
-print(len(ar_file))
-print(sum(values)/len(values))
-print(sum(ar_file.values())/len(ar_file))
+# for key in ar_file:
+#     if key in llama_file:
+#         values.append(llama_file[key])
+# print(len(ar_file))
+# print(sum(values)/len(values))
+# print(sum(ar_file.values())/len(ar_file))
 print(sum(list(llama_file.values()))/len(list(llama_file.values())))
-max_key = max(llama_file, key=llama_file.get)
-print(max_key)
-max_key = max(ar_file, key=ar_file.get)
-print(max_key)
+# max_key = max(llama_file, key=llama_file.get)
+# print(max_key)
+# max_key = max(ar_file, key=ar_file.get)
+# print(max_key)
+#
+# print(llama_file[max_key])
+# print(ar_file[max_key])
+# ranking = json.load(open('/Users/aysanaghazadeh/experiments/results/LLAMA3_generated_prompt_PixArt_20240508_084149_image_text_ranking.json'))
 
-print(llama_file[max_key])
-print(ar_file[max_key])
-ranking = json.load(open('/Users/aysanaghazadeh/experiments/results/LLAMA3_generated_prompt_PixArt_20240508_084149_image_text_ranking.json'))
-
-print(sum(ranking.values())/len(ranking))
+# print(sum(ranking.values())/len(ranking))
 
 
 images = [

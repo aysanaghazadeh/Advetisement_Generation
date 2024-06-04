@@ -1,4 +1,6 @@
 from util.data.trian_test_split import get_train_data
+from torch.utils.data import DataLoader
+from util.data.dataset import LLAMA3RLAIF
 from transformers import AutoTokenizer
 from datasets import Dataset
 import pandas as pd
@@ -146,6 +148,11 @@ def get_RLHF_train_LLAMA3_Dataloader(args):
     dataset = get_LLAMA3_RLHF_training_data(args, image_urls)
     return dataset
 
+
+def get_LLAMA3_RLAIF_Dataloader(args):
+    image_urls = get_train_data(args)
+    LLAMA3_data = LLAMA3RLAIF(args, image_urls)
+    return DataLoader(LLAMA3_data, shuffle=False, batch_size=1, num_workers=os.cpu_count())
 
 def get_Phi3_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",

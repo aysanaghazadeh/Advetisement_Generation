@@ -237,7 +237,7 @@ class PersuasivenessMetric:
         self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                              model_kwargs={"quantization_config": quantization_config})
 
-    def get_persuasiveness_score(self, generated_image_path):
+    def get_persuasiveness_score(self, generated_image):
         def extract_number(string_number):
             match = re.search(r'-?\d+', string_number)
             if match:
@@ -245,8 +245,10 @@ class PersuasivenessMetric:
             else:
                 return 0
                 raise ValueError("No numeric value found in the input string")
-
-        image = Image.open(generated_image_path).convert("RGB")
+        if type(generated_image) == str:
+            image = Image.open(generated_image).convert("RGB")
+        else:
+            image = generated_image
         prompt = """
         <image>\n USER:
         Context: If the image convinces the audience to take an action like buying a product, etc, then the image is considered persuasive.

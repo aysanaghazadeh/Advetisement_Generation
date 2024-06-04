@@ -3,6 +3,7 @@ from transformers import AutoTokenizer
 import pandas as pd
 import os
 import json
+from torch.utils.data import Dataset
 
 
 class Mistral7BTrainingDataset(nn.Module):
@@ -44,8 +45,24 @@ class Mistral7BTrainingDataset(nn.Module):
         return len(self.image_urls)
 
 
+class LLAMA3RLAIF(Dataset):
+    def __init__(self, args, image_urls):
+        super().__init__()
+        self.args = args
+        self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+        self.image_urls = image_urls
+        self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                                  token='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')
 
+    def __getitem__(self, item):
+        image_url = self.image_urls[item]
+        action_reason = self.QA[image_url]
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                    {action_reason}
+                    Description of the image:
+                """
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(device=self.args.device)
+        return prompt, inputs
 
-
-
-
+    def __len__(self):
+        return len(self.image_urls)

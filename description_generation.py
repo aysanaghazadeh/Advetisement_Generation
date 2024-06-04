@@ -57,7 +57,7 @@ def get_llm_generated_prompt(args):
     test_images = get_test_data(args)['ID'].values
     print(f'number of images in test set: {len(test_images)}')
     print('*' * 100)
-    description_file = os.path.join(args.data_path, 'train/llm_generated_description_test_set.csv')
+    description_file = os.path.join(args.data_path, 'train/llama3_FT_generated_description_test_set.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:
@@ -124,6 +124,6 @@ def get_negative_descriptions(args):
 if __name__ == '__main__':
     args = get_args()
     # descriptions = get_descriptions(args)
-    # descriptions = get_llm_generated_prompt(args)
-    get_negative_descriptions(args)
+    descriptions = get_llm_generated_prompt(args)
+    # get_negative_descriptions(args)
 

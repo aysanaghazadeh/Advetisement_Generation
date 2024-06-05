@@ -4,6 +4,10 @@ import pandas as pd
 import os
 import json
 from torch.utils.data import Dataset
+import torch.multiprocessing as mp
+
+# Set the start method to 'spawn' to avoid CUDA initialization issues
+mp.set_start_method('spawn', force=True)
 
 
 class Mistral7BTrainingDataset(nn.Module):

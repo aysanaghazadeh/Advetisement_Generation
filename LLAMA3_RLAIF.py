@@ -1,5 +1,6 @@
 import os.path
 from util.data.data_util import get_LLAMA3_RLAIF_Dataloader
+from util.data.trian_test_split import get_train_data
 from configs.training_config import get_args
 from transformers import TrainingArguments
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -9,6 +10,8 @@ from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from torch.optim import Adam
 from tqdm import tqdm
+import json
+
 
 class RewardModel:
     def __init__(self, args):
@@ -84,9 +87,17 @@ def train(args):
     optimizer = Adam(model.parameters(), lr=args.lr)
     reward_model = RewardModel(args)
     # training_args = get_training_args(args)
-    train_loader = get_LLAMA3_RLAIF_Dataloader(args)
+    # train_loader = get_LLAMA3_RLAIF_Dataloader(args)
+    train_images = get_train_data(args)
+    QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     for epoch in tqdm(range(args.epochs)):
-        for i, (prompt, inputs) in enumerate(train_loader):
+        for i, image_url in enumerate(train_images):
+            action_reason = QA[image_url[0]][0]
+            prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                                {action_reason}
+                                Description of the image:
+                            """
+            inputs = tokenizer(prompt, return_tensors="pt").to(device=args.device)
             print(f"Epoch {epoch + 1}/{args.epochs}")
             print(f'prompt: {prompt}')
             inputs = inputs.to(device=args.device)

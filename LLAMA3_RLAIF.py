@@ -8,7 +8,7 @@ from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_tr
 from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from torch.optim import Adam
-import tqdm
+from tqdm import tqdm
 
 class RewardModel:
     def __init__(self, args):

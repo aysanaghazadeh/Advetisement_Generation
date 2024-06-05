@@ -39,7 +39,7 @@ def get_model():
     peft_config = LoraConfig(inference_mode=False,
                              r=8,
                              lora_alpha=32,
-                             lora_dropout=0.1,
+                             lora_dropout=0.2,
                              peft_type=TaskType.CAUSAL_LM)
     model = get_peft_model(model, peft_config)
     print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')

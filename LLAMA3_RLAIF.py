@@ -7,7 +7,7 @@ import torch
 from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_training
 from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
-from transformers import AdamW
+from torch.optim import Adam
 import tqdm
 
 class RewardModel:
@@ -81,7 +81,7 @@ def get_training_args(args):
 
 def train(args):
     model, tokenizer = get_model()
-    optimizer = AdamW(model.parameters(), lr=args.lr)
+    optimizer = Adam(model.parameters(), lr=args.lr)
     reward_model = RewardModel(args)
     # training_args = get_training_args(args)
     train_loader = get_LLAMA3_RLAIF_Dataloader(args)

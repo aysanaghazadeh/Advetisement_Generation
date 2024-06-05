@@ -56,7 +56,6 @@ class LLAMA3RLAIF(Dataset):
 
     def __getitem__(self, item):
         image_url = self.image_urls[item]
-        print(image_url)
         action_reason = self.QA[image_url[0]][0]
         prompt = f"""Describe an advertisement image that conveys the following messages in detail:
                     {action_reason}

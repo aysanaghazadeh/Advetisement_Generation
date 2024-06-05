@@ -87,6 +87,8 @@ def train(args):
     train_loader = get_LLAMA3_RLAIF_Dataloader(args)
     for epoch in tqdm(range(args.epochs)):
         for i, (prompt, inputs) in enumerate(train_loader):
+            print(f"Epoch {epoch + 1}/{args.epochs}")
+            print(f'prompt: {prompt}')
             inputs = inputs.to(device=args.device)
             generated_ids = model.generate(**inputs, max_new_tokens=10)
             description = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()

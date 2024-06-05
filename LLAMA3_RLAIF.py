@@ -12,7 +12,7 @@ import tqdm
 
 class RewardModel:
     def __init__(self, args):
-        args.T2I_model = 'SDXL'
+        args.T2I_model = 'PixArt'
         self.T2I_model = T2IModel(args)
         self.reward_function = PersuasivenessMetric()
 

@@ -17,7 +17,7 @@ class SDXL(nn.Module):
         else:
             model_id = "runwayml/stable-diffusion-v1-5"
             self.pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
-            self.pipe = self.pipe.to(device=args.device)
+            self.pipe = self.pipe.to(device='cuda:1')
 
     def forward(self, prompt):
         negative_prompt = "typical,(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation, NSFW"

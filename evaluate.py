@@ -70,14 +70,17 @@ class Evaluation:
     @staticmethod
     def evaluate_data_persuasiveness(args):
         persuasiveness = PersuasivenessMetric()
-        saving_path = os.path.join(args.result_path, 'persuasiveness.json')
+        saving_path = os.path.join(args.result_path, 'persuasiveness_2.json')
         print(saving_path)
-        root_directory = os.path.join(args.data_path, args.test_set_images)
+        root_directory = os.path.join(args.data_path, 'train_images_total')
         persuasiveness_scores = {}
+        image_list = []
         for dirpath, _, filenames in os.walk(root_directory):
             for filename in filenames:
                 filepath = os.path.join(dirpath, filename)
                 image_url = os.path.relpath(filepath, root_directory)
+                if filename not in image_list:
+                    continue
                 persuasiveness_score = persuasiveness.get_persuasiveness_score(filepath)
                 persuasiveness_scores[image_url] = persuasiveness_score
                 print(f'persuasiveness score for image {image_url} is {persuasiveness_score}')

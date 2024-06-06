@@ -74,7 +74,36 @@ class Evaluation:
         print(saving_path)
         root_directory = os.path.join(args.data_path, 'train_images_total')
         persuasiveness_scores = {}
-        image_list = []
+        image_list = [
+            "60880.jpg",
+            "100170.jpg",
+            "65170.jpg",
+            "86630.jpg",
+            "13470.jpg",
+            "95690.jpg",
+            "121490.jpg",
+            "12080.jpg",
+            "11160.jpg",
+            "66680.jpg",
+            "66340.jpg",
+            "132590.jpg",
+            "133370.jpg",
+            "100270.jpg",
+            "133370.jpg",
+            "36080.jpg",
+            "100520.jpg",
+            "26400.jpg",
+            "53640.jpg",
+            "158750.jpg",
+            "69420.jpg",
+            "127260.jpg",
+            "134110.jpg",
+            "60380.jpg",
+            "58030.jpg",
+            "38390.jpg",
+            "132590.jpg"
+        ]
+
         for dirpath, _, filenames in os.walk(root_directory):
             for filename in filenames:
                 filepath = os.path.join(dirpath, filename)

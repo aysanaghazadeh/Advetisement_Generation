@@ -175,7 +175,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
         data_point["input_ids"] = tokens.copy()
         return data_point
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
-    dataset = {'QA': [], 'description': []}
+    dataset = {'query': []}
     for image_url in image_urls:
         QA = QAs[image_url[0]][0]
         # description = descriptions.loc[descriptions['ID'] == image_url[0]]['description'].values

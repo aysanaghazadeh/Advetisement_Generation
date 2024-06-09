@@ -34,23 +34,23 @@ def get_model():
         # bnb_4bit_use_double_quant=True,
         bnb_8bit_compute_dtype=torch.bfloat16
     )
-    model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    model = AutoModelForCausalLMWithValueHead.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                  token='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',
                                                  device_map='auto',
                                                  quantization_config=bnb_config)
-    model.gradient_checkpointing_enable()
-    model = prepare_model_for_kbit_training(model)
-    peft_config = LoraConfig(inference_mode=False,
-                             r=8,
-                             lora_alpha=32,
-                             lora_dropout=0.2,
-                             peft_type=TaskType.CAUSAL_LM)
-    model = get_peft_model(model, peft_config)
-    print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
-    if torch.cuda.device_count() > 1:
-        print(f'torch cuda count: {torch.cuda.device_count()}')
-        model.is_parallelizable = True
-        model.model_parallel = True
+    # model.gradient_checkpointing_enable()
+    # model = prepare_model_for_kbit_training(model)
+    # peft_config = LoraConfig(inference_mode=False,
+    #                          r=8,
+    #                          lora_alpha=32,
+    #                          lora_dropout=0.2,
+    #                          peft_type=TaskType.CAUSAL_LM)
+    # model = get_peft_model(model, peft_config)
+    # print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
+    # if torch.cuda.device_count() > 1:
+    #     print(f'torch cuda count: {torch.cuda.device_count()}')
+    #     model.is_parallelizable = True
+    #     model.model_parallel = True
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token

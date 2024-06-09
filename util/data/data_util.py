@@ -172,7 +172,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
                            truncation=True,
                            max_length=256,
                            padding="max_length", )
-        data_point["input_ids"] = tokens.copy()
+        data_point["input_ids"] = tokens.to(device=args.device)
         return data_point
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     dataset = {'query': []}

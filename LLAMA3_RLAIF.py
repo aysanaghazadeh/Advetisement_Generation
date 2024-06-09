@@ -110,13 +110,16 @@ def train(args):
     }
     for epoch in tqdm(range(args.epochs), "epoch: "):
         for batch in tqdm(ppo_trainer.dataloader):
+            print(batch['query'])
             query_tensors = batch["input_ids"]
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
+            print(batch['response'])
             texts = [q + r for q, r in zip(batch["query"], batch["response"])]
             pipe_outputs = reward_model.get_reward(texts)
             # rewards = [torch.tensor(output[1]["score"]) for output in pipe_outputs]
             rewards = [pipe_outputs]
+            print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
             print(f'epoch: {epoch} \n {stats}')

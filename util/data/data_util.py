@@ -149,10 +149,50 @@ def get_RLHF_train_LLAMA3_Dataloader(args):
     return dataset
 
 
+# def get_LLAMA3_RLAIF_Dataloader(args):
+#     image_urls = get_train_data(args)
+#     LLAMA3_data = LLAMA3RLAIF(args, image_urls)
+#     return DataLoader(LLAMA3_data, shuffle=False, batch_size=1, num_workers=os.cpu_count())
+
+
+def get_LLAMA3_RLAIF_training_data(args, image_urls):
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                              token='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',
+                                              padding='right')
+    tokenizer.pad_token = tokenizer.eos_token
+
+    def format_dataset(data_point):
+        # print(data_point['QA'])
+        action_reason = '\n-'.join(data_point['query'])
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                    {action_reason}
+                    Description of the image:
+                """
+        tokens = tokenizer.encode(prompt,
+                           truncation=True,
+                           max_length=256,
+                           padding="max_length", )
+        data_point["input_ids"] = tokens.copy()
+        return data_point
+    QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    dataset = {'QA': [], 'description': []}
+    for image_url in image_urls:
+        QA = QAs[image_url[0]][0]
+        # description = descriptions.loc[descriptions['ID'] == image_url[0]]['description'].values
+        dataset['query'].append(QA)
+
+    dataset = Dataset.from_dict(dataset)
+    dataset = dataset.map(format_dataset, batched=False)
+    # dataset = dataset.remove_columns(['QA', "description"])
+    print(dataset)
+    return dataset
+
+
 def get_LLAMA3_RLAIF_Dataloader(args):
     image_urls = get_train_data(args)
-    LLAMA3_data = LLAMA3RLAIF(args, image_urls)
-    return DataLoader(LLAMA3_data, shuffle=False, batch_size=1, num_workers=os.cpu_count())
+    dataset = get_LLAMA3_RLAIF_training_data(args, image_urls)
+    return dataset
+
 
 def get_Phi3_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",

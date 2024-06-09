@@ -34,7 +34,7 @@ def get_model():
         # bnb_4bit_use_double_quant=True,
         bnb_8bit_compute_dtype=torch.bfloat16
     )
-    model = AutoModelForCausalLMWithValueHead.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                  token='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',
                                                  device_map='auto',
                                                  quantization_config=bnb_config)

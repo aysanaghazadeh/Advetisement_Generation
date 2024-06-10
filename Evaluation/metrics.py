@@ -1,3 +1,5 @@
+import json
+
 from transformers import CLIPProcessor, CLIPModel, LlavaForConditionalGeneration, AutoProcessor, AutoTokenizer, AutoModelForCausalLM
 from PIL import Image
 import torch
@@ -234,6 +236,7 @@ class PersuasivenessMetric:
         )
         self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                              model_kwargs={"quantization_config": quantization_config})
+        self.QA = json.load(open('../Data/PittAd/train/Action_Reason_statements.json'))
 
     def get_persuasiveness_score(self, generated_image):
         def extract_number(string_number):
@@ -245,12 +248,16 @@ class PersuasivenessMetric:
                 raise ValueError("No numeric value found in the input string")
         if type(generated_image) == str:
             image = Image.open(generated_image).convert("RGB")
+            image_url = os.path.join(generated_image.split('/')[-2:])
+            action_reason = 'in convincing the message of '+ self.QA[image_url][0][0]
+
         else:
             image = generated_image
-        prompt = """
+            action_reason = ''
+        prompt = f"""
         <image>\n USER:
         Context: If the image convinces the audience to take an action like buying a product, etc, then the image is considered persuasive.
-        Question: Based on the context score the persuasiveness of the image in range of (-5, 5). For totally not persuasive images choose -5, for totally persuasive choose 5.
+        Question: Based on the context score the persuasiveness of the image {action_reason} in range of (-5, 5). For totally not persuasive images choose -5, for totally persuasive choose 5.
         Your output format is only Answer: score\n form, no other form. Empty is not allowed.
         ASSISTANT:
         """

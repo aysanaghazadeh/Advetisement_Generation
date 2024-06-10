@@ -54,17 +54,17 @@ def get_model():
     #     model.model_parallel = True
     lora_config = LoraConfig(
         r=16,
-        lora_alpha=32,
+        lora_alpha=64,
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
     )
-    current_device = Accelerator().local_process_index
+    # current_device = Accelerator().local_process_index
     model_id = "meta-llama/Meta-Llama-3-8B"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        device_map={"": current_device},
+        device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
     )

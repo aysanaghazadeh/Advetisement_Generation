@@ -94,6 +94,7 @@ def train(args):
         "min_length": -1,
         "top_k": 0.0,
         "top_p": 1.0,
+        "max_new_tokens": 200,
         "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }
@@ -105,7 +106,7 @@ def train(args):
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(batch['response'])
             texts = [q + r for q, r in zip(batch["query"], batch["response"])]
-            pipe_outputs = reward_model.get_reward(texts)
+            pipe_outputs = reward_model.get_reward(texts[0])
             # rewards = [torch.tensor(output[1]["score"]) for output in pipe_outputs]
             rewards = [pipe_outputs]
             print(rewards)

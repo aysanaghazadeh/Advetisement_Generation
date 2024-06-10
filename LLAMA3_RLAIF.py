@@ -112,7 +112,7 @@ def train(args):
         mini_batch_size=1
     )
     model, tokenizer = get_model()
-    model = model.to(args.device)
+    model = model.to(device='cuda:2')
     reward_model = RewardModel(args)
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(

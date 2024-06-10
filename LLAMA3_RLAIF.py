@@ -68,8 +68,8 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     )
-    # model = get_peft_model(model, lora_config)
-    # print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
+    model = get_peft_model(model, lora_config)
+    print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
     if torch.cuda.device_count() > 1:
         print(f'torch cuda count: {torch.cuda.device_count()}')
         model.is_parallelizable = True
@@ -79,31 +79,6 @@ def get_model():
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
     return model, tokenizer
-
-
-def get_training_args(args):
-    training_args = TrainingArguments(
-        output_dir=args.model_path+'/my_LLAMA3_large_sample_model',
-        remove_unused_columns=False,
-        per_device_train_batch_size=args.batch_size,
-        gradient_checkpointing=True,
-        gradient_accumulation_steps=4,
-        max_steps=40000,
-        learning_rate=args.lr,
-        logging_steps=10,
-        fp16=True,
-        save_strategy="steps",
-        save_steps=50,
-        evaluation_strategy="steps",
-        eval_steps=10,
-        do_eval=True,
-        label_names=["input_ids", "labels", "attention_mask"],
-        report_to="none",
-        logging_dir=os.path.join(args.results, 'logs')
-    )
-    if not os.path.exists(os.path.join(args.results, 'logs')):
-        os.makedirs(os.path.join(args.results, 'logs'))
-    return training_args
 
 
 def train(args):

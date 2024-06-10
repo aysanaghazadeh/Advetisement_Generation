@@ -112,9 +112,7 @@ def train(args):
         mini_batch_size=1
     )
     model, tokenizer = get_model()
-    optimizer = Adam(model.parameters(), lr=args.lr)
     reward_model = RewardModel(args)
-    # training_args = get_training_args(args)
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
         model=model,

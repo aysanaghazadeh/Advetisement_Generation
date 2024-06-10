@@ -12,6 +12,7 @@ from torch.optim import Adam
 from tqdm import tqdm
 import json
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
+from accelerate import Accelerator
 
 
 class RewardModel:
@@ -58,11 +59,12 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
+    current_device = Accelerator().local_process_index
     model_id = "meta-llama/Meta-Llama-3-8B"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        device_map='auto',
+        device_map={"": current_device},
         peft_config=lora_config,
         load_in_4bit=True
     )

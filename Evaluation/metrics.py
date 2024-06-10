@@ -235,7 +235,7 @@ class PersuasivenessMetric:
             bnb_8bit_compute_dtype=torch.float16
         )
         self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
-                             model_kwargs={"quantization_config": quantization_config})
+                             model_kwargs={"quantization_config": quantization_config}).to(device={'cuda:2'})
 
     def get_persuasiveness_score(self, generated_image):
         def extract_number(string_number):

@@ -62,7 +62,7 @@ def get_model():
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        # device_map='auto',
+        device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
     )
@@ -112,7 +112,6 @@ def train(args):
         mini_batch_size=1
     )
     model, tokenizer = get_model()
-    model = model.to(args.device)
     reward_model = RewardModel(args)
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(

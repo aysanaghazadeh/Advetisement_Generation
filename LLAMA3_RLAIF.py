@@ -64,6 +64,7 @@ def get_model():
         token='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',
         device_map='auto',
         peft_config=lora_config,
+        load_in_8bit=True
     )
     # model = get_peft_model(model, lora_config)
     # print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')

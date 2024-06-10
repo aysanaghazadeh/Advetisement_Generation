@@ -236,7 +236,7 @@ class PersuasivenessMetric:
             bnb_4bit_compute_dtype=torch.float16
         )
         accelerator = Accelerator()
-        accelerator.device_placement("cuda:2")
+        accelerator.device_placement = "cuda:2"
         self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                              model_kwargs={"quantization_config": quantization_config},
                              accelerator=accelerator)

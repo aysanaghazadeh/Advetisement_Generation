@@ -59,7 +59,6 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    # current_device = Accelerator().local_process_index
     model_id = "meta-llama/Meta-Llama-3-8B"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
@@ -68,12 +67,6 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     )
-    model = get_peft_model(model, lora_config)
-    # print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
-    if torch.cuda.device_count() > 1:
-        print(f'torch cuda count: {torch.cuda.device_count()}')
-        model.is_parallelizable = True
-        model.model_parallel = True
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token

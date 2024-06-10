@@ -7,6 +7,7 @@ import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig
 import re
+from accelerate import Accelerator
 
 
 # Function to convert an image file to a tensor
@@ -234,9 +235,12 @@ class PersuasivenessMetric:
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16
         )
+        accelerator = Accelerator()
+        accelerator.device_placement("cuda:2")
         self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                              model_kwargs={"quantization_config": quantization_config},
-                             device='cuda:2')
+                             accelerator=accelerator)
+
 
     def get_persuasiveness_score(self, generated_image):
         def extract_number(string_number):

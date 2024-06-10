@@ -65,7 +65,7 @@ def get_model():
         device_map='auto',
         peft_config=lora_config,
     )
-    model = get_peft_model(model, lora_config)
+    # model = get_peft_model(model, lora_config)
     print(f'model\'s trainable parameters: {model.print_trainable_parameters()}')
     if torch.cuda.device_count() > 1:
         print(f'torch cuda count: {torch.cuda.device_count()}')

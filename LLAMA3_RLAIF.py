@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "meta-llama/Meta-Llama-3-8B"
+    model_id = "syf97/llama-2-ft-v2-imdb"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',

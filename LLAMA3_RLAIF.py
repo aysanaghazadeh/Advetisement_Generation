@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "syf97/llama-2-ft-v2-imdb"
+    model_id = "RLHFlow/LLaMA3-SFT"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -76,7 +76,7 @@ def get_model():
 
 def train(args):
     config = PPOConfig(
-        model_name="meta-llama/Meta-Llama-3-8B",
+        model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1

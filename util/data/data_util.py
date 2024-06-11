@@ -169,7 +169,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
                     Description of the image:
                 """
         # data_point['query'] = prompt
-        tokens = tokenizer(prompt,
+        tokens = tokenizer.encode(prompt,
                            truncation=True,
                            max_length=256,
                            padding="max_length",

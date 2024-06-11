@@ -172,7 +172,8 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
         tokens = tokenizer(prompt,
                            truncation=True,
                            max_length=256,
-                           padding="max_length", )
+                           padding="max_length",
+                           return_tensors="pt").to(device=args.device)
         data_point["input_ids"] = tokens.copy()
         return data_point
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))

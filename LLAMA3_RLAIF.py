@@ -89,7 +89,7 @@ def train(args):
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,
-    )
+    ).to(device=args.device)
     generation_kwargs = {
         "min_length": -1,
         "top_k": 0.0,

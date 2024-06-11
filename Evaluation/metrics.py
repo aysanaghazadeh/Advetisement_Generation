@@ -231,8 +231,8 @@ class Metrics:
 class PersuasivenessMetric:
     def __init__(self):
         quantization_config = BitsAndBytesConfig(
-            load_in_8bit=True,
-            bnb_8bit_compute_dtype=torch.float16
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.float16
         )
         self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                              model_kwargs={"quantization_config": quantization_config})

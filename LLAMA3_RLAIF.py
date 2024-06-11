@@ -63,7 +63,7 @@ def get_model():
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        device_map='auto',
+        # device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)

@@ -103,7 +103,7 @@ def train(args):
             print(batch['query'])
             query_tensors = batch["input_ids"]
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
-            query_tensors = torch.stack(batch["input_ids"]).transpose()
+            query_tensors = torch.stack(batch["input_ids"]).transpose(0,1)
             print(query_tensors.size())
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(batch['response'])

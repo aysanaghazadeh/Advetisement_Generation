@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "damienbenveniste/mistral-ppo"
+    model_id = "trl-lib/llama-7b-se-rl-peft"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -76,7 +76,7 @@ def get_model():
 
 def train(args):
     config = PPOConfig(
-        model_name="damienbenveniste/mistral-ppo",
+        model_name="trl-lib/llama-7b-se-rl-peft",
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1

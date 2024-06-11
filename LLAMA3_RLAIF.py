@@ -110,7 +110,7 @@ def train(args):
             # rewards = [torch.tensor(output[1]["score"]) for output in pipe_outputs]
             rewards = [pipe_outputs]
             print(rewards)
-            stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
+            stats = ppo_trainer.step([query_tensors], [response_tensors], rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
             print(f'epoch: {epoch} \n {stats}')
 

@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "meta-llama/Meta-Llama-3-8B"
+    model_id = "meta-llama/Llama-2-7b-hf"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -67,7 +67,7 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"

@@ -175,8 +175,8 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
         tokens = tokenizer.encode(prompt,
                                   truncation=True,
                                   max_length=256,
-                                  padding="max_length",
-                                  return_tensors="pt")#.to(device=args.device)
+                                  padding="max_length")
+                                  # return_tensors="pt")#.to(device=args.device)
         data_point["input_ids"] = tokens
         return data_point
 

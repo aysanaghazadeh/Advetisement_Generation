@@ -102,11 +102,8 @@ def train(args):
         for batch in tqdm(ppo_trainer.dataloader):
             print(batch['query'])
             query_tensors = batch["input_ids"]
+            #### Get response from SFTModel
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
-            query_tensors = torch.stack(batch["input_ids"]).squeeze()
-            response_tensors = torch.stack(response_tensors)
-            print(response_tensors.size())
-            query_tensors = [query_tensors]
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(batch['response'])
             texts = [q + r for q, r in zip(batch["query"], batch["response"])]

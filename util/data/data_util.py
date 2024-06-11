@@ -159,7 +159,7 @@ def get_RLHF_train_LLAMA3_Dataloader(args):
 
 
 def get_LLAMA3_RLAIF_training_data(args, image_urls):
-    tokenizer = AutoTokenizer.from_pretrained("damienbenveniste//var/folders/qj/lfvfq6590q5fn7hnwx6c29k80000gn/T/tmppue5zznd/damienbenveniste/mistral-ppo",
+    tokenizer = AutoTokenizer.from_pretrained("damienbenveniste/mistral-ppo",
                                               token='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',
                                               padding='right')
     tokenizer.pad_token = tokenizer.eos_token

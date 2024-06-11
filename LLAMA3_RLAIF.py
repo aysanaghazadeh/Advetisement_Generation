@@ -66,7 +66,7 @@ def get_model():
         device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
-    )
+    ).to(device=args.device)
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
@@ -89,7 +89,7 @@ def train(args):
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,
-    ).to(device=args.device)
+    )
     generation_kwargs = {
         "min_length": -1,
         "top_k": 0.0,

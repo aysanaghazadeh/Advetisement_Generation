@@ -102,6 +102,7 @@ def train(args):
         for batch in tqdm(ppo_trainer.dataloader):
             print(batch['query'])
             query_tensors = batch["input_ids"]
+            print(query_tensors.size())
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(batch['response'])

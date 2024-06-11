@@ -127,15 +127,18 @@ def get_LLAMA3_RLHF_training_data(args, image_urls):
     for image_url in image_urls:
         QA = QAs[image_url[0]]
         chosen_description = chosen_descriptions.loc[chosen_descriptions['ID'] == image_url[0]]['description'].values[0]
-        product_description = product_descriptions.loc[product_descriptions['ID'] == image_url[0]]['description'].values[0]
-        negative_description = negative_descriptions.loc[negative_descriptions['ID'] == image_url[0]]['description'].values[0]
+        product_description = \
+        product_descriptions.loc[product_descriptions['ID'] == image_url[0]]['description'].values[0]
+        negative_description = \
+        negative_descriptions.loc[negative_descriptions['ID'] == image_url[0]]['description'].values[0]
         action = QA[0][0].lower().split('because')[0]
         dataset['QA'].append(QA)
         dataset['chosen'].append(chosen_description)
         dataset['rejected'].append(product_description + action)
         dataset['QA'].append(QA)
         dataset['chosen'].append(chosen_description)
-        dataset['rejected'].append('image of ' + negative_description + product_description.split('image of')[-1] + action)
+        dataset['rejected'].append(
+            'image of ' + negative_description + product_description.split('image of')[-1] + action)
 
     dataset = Dataset.from_dict(dataset)
     dataset = dataset.map(format_dataset)
@@ -170,12 +173,13 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
                 """
         # data_point['query'] = prompt
         tokens = tokenizer.encode(prompt,
-                           truncation=True,
-                           max_length=256,
-                           padding="max_length",
-                           return_tensors="pt").to(device=args.device)
-        data_point["input_ids"] = tokens.copy()
+                                  truncation=True,
+                                  max_length=256,
+                                  padding="max_length",
+                                  return_tensors="pt").to(device=args.device)
+        data_point["input_ids"] = tokens
         return data_point
+
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     dataset = {'query': []}
     for image_url in image_urls:

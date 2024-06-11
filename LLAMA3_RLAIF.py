@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "huggyllama/llama-13b"
+    model_id = "damienbenveniste//var/folders/qj/lfvfq6590q5fn7hnwx6c29k80000gn/T/tmppue5zznd/damienbenveniste/mistral-ppo"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -67,7 +67,7 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
-    tokenizer = AutoTokenizer.from_pretrained("huggyllama/llama-13b",
+    tokenizer = AutoTokenizer.from_pretrained(model_id,
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
@@ -76,7 +76,7 @@ def get_model():
 
 def train(args):
     config = PPOConfig(
-        model_name="huggyllama/llama-13b",
+        model_name="damienbenveniste//var/folders/qj/lfvfq6590q5fn7hnwx6c29k80000gn/T/tmppue5zznd/damienbenveniste/mistral-ppo",
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1

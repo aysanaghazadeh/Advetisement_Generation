@@ -102,7 +102,7 @@ def train(args):
         for batch in tqdm(ppo_trainer.dataloader):
             query_tensors = batch["input_ids"]
             query_tensors = [torch.tensor(tensor.item()) for tensor in query_tensors]
-            print(batch)
+            print(query_tensors)
             #### Get response from SFTModel
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]

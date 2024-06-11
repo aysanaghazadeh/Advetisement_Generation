@@ -101,6 +101,7 @@ def train(args):
     for epoch in tqdm(range(args.epochs), "epoch: "):
         for batch in tqdm(ppo_trainer.dataloader):
             query_tensors = batch["input_ids"]
+            query_tensors = [tensor.item() for tensor in query_tensors]
             print(batch)
             #### Get response from SFTModel
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)

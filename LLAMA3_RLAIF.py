@@ -91,17 +91,17 @@ def train(args):
         tokenizer=tokenizer,
     )
     generation_kwargs = {
-        "min_length": -1,
-        "top_k": 0.0,
-        "top_p": 1.0,
+        # "min_length": -1,
+        # "top_k": 0.0,
+        # "top_p": 1.0,
         "max_new_tokens": 200,
-        "do_sample": True,
+        # "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }
     for epoch in tqdm(range(args.epochs), "epoch: "):
         for batch in tqdm(ppo_trainer.dataloader):
             print(batch['query'])
-            query_tensors = batch["input_ids"]
+            query_tensors = batch["input_ids"].to(device=args.device)
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(batch['response'])

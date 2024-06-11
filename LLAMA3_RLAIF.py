@@ -101,9 +101,10 @@ def train(args):
     for epoch in tqdm(range(args.epochs), "epoch: "):
         for batch in tqdm(ppo_trainer.dataloader):
             print(batch['query'])
-            query_tensors = [torch.stack(batch["input_ids"])]
-            print(type(query_tensors))
+            query_tensors = batch["input_ids"]
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
+            query_tensors = torch.stack([batch["input_ids"]])
+            print(type(query_tensors))
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(batch['response'])
             texts = [q + r for q, r in zip(batch["query"], batch["response"])]

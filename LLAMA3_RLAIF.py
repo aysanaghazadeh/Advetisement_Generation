@@ -107,10 +107,10 @@ def train(args):
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             print(response_tensors)
-            texts = [q + r for q, r in zip(batch["query"], batch["response"])]
+            texts = [r for q, r in zip(batch["query"], batch["response"])]
             pipe_outputs = reward_model.get_reward(texts[0])
             # rewards = [torch.tensor(output[1]["score"]) for output in pipe_outputs]
-            rewards = [torch.tensor(pipe_outputs)]
+            rewards = [torch.tensor(pipe_outputs, type=torch.float16)]
             print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)

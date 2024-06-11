@@ -159,7 +159,7 @@ def get_RLHF_train_LLAMA3_Dataloader(args):
 
 
 def get_LLAMA3_RLAIF_training_data(args, image_urls):
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    tokenizer = AutoTokenizer.from_pretrained("huggyllama/llama-13b",
                                               token='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',
                                               padding='right')
     tokenizer.pad_token = tokenizer.eos_token

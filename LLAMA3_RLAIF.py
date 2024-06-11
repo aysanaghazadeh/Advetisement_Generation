@@ -13,7 +13,6 @@ from tqdm import tqdm
 import json
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from accelerate import Accelerator
-from peft import PeftModel
 
 
 class RewardModel:
@@ -60,22 +59,15 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    # model_id = "meta-llama/Meta-Llama-3-8B"
-    # model = AutoModelForCausalLMWithValueHead.from_pretrained(
-    #     model_id,
-    #     token='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',
-    #     # device_map='auto',
-    #     peft_config=lora_config,
-    #     load_in_4bit=True
-    # ).to(device=args.device)
-    model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                      token='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',
-                                                      device_map="auto")
-    # device_map=device_map)
-    # self.model = self.model.to(device='cuda:1')
-    model = PeftModel.from_pretrained(model, os.path.join(args.model_path,
-                                                                    'my_LLAMA3_large_sample_model/checkpoint-4350/'))
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    model_id = "huggyllama/llama-13b"
+    model = AutoModelForCausalLMWithValueHead.from_pretrained(
+        model_id,
+        token='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',
+        # device_map='auto',
+        peft_config=lora_config,
+        load_in_4bit=True
+    ).to(device=args.device)
+    tokenizer = AutoTokenizer.from_pretrained("huggyllama/llama-13b",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
@@ -84,7 +76,7 @@ def get_model():
 
 def train(args):
     config = PPOConfig(
-        model_name="meta-llama/Meta-Llama-3-8B",
+        model_name="huggyllama/llama-13b",
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1

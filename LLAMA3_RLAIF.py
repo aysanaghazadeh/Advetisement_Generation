@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "RLHFlow/LLaMA3-SFT"
+    model_id = "meta-llama/Meta-Llama-3-8B"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -76,7 +76,7 @@ def get_model():
 
 def train(args):
     config = PPOConfig(
-        model_name="RLHFlow/LLaMA3-SFT",
+        model_name="meta-llama/Meta-Llama-3-8B",
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1
@@ -94,7 +94,7 @@ def train(args):
         # "min_length": -1,
         # "top_k": 0.0,
         # "top_p": 1.0,
-        "max_new_tokens": 2,
+        "max_new_tokens": 30,
         # "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }
@@ -102,22 +102,21 @@ def train(args):
         for batch in tqdm(ppo_trainer.dataloader):
             query_tensors = batch["input_ids"]
             query_tensors = [torch.stack([torch.tensor(tensor.item()) for tensor in query_tensors])]
-            print(query_tensors)
+            # print(query_tensors)
             #### Get response from SFTModel
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
-            print(response_tensors)
+            # print(response_tensors)
             texts = [r for q, r in zip(batch["query"], batch["response"])]
             pipe_outputs = reward_model.get_reward(texts[0])
             # rewards = [torch.tensor(output[1]["score"]) for output in pipe_outputs]
             rewards = [torch.tensor(pipe_outputs).float()]
-            print(rewards)
+            # print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
             print(f'epoch: {epoch} \n {stats}')
-
-    #### Save model
-    ppo_trainer.save_pretrained("my_ppo_model")
+            #### Save model
+            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model"))
     # train_images = get_train_data(args)
     # QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     # for epoch in tqdm(range(args.epochs)):

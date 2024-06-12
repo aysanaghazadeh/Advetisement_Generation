@@ -114,7 +114,7 @@ def train(args):
             # print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
-            print(f'epoch: {epoch} \n {stats}')
+            # print(f'epoch: {epoch} \n {stats}')
             #### Save model
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model"))
     # train_images = get_train_data(args)

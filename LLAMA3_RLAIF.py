@@ -94,7 +94,7 @@ def train(args):
         # "min_length": -1,
         # "top_k": 0.0,
         # "top_p": 1.0,
-        "max_new_tokens": 20,
+        "max_new_tokens": 30,
         # "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }

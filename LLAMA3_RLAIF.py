@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "RLHFlow/LLaMA3-SFT"
+    model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -67,7 +67,7 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
-    tokenizer = AutoTokenizer.from_pretrained("RLHFlow/LLaMA3-SFT",
+    tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/'),
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
@@ -94,7 +94,7 @@ def train(args):
         # "min_length": -1,
         # "top_k": 0.0,
         # "top_p": 1.0,
-        "max_new_tokens": 30,
+        "max_new_tokens": 25,
         # "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }

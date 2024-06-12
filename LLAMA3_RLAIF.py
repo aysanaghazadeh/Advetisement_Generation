@@ -59,7 +59,7 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model_id = "meta-llama/Meta-Llama-3-8B"
+    model_id = "RLHFlow/LLaMA3-SFT"
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -67,7 +67,7 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    tokenizer = AutoTokenizer.from_pretrained("RLHFlow/LLaMA3-SFT",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
@@ -76,7 +76,7 @@ def get_model():
 
 def train(args):
     config = PPOConfig(
-        model_name="meta-llama/Meta-Llama-3-8B",
+        model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1
@@ -94,7 +94,7 @@ def train(args):
         # "min_length": -1,
         # "top_k": 0.0,
         # "top_p": 1.0,
-        "max_new_tokens": 30,
+        "max_new_tokens": 50,
         # "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }

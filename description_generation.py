@@ -1,6 +1,6 @@
 import json
 
-from transformers import AutoProcessor, LlavaForConditionalGeneration, pipeline
+from transformers import pipeline
 from util.data.trian_test_split import get_test_data, get_train_data
 from PIL import Image
 import os
@@ -87,15 +87,15 @@ def get_negative_descriptions(args):
     print(f'number of images in train set: {len(train_images)}')
     print('*' * 100)
     product_file = os.path.join(args.data_path, 'train/product_name_train_set.csv')
-    # if os.path.exists(product_file):
-    #     return pd.read_csv(product_file)
+    if os.path.exists(product_file):
+        return pd.read_csv(product_file)
     with open(product_file, 'w', newline='') as file:
         writer = csv.writer(file)
         # Write the header
         writer.writerow(['ID', 'description'])
     negative_file = os.path.join(args.data_path, 'train/negative_prompt_train_set.csv')
-    # if os.path.exists(negative_file):
-    #     return pd.read_csv(negative_file)
+    if os.path.exists(negative_file):
+        return pd.read_csv(negative_file)
     with open(negative_file, 'w', newline='') as file:
         writer = csv.writer(file)
         # Write the header

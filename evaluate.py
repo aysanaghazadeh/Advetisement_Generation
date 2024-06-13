@@ -68,6 +68,26 @@ class Evaluation:
                 json.dump(persuasiveness_scores, outfile)
 
     @staticmethod
+    def evaluate_action_reason_aware_persuasiveness(args):
+        persuasiveness = PersuasivenessMetric()
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               'action_reason_aware_persuasiveness.json')
+        print(saving_path)
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
+        persuasiveness_scores = {}
+        for row in results:
+            image_url = row[0]
+            generated_image_path = row[3]
+            persuasiveness_score = persuasiveness.get_action_reason_aware_persuasiveness_score(generated_image_path)
+            print(
+                f'action reason aware persuasiveness score of the image {image_url} is {persuasiveness_score} out of 5')
+            print('*' * 80)
+            persuasiveness_scores[image_url] = persuasiveness_score
+
+            with open(saving_path, "w") as outfile:
+                json.dump(persuasiveness_scores, outfile)
+
+    @staticmethod
     def evaluate_data_persuasiveness(args):
         persuasiveness = PersuasivenessMetric()
         saving_path = os.path.join(args.result_path, 'persuasiveness_2.json')

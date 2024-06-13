@@ -49,6 +49,25 @@ class Evaluation:
             print('*' * 80)
 
     @staticmethod
+    def evaluate_persuasiveness_alignment(args):
+        persuasiveness = PersuasivenessMetric()
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_persuasiveness_alignment.json')
+        print(saving_path)
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
+        persuasiveness_alignment_scores = {}
+        for row in results:
+            image_url = row[0]
+            generated_image_path = row[3]
+            persuasiveness_alignment_score = persuasiveness.get_persuasiveness_alignment(generated_image_path)
+            print(f'persuasiveness score of the image {image_url} is {persuasiveness_alignment_score} out of 5')
+            print('*' * 80)
+            persuasiveness_alignment_scores[image_url] = persuasiveness_alignment_score
+
+            # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
+            with open(saving_path, "w") as outfile:
+                json.dump(persuasiveness_alignment_scores, outfile)
+
+    @staticmethod
     def evaluate_persuasiveness(args):
         persuasiveness = PersuasivenessMetric()
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_persuasiveness.json')
@@ -94,35 +113,35 @@ class Evaluation:
         print(saving_path)
         root_directory = os.path.join(args.data_path, 'train_images_total')
         persuasiveness_scores = {}
-        image_list = [
-            "60880.jpg",
-            "100170.jpg",
-            "65170.jpg",
-            "86630.jpg",
-            "13470.jpg",
-            "95690.jpg",
-            "121490.jpg",
-            "12080.jpg",
-            "11160.jpg",
-            "66680.jpg",
-            "66340.jpg",
-            "132590.jpg",
-            "133370.jpg",
-            "100270.jpg",
-            "133370.jpg",
-            "36080.jpg",
-            "100520.jpg",
-            "26400.jpg",
-            "53640.jpg",
-            "158750.jpg",
-            "69420.jpg",
-            "127260.jpg",
-            "134110.jpg",
-            "60380.jpg",
-            "58030.jpg",
-            "38390.jpg",
-            "132590.jpg"
-        ]
+        # image_list = [
+        #     "60880.jpg",
+        #     "100170.jpg",
+        #     "65170.jpg",
+        #     "86630.jpg",
+        #     "13470.jpg",
+        #     "95690.jpg",
+        #     "121490.jpg",
+        #     "12080.jpg",
+        #     "11160.jpg",
+        #     "66680.jpg",
+        #     "66340.jpg",
+        #     "132590.jpg",
+        #     "133370.jpg",
+        #     "100270.jpg",
+        #     "133370.jpg",
+        #     "36080.jpg",
+        #     "100520.jpg",
+        #     "26400.jpg",
+        #     "53640.jpg",
+        #     "158750.jpg",
+        #     "69420.jpg",
+        #     "127260.jpg",
+        #     "134110.jpg",
+        #     "60380.jpg",
+        #     "58030.jpg",
+        #     "38390.jpg",
+        #     "132590.jpg"
+        # ]
 
         for dirpath, _, filenames in os.walk(root_directory):
             for filename in filenames:

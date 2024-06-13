@@ -227,8 +227,10 @@ class Evaluation:
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
         self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
-                                                                               args.text_alignment_file +
+                                                                               args.text_alignment_file.split('_')[-1].split('.')[0] +
                                                                                '_creativity.json')
+        print(saving_path)
+        exit()
         creativity_scores = {}
         image_text_alignment_scores = json.load(open(os.path.join(args.result_path,
                                                                   args.text_alignment_file)))

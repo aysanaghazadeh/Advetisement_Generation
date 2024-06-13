@@ -172,7 +172,7 @@ class Metrics:
         creativity = text_score / (avg_image_score + 0.1)
         return creativity
 
-    def get_persuasiveness_creativity_scores(self, text_alignment_score, generated_image_path, product_image_paths, args):
+    def get_persuasiveness_creativity_score(self, text_alignment_score, generated_image_path, product_image_paths, args):
         image_scores = []
         for product_image in product_image_paths[:1]:
             image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))

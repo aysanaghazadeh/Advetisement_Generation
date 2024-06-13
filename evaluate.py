@@ -242,10 +242,10 @@ class Evaluation:
             product_image_files = os.listdir(directory)
             product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
                                    for file in product_image_files]
-            creativity_scores[image_url] = self.metrics.get_creativity_scores(text_alignment_score=image_text_alignment_score,
-                                                                              generated_image_path=generated_image_path,
-                                                                              product_image_paths=product_image_paths,
-                                                                              args=args)
+            creativity_scores[image_url] = self.metrics.get_persuasiveness_creativity_score(text_alignment_score=image_text_alignment_score,
+                                                                                            generated_image_path=generated_image_path,
+                                                                                            product_image_paths=product_image_paths,
+                                                                                            args=args)
             print(
                 f'creativity score for image {image_url} is {creativity_scores[image_url]}')
             with open(saving_path, "w") as outfile:

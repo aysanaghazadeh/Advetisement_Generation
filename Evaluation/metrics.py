@@ -172,6 +172,14 @@ class Metrics:
         creativity = text_score / (avg_image_score + 0.1)
         return creativity
 
+    def get_persuasiveness_creativity_scores(self, text_alignment_score, generated_image_path, product_image_paths, args):
+        image_scores = []
+        for product_image in product_image_paths[:1]:
+            image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))
+        avg_image_score = sum(image_scores) / len(image_scores)
+        creativity = text_alignment_score / (avg_image_score + 0.01)
+        return creativity
+
     @staticmethod
     def get_image_message_prompt():
         answer_format = 'Answer: I should ${action} because {reason}'

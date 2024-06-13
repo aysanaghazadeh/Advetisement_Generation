@@ -147,8 +147,8 @@ class Evaluation:
             for filename in filenames:
                 filepath = os.path.join(dirpath, filename)
                 image_url = os.path.relpath(filepath, root_directory)
-                if filename not in image_list:
-                    continue
+                # if filename not in image_list:
+                #     continue
                 persuasiveness_score = persuasiveness.get_persuasiveness_score(filepath)
                 persuasiveness_scores[image_url] = persuasiveness_score
                 print(f'persuasiveness score for image {image_url} is {persuasiveness_score}')
@@ -213,6 +213,36 @@ class Evaluation:
             product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
                                    for file in product_image_files]
             creativity_scores[image_url] = self.metrics.get_creativity_scores(text_description=action_reason,
+                                                                              generated_image_path=generated_image_path,
+                                                                              product_image_paths=product_image_paths,
+                                                                              args=args)
+            print(
+                f'creativity score for image {image_url} is {creativity_scores[image_url]}')
+            with open(saving_path, "w") as outfile:
+                json.dump(creativity_scores, outfile)
+
+    def evaluate_persuasiveness_creativity(self, args):
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
+        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
+        self.generate_product_images(args, results)
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               args.text_alignment_file +
+                                                                               '_creativity.json')
+        creativity_scores = {}
+        image_text_alignment_scores = json.load(open(os.path.join(args.result_path,
+                                                                  args.text_alignment_file)))
+        for row in range(len(results.values)):
+            image_url = results.image_url.values[row]
+            if image_url not in baseline_results:
+                continue
+            image_text_alignment_score = image_text_alignment_scores[image_url]
+            generated_image_path = results.generated_image_url.values[row]
+            directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
+            product_image_files = os.listdir(directory)
+            product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
+                                   for file in product_image_files]
+            creativity_scores[image_url] = self.metrics.get_creativity_scores(text_alignment_score=image_text_alignment_score,
                                                                               generated_image_path=generated_image_path,
                                                                               product_image_paths=product_image_paths,
                                                                               args=args)

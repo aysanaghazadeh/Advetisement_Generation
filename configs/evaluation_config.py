@@ -99,6 +99,9 @@ def parse_args():
                         default='product_images',
                         help='path to the typical images for the advertised product in each advertisement'
                         )
+    parser.add_argument('--text_alignment_file',
+                        type=str,
+                        default=None)
     parser.add_argument('--train_set_QA',
                         type=str,
                         default='train/Action_Reason_statements.json',

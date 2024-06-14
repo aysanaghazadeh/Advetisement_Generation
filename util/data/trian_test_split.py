@@ -8,7 +8,7 @@ from util.data.mapping import TOPIC_MAP as topic_map
 
 
 def get_train_data(args):
-    train_file = os.path.join(args.data_path, 'train/train_image.csv')
+    train_file = os.path.join(args.data_path, 'train/train_image_large.csv')
     if os.path.exists(train_file):
         return pd.read_csv(train_file).values
     if os.path.exists(os.path.join(args.data_path, 'Action_Reason_statements.json')):

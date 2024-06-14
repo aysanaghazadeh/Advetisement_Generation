@@ -37,7 +37,7 @@ def save_image(args, filename, image, experiment_datetime):
                             filename))
 
 
-def save_results(args, prompt, action_reason, filename, experiment_datetime, scores, topics):
+def save_results(args, prompt, action_reason, filename, experiment_datetime, scores):
     if args.text_input_type == 'AR':
         text_input = 'AR'
     elif args.text_input_type == 'LLM':
@@ -60,7 +60,6 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
                              'action_reason',
                              'T2I_prompt',
                              'generated_image_url',
-                             'topics',
                              'clip_image_image_score',
                              'clip_image_text_score',
                              'clip_image_action_score',
@@ -73,7 +72,7 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
                                        filename)
     with open(csv_file, 'a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow([filename, action_reason, prompt, generated_image_url, topics] + scores)
+        writer.writerow([filename, action_reason, prompt, generated_image_url] + scores)
 
 
 def evaluate(metrics, args, action_reason, filename, experiment_datetime):
@@ -110,17 +109,13 @@ def generate_images(args):
     test_set_image_url = test_set_image_url[:4500]
     for filename, content in QA.items():
         if filename not in test_set_image_url:
-        # if filename not in test_set:
             continue
-        topics = test_set.loc[test_set['ID'] == filename]['topic'].values
-        # topics = []
         action_reasons = content[0]
         image, prompt = AdImageGeneration(filename)
         save_image(args, filename, image, experiment_datetime)
         scores = evaluate(metrics, args, action_reasons, filename, experiment_datetime)
-        save_results(args, prompt, action_reasons, filename, experiment_datetime, list(scores.values()), topics)
+        save_results(args, prompt, action_reasons, filename, experiment_datetime, list(scores.values()))
         print(f'image url: {filename}')
-        print(f'topics: {topics}')
         print(f'action-reason statements: {process_action_reason(action_reasons)}')
         print(f'scores: {scores}')
         print('-' * 20)

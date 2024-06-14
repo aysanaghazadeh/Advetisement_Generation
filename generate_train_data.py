@@ -48,7 +48,7 @@ def save_results(args, prompt, action_reason, filename, experiment_datetime, sco
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    csv_file_name = '_'.join([text_input, args.T2I_model, experiment_datetime])
+    csv_file_name = '_'.join([text_input, args.T2I_model, 'train_images', experiment_datetime])
     csv_file_name = f'{csv_file_name}.csv'
     csv_file = os.path.join(directory, csv_file_name)
     if not os.path.exists(csv_file):

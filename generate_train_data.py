@@ -106,7 +106,7 @@ def generate_images(args):
     metrics = Metrics(args)
     print(f'experiment started at {experiment_datetime}')
     test_set_image_url = list(test_set['ID'].values)
-    test_set_image_url = test_set_image_url[:4500]
+    test_set_image_url = test_set_image_url[:3164]
     for filename, content in QA.items():
         if filename not in test_set_image_url:
             continue

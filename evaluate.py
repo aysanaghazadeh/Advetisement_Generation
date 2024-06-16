@@ -331,7 +331,8 @@ class Evaluation:
             with open(saving_path, "w") as outfile:
                 json.dump(image_text_ranking, outfile)
 
-    def evaluate_original_images_persuasiveness(self, args):
+    @staticmethod
+    def evaluate_original_images(args):
         persuasiveness = PersuasivenessMetric(args)
         QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         metrics = Metrics(args)

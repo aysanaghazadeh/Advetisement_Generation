@@ -117,7 +117,7 @@ def parse_args():
                         )
     parser.add_argument('--test_set_images',
                         type=str,
-                        default='test_set',
+                        default='train_images_total',
                         help='Relative path to the original images for the test set from root')
     return parser.parse_args()
 

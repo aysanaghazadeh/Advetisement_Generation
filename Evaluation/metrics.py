@@ -314,7 +314,7 @@ class PersuasivenessMetric:
         if type(generated_image) == str:
             image = Image.open(generated_image).convert("RGB")
             print(generated_image.split('/'))
-            image_url = '/'.join(generated_image.split('/')[5:7])
+            image_url = '/'.join(generated_image.split('/')[-2:])
             action_reason = 'in convincing the message of ' + self.QA[image_url][0][0]
 
         else:
@@ -346,7 +346,7 @@ class PersuasivenessMetric:
 
         image = Image.open(generated_image).convert("RGB")
         print(generated_image.split('/'))
-        image_url = '/'.join(generated_image.split('/')[5:7])
+        image_url = '/'.join(generated_image.split('/')[-2:])
         action = self.QA[image_url][0][0].lower().split('because')[0]
         reason = self.QA[image_url][0][0].lower().split('because')[-1]
         answer_format = 'Answer: ${score}'

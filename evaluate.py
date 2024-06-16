@@ -50,7 +50,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_persuasiveness_alignment(args):
-        persuasiveness = PersuasivenessMetric()
+        persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_persuasiveness_alignment.json')
         print(saving_path)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
@@ -69,7 +69,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_persuasiveness(args):
-        persuasiveness = PersuasivenessMetric()
+        persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_persuasiveness.json')
         print(saving_path)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
@@ -88,7 +88,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_action_reason_aware_persuasiveness(args):
-        persuasiveness = PersuasivenessMetric()
+        persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                'action_reason_aware_persuasiveness.json')
         print(saving_path)
@@ -108,7 +108,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_data_persuasiveness(args):
-        persuasiveness = PersuasivenessMetric()
+        persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, 'persuasiveness_2.json')
         print(saving_path)
         root_directory = os.path.join(args.data_path, 'train_images_total')

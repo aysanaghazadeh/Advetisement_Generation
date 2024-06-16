@@ -262,7 +262,7 @@ class Metrics:
 
 
 class PersuasivenessMetric:
-    def __init__(self):
+    def __init__(self, args):
         quantization_config = BitsAndBytesConfig(
             load_in_8bit=True,
             bnb_8bit_compute_dtype=torch.float16
@@ -270,7 +270,7 @@ class PersuasivenessMetric:
         self.pipe = pipeline("image-to-text",
                              model='llava-hf/llava-1.5-13b-hf',
                              model_kwargs={"quantization_config": quantization_config})
-        self.QA = json.load(open('../Data/PittAd/train/Action_Reason_statements.json'))
+        self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):
         def extract_number(string_number):

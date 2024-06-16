@@ -122,7 +122,7 @@ def get_negative_descriptions(args):
 
 if __name__ == '__main__':
     args = get_args()
-    test_images = get_test_data(args)['ID'].values[:1340]
+    test_images = get_train_data(args)['ID'].values[:3164]
     # descriptions = get_descriptions(args)
     descriptions = get_llm_generated_prompt(args, test_images)
     # get_negative_descriptions(args)

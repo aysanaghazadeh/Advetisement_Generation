@@ -362,13 +362,15 @@ class PersuasivenessMetric:
         output = output[0]["generated_text"].split(':')[-1]
         print(output)
         action_numeric_value = extract_number(output)
-        reason_score_prompt = f"""
-                <image>\n USER:
-                Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relativity of an image and a reason on a scale from -5 to 5. 
-                Context: Imagine the image is convincing the audience to take the action in the message of {action}. If the reason for convincing the audience is the same as the given message, the score is 5 and if it is totally irrelevant the score is -5.
-                Question: Given the message of {reason} provide the score in the following format: {answer_format}. 
-                ASSISTANT:
-                """
+        reason_score_prompt = \
+            f"""
+            <image>\n USER:
+            Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relatedness of an image and a reason on a scale from -5 to 5. 
+            Context: Imagine the image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given message in the next sentence, the score is 5 and if it is totally irrelevant the score is -5.
+            Question: Given the message of {reason} and the image, provide the score in the following format: {answer_format}. 
+            ASSISTANT:
+            """
+
         output = self.pipe(image, prompt=reason_score_prompt,
                            generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"].split(':')[-1]

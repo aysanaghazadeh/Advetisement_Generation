@@ -196,9 +196,9 @@ def get_LLAMA3_DPO_training_data(args, image_urls):
                     {data_point['query']}
                     Description of the image:
                 """
-        data_point['prompt'] = tokenizer.apply_chat_template(prompt, tokenize=False)
-        data_point['chosen'] = tokenizer.apply_chat_template(data_point['chosen'], tokenize=False)
-        data_point['rejected'] = tokenizer.apply_chat_template(data_point['rejected'], tokenize=False)
+        data_point['prompt'] = prompt
+        # data_point['chosen'] = tokenizer.apply_chat_template(data_point['chosen'], tokenize=False)
+        # data_point['rejected'] = tokenizer.apply_chat_template(data_point['rejected'], tokenize=False)
         # tokens = tokenizer.encode(prompt)
         # data_point["input_ids"] = tokens
         return data_point

@@ -7,7 +7,7 @@ from peft import LoraConfig
 from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from tqdm import tqdm
-from trl import DPOConfig, DPOTrainer
+from trl import DDPOConfig, DPOTrainer
 
 
 class RewardModel:

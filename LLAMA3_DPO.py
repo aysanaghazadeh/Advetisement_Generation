@@ -57,7 +57,7 @@ def train(args):
     model, tokenizer = get_model()
     # reward_model = RewardModel(args)
     dataset = get_LLAMA3_DPO_Dataloader(args)
-    training_args = DPOConfig(
+    training_args = DDPOConfig(
         per_device_train_batch_size=1,
         per_device_eval_batch_size=1,
         max_steps=6000,

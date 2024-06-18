@@ -210,7 +210,7 @@ def get_LLAMA3_DPO_training_data(args, image_urls):
     llama_descriptions_2 = pd.read_csv(os.path.join(args.data_path, 'train/llama3_FT_generated_description_train_set.csv'))
     dataset = {'query': [], 'chosen': [], 'rejected': []}
     for image_url in image_urls:
-        QA = str(QAs[image_url[0]][0])
+        QA = str(QAs[image_url][0])
         PA1 = PA_train_1[image_url]
         PA2 = PA_train_2[image_url]
         description_1 = llama_descriptions_1.loc[llama_descriptions_1['ID'] == image_url]['description'].values[0]

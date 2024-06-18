@@ -70,6 +70,7 @@ def train(args):
         bf16=True,
         remove_unused_columns=False,
         run_name="dpo_llama3",
+        output_dir=os.path.join(args.model_path, 'llama3_dpo')
     )
     lora_config = LoraConfig(
         r=16,

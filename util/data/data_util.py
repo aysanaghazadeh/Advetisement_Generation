@@ -1,3 +1,5 @@
+import random
+
 from util.data.trian_test_split import get_train_data
 from transformers import AutoTokenizer
 from datasets import Dataset
@@ -179,6 +181,64 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
 def get_LLAMA3_RLAIF_Dataloader(args):
     image_urls = get_train_data(args)
     dataset = get_LLAMA3_RLAIF_training_data(args, image_urls)
+    return dataset
+
+
+def get_LLAMA3_DPO_training_data(args, image_urls):
+    tokenizer = AutoTokenizer.from_pretrained(
+        os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/'),
+        token='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',
+        padding='left')
+    tokenizer.pad_token = tokenizer.eos_token
+
+    def format_dataset(data_point):
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                    {data_point['query']}
+                    Description of the image:
+                """
+        data_point['prompt'] = tokenizer.apply_chat_template(prompt, tokenize=False)
+        data_point['chosen'] = tokenizer.apply_chat_template(data_point['chosen'], tokenize=False)
+        data_point['rejected'] = tokenizer.apply_chat_template(data_point['rejected'], tokenize=False)
+        # tokens = tokenizer.encode(prompt)
+        # data_point["input_ids"] = tokens
+        return data_point
+
+    QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    PA_train_1 = json.load(open(os.path.join(args.result_path, 'results', 'llama3_FT_generated_description_train_set_persuasiveness_alignment.json_SDXL_20240616_232723_persuasiveness_alignment.json')))
+    PA_train_2 = json.load(open(os.path.join(args.result_path, 'results', 'llama3_FT_generated_description_new_train_set_persuasiveness_alignment.json_SDXL_train_images_20240617_074807_persuasiveness_alignment.json')))
+    llama_descriptions_1 = pd.read_csv(os.path.join(args.data_path, 'llama3_FT_generated_description_new_train_set.csv'))
+    llama_descriptions_2 = pd.read_csv(os.path.join(args.data_path, 'llama3_FT_generated_description_train_set'))
+    dataset = {'query': [], 'chosen': [], 'rejected': []}
+    for image_url in image_urls:
+        QA = str(QAs[image_url[0]][0])
+        PA1 = PA_train_1[image_url]
+        PA2 = PA_train_2[image_url]
+        description_1 = llama_descriptions_1.loc[llama_descriptions_1['ID'] == image_url]['description'].values[0]
+        description_2 = llama_descriptions_2.loc[llama_descriptions_2['ID'] == image_url]['description'].values[0]
+        if PA1 > PA2:
+            dataset['chosen'].append(description_1)
+            dataset['rejected'].append(description_2)
+        if PA2 > PA1:
+            dataset['chosen'].append(description_2)
+            dataset['rejected'].append(description_1)
+        if PA1 == PA2:
+            if random.uniform(0, 1) > 0.5:
+                dataset['chosen'].append(description_2)
+                dataset['rejected'].append(description_1)
+            else:
+                dataset['chosen'].append(description_1)
+                dataset['rejected'].append(description_2)
+        dataset['query'].append(QA)
+
+    dataset = Dataset.from_dict(dataset)
+    dataset = dataset.map(format_dataset, batched=False)
+    print(dataset)
+    return dataset
+
+
+def get_LLAMA3_DPO_Dataloader(args):
+    image_urls = get_train_data(args)[:3140]
+    dataset = get_LLAMA3_DPO_training_data(args, image_urls)
     return dataset
 
 

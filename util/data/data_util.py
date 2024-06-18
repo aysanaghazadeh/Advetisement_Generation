@@ -237,7 +237,7 @@ def get_LLAMA3_DPO_training_data(args, image_urls):
 
 
 def get_LLAMA3_DPO_Dataloader(args):
-    image_urls = get_train_data(args)[:3140]
+    image_urls = list(get_train_data(args).ID.values)[:3140]
     dataset = get_LLAMA3_DPO_training_data(args, image_urls)
     return dataset
 

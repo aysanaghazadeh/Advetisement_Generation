@@ -203,11 +203,11 @@ def get_LLAMA3_DPO_training_data(args, image_urls):
         # data_point["input_ids"] = tokens
         return data_point
 
-    QAs = json.load(open(os.path.join(args.data_path, 'train', args.test_set_QA)))
+    QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     PA_train_1 = json.load(open(os.path.join(args.results, 'results', 'llama3_FT_generated_description_train_set_persuasiveness_alignment.json_SDXL_train_images_20240615_143729_persuasiveness_alignment.json')))
     PA_train_2 = json.load(open(os.path.join(args.results, 'results', 'llama3_FT_generated_description_new_train_set_persuasiveness_alignment.json_SDXL_train_images_20240617_074807_persuasiveness_alignment.json')))
-    llama_descriptions_1 = pd.read_csv(os.path.join(args.data_path, 'llama3_FT_generated_description_new_train_set.csv'))
-    llama_descriptions_2 = pd.read_csv(os.path.join(args.data_path, 'llama3_FT_generated_description_train_set'))
+    llama_descriptions_1 = pd.read_csv(os.path.join(args.data_path, 'train/llama3_FT_generated_description_new_train_set.csv'))
+    llama_descriptions_2 = pd.read_csv(os.path.join(args.data_path, 'train/llama3_FT_generated_description_train_set'))
     dataset = {'query': [], 'chosen': [], 'rejected': []}
     for image_url in image_urls:
         QA = str(QAs[image_url[0]][0])

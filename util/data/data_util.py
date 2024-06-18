@@ -228,7 +228,7 @@ def get_LLAMA3_DPO_training_data(args, image_urls):
             else:
                 dataset['chosen'].append(description_1)
                 dataset['rejected'].append(description_2)
-        dataset['query'].append(QA)
+        dataset['prompt'].append(QA)
 
     dataset = Dataset.from_dict(dataset)
     dataset = dataset.map(format_dataset, batched=False)

@@ -66,7 +66,6 @@ def train(args):
         gradient_accumulation_steps=4,
         gradient_checkpointing=False,
         learning_rate=5e-4,
-        eval_strategy="steps",
         eval_steps=10,
         bf16=True,
         remove_unused_columns=False,

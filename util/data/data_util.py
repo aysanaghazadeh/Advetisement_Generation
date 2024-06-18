@@ -204,7 +204,7 @@ def get_LLAMA3_DPO_training_data(args, image_urls):
         return data_point
 
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
-    PA_train_1 = json.load(open(os.path.join(args.results, 'results', 'llama3_FT_generated_description_train_set_persuasiveness_alignment.json_SDXL_20240616_232723_persuasiveness_alignment.json')))
+    PA_train_1 = json.load(open(os.path.join(args.results, 'results', 'llama3_FT_generated_description_train_set_persuasiveness_alignment.json_SDXL_train_images_20240615_143729_persuasiveness_alignment.json')))
     PA_train_2 = json.load(open(os.path.join(args.results, 'results', 'llama3_FT_generated_description_new_train_set_persuasiveness_alignment.json_SDXL_train_images_20240617_074807_persuasiveness_alignment.json')))
     llama_descriptions_1 = pd.read_csv(os.path.join(args.data_path, 'llama3_FT_generated_description_new_train_set.csv'))
     llama_descriptions_2 = pd.read_csv(os.path.join(args.data_path, 'llama3_FT_generated_description_train_set'))

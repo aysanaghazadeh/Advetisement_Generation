@@ -7,7 +7,7 @@ from peft import LoraConfig
 from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from tqdm import tqdm
-from trl import DDPOConfig, DPOTrainer
+from trl import DPOConfig, DPOTrainer
 
 
 class RewardModel:
@@ -57,7 +57,7 @@ def train(args):
     model, tokenizer = get_model()
     # reward_model = RewardModel(args)
     dataset = get_LLAMA3_DPO_Dataloader(args)
-    training_args = DDPOConfig(
+    training_args = DPOConfig(
         per_device_train_batch_size=1,
         per_device_eval_batch_size=1,
         max_steps=6000,

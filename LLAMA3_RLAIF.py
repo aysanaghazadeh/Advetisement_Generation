@@ -17,6 +17,7 @@ class RewardModel:
         self.reward_function = PersuasivenessMetric(args)
 
     def get_reward(self, prompt, action_reason):
+        print(action_reason)
         print(prompt)
         prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
         image = self.T2I_model(prompt)

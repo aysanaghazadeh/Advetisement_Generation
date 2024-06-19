@@ -179,7 +179,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
 
 
 def get_LLAMA3_RLAIF_Dataloader(args):
-    image_urls = get_train_data(args)
+    image_urls = get_train_data(args).ID.values
     dataset = get_LLAMA3_RLAIF_training_data(args, image_urls)
     return dataset
 

@@ -12,7 +12,7 @@ from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 
 class RewardModel:
     def __init__(self, args):
-        args.T2I_model = 'SDXL'
+        args.T2I_model = 'DMD'
         self.T2I_model = T2IModel(args)
         self.reward_function = PersuasivenessMetric()
 
@@ -35,10 +35,10 @@ def get_model():
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        # device_map='auto',
+        device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
-    ).to(device=args.device)
+    )
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),
                                               token='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')
@@ -64,10 +64,10 @@ def train(args):
         tokenizer=tokenizer,
     )
     generation_kwargs = {
-        "min_length": -1,
+        "min_length": 1,
         "top_k": 0.0,
         "top_p": 1.0,
-        "max_new_tokens": 25,
+        "max_new_tokens": 125,
         "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }
@@ -82,7 +82,7 @@ def train(args):
             rewards = [torch.tensor(pipe_outputs).float()]
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
-            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model"))
+            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD"))
 
 if __name__ == '__main__':
     args = get_args()

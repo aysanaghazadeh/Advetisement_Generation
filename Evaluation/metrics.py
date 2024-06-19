@@ -269,7 +269,8 @@ class PersuasivenessMetric:
         )
         self.pipe = pipeline("image-to-text",
                              model='llava-hf/llava-1.5-13b-hf',
-                             model_kwargs={"quantization_config": quantization_config})
+                             model_kwargs={"quantization_config": quantization_config},
+                             device='cuda:1')
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):

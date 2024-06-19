@@ -336,7 +336,7 @@ class PersuasivenessMetric:
         print(f'persuasiveness: {numeric_value}')
         return numeric_value
 
-    def get_persuasiveness_alignment(self, generated_image):
+    def get_persuasiveness_alignment(self, generated_image, action_reasons=None):
         def extract_number(string_number):
             match = re.search(r'-?\d+', string_number)
             if match:
@@ -345,36 +345,44 @@ class PersuasivenessMetric:
                 print("No numeric value found in the input string")
                 return 0
 
-        image = Image.open(generated_image).convert("RGB")
-        print(generated_image.split('/'))
-        image_url = '/'.join(generated_image.split('/')[-2:])
-        action = self.QA[image_url][0][0].lower().split('because')[0]
-        reason = self.QA[image_url][0][0].lower().split('because')[-1]
-        answer_format = 'Answer: ${score}'
-        action_score_prompt = f"""
+        if type(generated_image) != str:
+            image = generated_image
+        else:
+            image = Image.open(generated_image).convert("RGB")
+            print(generated_image.split('/'))
+            image_url = '/'.join(generated_image.split('/')[-2:])
+            action_reasons = self.QA[image_url][0]
+        statements_count = len(action_reasons)
+        action_numeric_value = 0
+        reason_numeric_value = 0
+        for action_reason in action_reasons:
+            action = action_reason.lower().split('because')[0]
+            reason = action_reason.lower().split('because')[-1]
+            answer_format = 'Answer: ${score}'
+            action_score_prompt = f"""
+                    <image>\n USER:
+                    Imagine you are a human evaluating how convincing is an image. Your task is to score how convincing an image is given an action on a scale from -5 to 5. 
+                    Context: If the image convinces the audience to take an action considered convincing.
+                    Question: Given the message of {action} provide the score in the following format: {answer_format}
+                    ASSISTANT:
+                    """
+            output = self.pipe(image, prompt=action_score_prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            output = output[0]["generated_text"].split(':')[-1]
+            print('action:', output)
+            action_numeric_value = extract_number(output)
+            reason_score_prompt = \
+                f"""
                 <image>\n USER:
-                Imagine you are a human evaluating how convincing is an image. Your task is to score how convincing an image is given an action on a scale from -5 to 5. 
-                Context: If the image convinces the audience to take an action considered convincing.
-                Question: Given the message of {action} provide the score in the following format: {answer_format}
+                Imagine you are a human evaluating how related an image is to a reason. Your task is to score how well image shows the reason for why the image is convincing how well the reason in the image is aligned with the given reason. 
+                Context: Imagine the given image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given reason in the question, the score is 5 and if it is totally irrelevant the score is -5.
+                Question: Given the message of {reason} and the image, provide the score in the following format: {answer_format}. 
                 ASSISTANT:
                 """
-        output = self.pipe(image, prompt=action_score_prompt,
-                           generate_kwargs={"max_new_tokens": 45})
-        output = output[0]["generated_text"].split(':')[-1]
-        print(output)
-        action_numeric_value = extract_number(output)
-        reason_score_prompt = \
-            f"""
-            <image>\n USER:
-            Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relatedness of an image and a reason on a scale from -5 to 5. 
-            Context: Imagine the image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given message in the next sentence, the score is 5 and if it is totally irrelevant the score is -5.
-            Question: Given the message of {reason} and the image, provide the score in the following format: {answer_format}. 
-            ASSISTANT:
-            """
 
-        output = self.pipe(image, prompt=reason_score_prompt,
-                           generate_kwargs={"max_new_tokens": 45})
-        output = output[0]["generated_text"].split(':')[-1]
-        print(output)
-        reason_numeric_value = extract_number(output)
-        return (reason_numeric_value + action_numeric_value)/2
+            output = self.pipe(image, prompt=reason_score_prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            output = output[0]["generated_text"].split(':')[-1]
+            print('reason:', output)
+            reason_numeric_value += extract_number(output)
+        return (reason_numeric_value + action_numeric_value) / (2 * statements_count)

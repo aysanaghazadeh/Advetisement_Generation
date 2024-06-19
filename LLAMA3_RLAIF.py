@@ -16,11 +16,11 @@ class RewardModel:
         self.T2I_model = T2IModel(args)
         self.reward_function = PersuasivenessMetric(args)
 
-    def get_reward(self, prompt):
+    def get_reward(self, prompt, action_reason):
         print(prompt)
-        prompt = 'Generate the described image:\n' + prompt
+        prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
         image = self.T2I_model(prompt)
-        persuasiveness = self.reward_function.get_persuasiveness_score(image)
+        persuasiveness = self.reward_function.get_persuasiveness_alignment(image, action_reason)
         return persuasiveness - 1
 
 
@@ -79,7 +79,7 @@ def train(args):
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             texts = [r for q, r in zip(batch["query"], batch["response"])]
-            pipe_outputs = reward_model.get_reward(texts[0])
+            pipe_outputs = reward_model.get_reward(texts[0], batch['query'][0])
             rewards = [torch.tensor(pipe_outputs).float()]
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)

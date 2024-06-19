@@ -169,7 +169,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     dataset = {'query': []}
     for image_url in image_urls:
-        QA = str(QAs[image_url[0]][0])
+        QA = str(QAs[image_url][0])
         dataset['query'].append(QA)
 
     dataset = Dataset.from_dict(dataset)

@@ -43,12 +43,19 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
+    ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
+        model_id,
+        token='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',
+        # device_map='auto',
+        peft_config=lora_config,
+        load_in_4bit=True
+    ).to(device='cuda:1')
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
-    return model, tokenizer
+    return model, tokenizer, ref_model
 
 
 def train(args):
@@ -56,13 +63,15 @@ def train(args):
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-5,
         batch_size=1,
-        mini_batch_size=1
+        mini_batch_size=1,
+
     )
-    model, tokenizer = get_model()
+    model, tokenizer, ref_model = get_model()
     reward_model = RewardModel(args)
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
         model=model,
+        ref_model=ref_model,
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,

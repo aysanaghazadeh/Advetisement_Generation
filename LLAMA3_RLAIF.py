@@ -65,7 +65,7 @@ def train(args):
         learning_rate=1.41e-5,
         batch_size=1,
         mini_batch_size=1,
-
+        log_with='wandb'
     )
     model, tokenizer, ref_model = get_model()
     reward_model = RewardModel(args)

@@ -93,7 +93,7 @@ def train(args):
             query_tensors = batch["input_ids"]
             query_tensors = [torch.stack([torch.tensor(tensor) for tensor in query_tensor]) for query_tensor in query_tensors]
             response_tensors = [ppo_trainer.generate(query_tensor, **generation_kwargs) for query_tensor in query_tensors]
-            response_tensors = [[r.squeeze() for r in response_tensor] for response_tensor in response_tensors ]
+            response_tensors = [torch.stack([r.squeeze() for r in response_tensor]) for response_tensor in response_tensors ]
             batch["response"] = [[tokenizer.decode(r) for r in response_tensor] for response_tensor in response_tensors]
             # print(batch['response'])
             texts = [r for r in batch["response"]]
@@ -106,7 +106,7 @@ def train(args):
             print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
-            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD"))
+            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_4"))
 
 if __name__ == '__main__':
     args = get_args()

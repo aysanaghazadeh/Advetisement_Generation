@@ -17,7 +17,7 @@ class RewardModel:
         self.reward_function = PersuasivenessMetric(args)
 
     def get_reward(self, prompt, action_reason):
-        action_reason = [ar[0] for ar in action_reason.split('\n')]
+        action_reason = [ar for ar in action_reason.split('\n')]
         print('action-reason:', action_reason)
         print('prompt:', prompt.split(':')[-1])
         prompt = 'Generate the described image:\n' + prompt.split(':')[-1]

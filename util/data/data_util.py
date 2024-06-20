@@ -161,7 +161,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
                     {data_point['action_reason']}
                     Description of the image:
                 """
-        data_point['query'] = {'query': prompt, 'action_reason': data_point['action_reason']}
+        data_point['query'] = prompt
         tokens = tokenizer.encode(prompt)
         data_point["input_ids"] = tokens
         return data_point

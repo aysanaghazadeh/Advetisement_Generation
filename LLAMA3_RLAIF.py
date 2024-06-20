@@ -20,8 +20,8 @@ class RewardModel:
         action_reason = [ar for ar in action_reason.split('\n')]
         print(prompt)
         print('action-reason:', action_reason)
-        print('prompt:', prompt.split(':')[-1])
-        prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
+        print('prompt:', prompt[0].split(':')[-1])
+        prompt = 'Generate the described image:\n' + prompt[0].split(':')[-1]
         image = self.T2I_model(prompt)
 
         persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \

@@ -18,6 +18,7 @@ class RewardModel:
 
     def get_reward(self, prompt, action_reason):
         action_reason = [ar for ar in action_reason.split('\n')]
+        print(prompt)
         print('action-reason:', action_reason)
         print('prompt:', prompt.split(':')[-1])
         prompt = 'Generate the described image:\n' + prompt.split(':')[-1]

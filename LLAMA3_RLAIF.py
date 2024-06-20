@@ -42,14 +42,14 @@ def get_model():
         token='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',
         # device_map='auto',
         peft_config=lora_config,
-        load_in_4bit=True
+        load_in_8bit=True
     ).to(device='cuda:3')
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
         # device_map='auto',
         peft_config=lora_config,
-        load_in_4bit=True
+        load_in_8bit=True
     ).to(device='cuda:1')
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),

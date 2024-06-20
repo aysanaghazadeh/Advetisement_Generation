@@ -99,13 +99,10 @@ def train(args):
             # print(texts)
             pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in range(len(texts))]
             rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
-            print(query_tensors)
-            print('-'*100)
-            print(response_tensors)
-            print(rewards)
+            print('reward:', rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
-            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_4"))
+            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_1"))
 
 if __name__ == '__main__':
     args = get_args()

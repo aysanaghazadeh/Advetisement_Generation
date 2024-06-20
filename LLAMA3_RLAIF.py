@@ -65,7 +65,8 @@ def train(args):
         learning_rate=1.41e-5,
         # batch_size=4,
         # mini_batch_size=4,
-        log_with='wandb'
+        log_with='wandb',
+        remove_unused_columns = False
     )
     model, tokenizer, ref_model = get_model()
     reward_model = RewardModel(args)
@@ -76,7 +77,6 @@ def train(args):
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,
-        remove_unused_columns=False
     )
     generation_kwargs = {
         "min_length": 1,

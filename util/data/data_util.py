@@ -161,7 +161,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
                     {data_point['action_reason']}
                     Description of the image:
                 """
-        data_point['query'] = prompt
+        data_point['query'] = {'query': prompt, 'action_reason':data_point['action_reason']}
         # tokens = tokenizer.encode(prompt)
         # data_point["input_ids"] = tokens
         # print(len(tokens))
@@ -172,7 +172,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
     for image_url in image_urls:
         QA = QAs[image_url][0]
         dataset['query'].append(str(QA))
-        dataset['action_reason'].append(QA)
+        dataset['action_reason'].append(QA[0:3])
 
     dataset = Dataset.from_dict(dataset)
     dataset = dataset.map(format_dataset, batched=False)

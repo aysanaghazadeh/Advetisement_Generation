@@ -63,8 +63,8 @@ def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-5,
-        batch_size=1,
-        mini_batch_size=1,
+        # batch_size=4,
+        # mini_batch_size=4,
         log_with='wandb'
     )
     model, tokenizer, ref_model = get_model()
@@ -92,8 +92,8 @@ def train(args):
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             texts = [r for q, r in zip(batch["query"], batch["response"])]
-            pipe_outputs = reward_model.get_reward(texts[0], batch["query"]['action_reason'])
-            rewards = [torch.tensor(pipe_outputs).float()]
+            pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason']) for i in range(len(texts))]
+            rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD"))

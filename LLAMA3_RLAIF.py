@@ -88,11 +88,10 @@ def train(args):
     }
     for epoch in tqdm(range(args.epochs), "epoch: "):
         for batch in tqdm(ppo_trainer.dataloader):
-            print(batch)
             batch["input_ids"] = [tokenizer.encode(batch['query']['query'][i]) for i in range(len(batch['query']['query']))]
             query_tensors = batch["input_ids"]
             print(query_tensors)
-            query_tensors = [[torch.stack([torch.tensor(tensor.item()) for tensor in query_tensor])] for query_tensor in query_tensors]
+            query_tensors = [[torch.stack([torch.tensor(tensor) for tensor in query_tensor])] for query_tensor in query_tensors]
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
             texts = [r for q, r in zip(batch["query"], batch["response"])]

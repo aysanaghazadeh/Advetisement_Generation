@@ -63,8 +63,8 @@ def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-5,
-        # batch_size=4,
-        # mini_batch_size=4,
+        batch_size=4,
+        mini_batch_size=4,
         # log_with='wandb',
         # remove_unused_columns = False
     )

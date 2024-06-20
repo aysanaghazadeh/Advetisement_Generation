@@ -93,13 +93,15 @@ def train(args):
             query_tensors = batch["input_ids"]
             query_tensors = [torch.stack([torch.tensor(tensor) for tensor in query_tensor]) for query_tensor in query_tensors]
             response_tensors = [ppo_trainer.generate(query_tensor, **generation_kwargs) for query_tensor in query_tensors]
-            # print(response_tensors)
             batch["response"] = [[tokenizer.decode(r.squeeze()) for r in response_tensor] for response_tensor in response_tensors]
-            print(batch['response'])
+            # print(batch['response'])
             texts = [r for r in batch["response"]]
             # print(texts)
             pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in range(len(texts))]
             rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
+            print(query_tensors)
+            print('-'*100)
+            print(response_tensors)
             print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)

@@ -97,6 +97,7 @@ def train(args):
             texts = [r for q, r in zip(batch["query"], batch["response"])]
             pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in range(len(texts))]
             rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
+            print(rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD"))

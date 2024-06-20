@@ -18,15 +18,14 @@ class RewardModel:
 
     def get_reward(self, prompt, action_reason):
         action_reason = [ar for ar in action_reason.split('\n')]
-        # print(prompt)
-        # print('action-reason:', action_reason)
-        # print('prompt:', prompt[0].split(':')[-1])
+        print('action-reason:', action_reason)
+        print('prompt:', prompt[0].split(':')[-1])
         prompt = 'Generate the described image:\n' + prompt[0].split(':')[-1]
         image = self.T2I_model(prompt)
 
         persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
                          self.reward_function.get_persuasiveness_score(image)) / 4
-        return persuasiveness - 4
+        return (persuasiveness - 3)/10
 
 
 def get_model():
@@ -63,10 +62,10 @@ def get_model():
 def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
-        learning_rate=1.41e-5,
+        learning_rate=1.41e-3,
         batch_size=1,
         mini_batch_size=1,
-        # log_with='wandb',
+        log_with='wandb',
         # remove_unused_columns = False
     )
     model, tokenizer, ref_model = get_model()

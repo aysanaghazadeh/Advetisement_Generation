@@ -76,6 +76,7 @@ def train(args):
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,
+        remove_unused_columns=False
     )
     generation_kwargs = {
         "min_length": 1,

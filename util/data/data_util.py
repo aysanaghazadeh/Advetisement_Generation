@@ -164,7 +164,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
         data_point['query'] = prompt
         tokens = tokenizer.encode(prompt)
         data_point["input_ids"] = tokens
-        print(tokens.size())
+        print(len(tokens))
         return data_point
 
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))

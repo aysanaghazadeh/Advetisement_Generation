@@ -23,8 +23,9 @@ class RewardModel:
         prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
         image = self.T2I_model(prompt)
 
-        persuasiveness = self.reward_function.get_persuasiveness_alignment(image, action_reason)
-        return persuasiveness - 1
+        persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
+                         self.reward_function.get_persuasiveness_score(image, action_reason)) / 4
+        return persuasiveness - 4
 
 
 def get_model():

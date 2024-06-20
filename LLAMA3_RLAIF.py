@@ -64,8 +64,8 @@ def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-5,
-        batch_size=2,
-        mini_batch_size=2,
+        batch_size=1,
+        mini_batch_size=1,
         # log_with='wandb',
         # remove_unused_columns = False
     )
@@ -83,7 +83,7 @@ def train(args):
         "min_length": 1,
         "top_k": 0.0,
         "top_p": 1.0,
-        "max_new_tokens": 64,
+        "max_new_tokens": 125,
         "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }

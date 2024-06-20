@@ -96,7 +96,7 @@ def train(args):
             batch["response"] = [[tokenizer.decode(r) for r in response_tensor] for response_tensor in response_tensors]
             # print(batch['response'])
             texts = [r for r in batch["response"]]
-            # print(texts)
+            print(texts)
             pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in range(len(texts))]
             rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
             print('reward:', rewards)

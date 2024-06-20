@@ -375,11 +375,12 @@ class PersuasivenessMetric:
             reason_score_prompt = \
                 f"""
                 <image>\n USER:
-                Imagine you are a human evaluating how related an image is to a reason. Your task is to score how well image shows the reason for why the image is convincing how well the reason in the image is aligned with the given reason. 
-                Context: Imagine the given image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given reason in the question, the score is 5 and if it is totally irrelevant the score is -5.
+                Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relatedness of an image and a reason on a scale from -5 to 5. 
+                Context: Imagine the image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given message in the next sentence, the score is 5 and if it is totally irrelevant the score is -5.
                 Question: Given the message of {reason} and the image, provide the score in the following format: {answer_format}. 
                 ASSISTANT:
                 """
+
 
             output = self.pipe(image, prompt=reason_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})

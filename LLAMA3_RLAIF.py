@@ -24,7 +24,7 @@ class RewardModel:
         image = self.T2I_model(prompt)
 
         persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
-                         self.reward_function.get_persuasiveness_score(image, action_reason)) / 4
+                         self.reward_function.get_persuasiveness_score(image)) / 4
         return persuasiveness - 4
 
 

@@ -356,6 +356,7 @@ class PersuasivenessMetric:
         action_numeric_value = 0
         reason_numeric_value = 0
         for action_reason in action_reasons:
+            print(action_reason)
             action = action_reason.lower().split('because')[0]
             reason = action_reason.lower().split('because')[-1]
             answer_format = 'Answer: ${score}'

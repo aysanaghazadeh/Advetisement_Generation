@@ -158,10 +158,10 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
 
     def format_dataset(data_point):
         prompt = f"""Describe an advertisement image that conveys the following messages in detail:
-                    {data_point['query']}
+                    {data_point['action_reason']}
                     Description of the image:
                 """
-        data_point['query'] = prompt
+        data_point['query'] = {'query': prompt, 'action_reason':data_point['action_reason']}
         tokens = tokenizer.encode(prompt)
         data_point["input_ids"] = tokens
         return data_point

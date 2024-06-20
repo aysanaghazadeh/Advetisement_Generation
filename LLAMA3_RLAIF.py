@@ -18,9 +18,9 @@ class RewardModel:
 
     def get_reward(self, prompt, action_reason):
         action_reason = [ar for ar in action_reason.split('\n')]
-        print(prompt)
-        print('action-reason:', action_reason)
-        print('prompt:', prompt[0].split(':')[-1])
+        # print(prompt)
+        # print('action-reason:', action_reason)
+        # print('prompt:', prompt[0].split(':')[-1])
         prompt = 'Generate the described image:\n' + prompt[0].split(':')[-1]
         image = self.T2I_model(prompt)
 
@@ -95,6 +95,7 @@ def train(args):
             response_tensors = [ppo_trainer.generate(query_tensor, **generation_kwargs) for query_tensor in query_tensors]
             batch["response"] = [[tokenizer.decode(r.squeeze()) for r in response_tensor] for response_tensor in response_tensors]
             texts = [r for q, r in zip(batch["query"], batch["response"])]
+            print(texts)
             pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in range(len(texts))]
             rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
             print(rewards)

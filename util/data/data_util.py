@@ -153,7 +153,7 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained(
         os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/'),
         token='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',
-        padding='left')
+        padding='max_length')
     tokenizer.pad_token = tokenizer.eos_token
 
     def format_dataset(data_point):

@@ -80,8 +80,8 @@ def train(args):
             query_tensors = [torch.stack([torch.tensor(tensor.item()) for tensor in query_tensors])]
             response_tensors = ppo_trainer.generate(query_tensors, **generation_kwargs)
             batch["response"] = [tokenizer.decode(r.squeeze()) for r in response_tensors]
-            texts = [r for q, r in zip(batch["query"], batch["response"])]
-            pipe_outputs = reward_model.get_reward(texts[0], batch[0]["action_reason"][0])
+            texts = [r for q, r in zip(batch["query"]['query'], batch["response"])]
+            pipe_outputs = reward_model.get_reward(texts[0], batch[0]["query"]['action_reason'])
             rewards = [torch.tensor(pipe_outputs).float()]
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)

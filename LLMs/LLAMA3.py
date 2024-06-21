@@ -22,7 +22,7 @@ class LLAMA3(nn.Module):
                                                               # device_map=device_map)
             # self.model = self.model.to(device='cuda:1')
             if args.fine_tuned:
-                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'llama3_dpo'))
+                self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_ppo_model_DMD_batch_size_1'))
         # else:
             # bnb_config = BitsAndBytesConfig(
             #     load_in_8bit=True,

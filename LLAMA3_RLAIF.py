@@ -25,7 +25,7 @@ class RewardModel:
 
         persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
                          self.reward_function.get_persuasiveness_score(image)) / 4
-        return (persuasiveness - 3)/10
+        return (persuasiveness - 3)
 
 
 def get_model():
@@ -62,7 +62,7 @@ def get_model():
 def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
-        learning_rate=1.41e-3,
+        learning_rate=1.41e-1,
         batch_size=1,
         mini_batch_size=1,
         log_with='wandb',

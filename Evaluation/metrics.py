@@ -371,7 +371,7 @@ class PersuasivenessMetric:
                                generate_kwargs={"max_new_tokens": 45})
             output = output[0]["generated_text"].split(':')[-1]
             print('action:', output)
-            action_numeric_value = extract_number(output)
+            action_numeric_value += extract_number(output)
             reason_score_prompt = \
                 f"""
                 <image>\n USER:

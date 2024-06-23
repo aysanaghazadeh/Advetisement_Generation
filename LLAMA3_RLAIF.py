@@ -10,6 +10,7 @@ from tqdm import tqdm
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
+import argparse
 
 
 class RewardModel:
@@ -59,10 +60,9 @@ def get_model():
     return model, tokenizer, ref_model
 
 
-def train(args):
+def train(args, local_rank):
     dist.init_process_group(backend='nccl')
-    rank = 1
-    device = torch.device(f'cuda:{rank}')
+    device = torch.device(f'cuda:{local_rank}')
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-1,
@@ -72,8 +72,8 @@ def train(args):
     )
     model, tokenizer, ref_model = get_model()
     reward_model = RewardModel(args)
-    model = DDP(model.to(device), device_ids=[rank])
-    ref_model = DDP(ref_model.to(device), device_ids=[rank])
+    model = DDP(model.to(device), device_ids=[local_rank])
+    ref_model = DDP(ref_model.to(device), device_ids=[local_rank])
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
         model=model,
@@ -109,5 +109,10 @@ def train(args):
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--local_rank", type=int, default=-1, help="Local rank for distributed training")
     args = get_args()
-    train(args)
+    additional_args = parser.parse_args()
+    train(args, additional_args.local_rank)
+    # args = get_args()
+    # train(args)

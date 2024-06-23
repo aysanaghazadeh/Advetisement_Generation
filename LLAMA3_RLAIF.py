@@ -61,7 +61,7 @@ def get_model():
 
 def train(args):
     dist.init_process_group(backend='nccl')
-    rank = dist.get_rank()
+    rank = 1
     device = torch.device(f'cuda:{rank}')
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",

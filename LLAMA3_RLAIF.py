@@ -11,6 +11,9 @@ from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 
+torch.distributed.init_process_group(backend='nccl')
+
+
 class RewardModel:
     def __init__(self, args):
         args.T2I_model = 'DMD'

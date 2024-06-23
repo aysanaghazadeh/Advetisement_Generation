@@ -111,8 +111,11 @@ def train(args, local_rank):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_rank", type=int, default=-1, help="Local rank for distributed training")
-    args = get_args()
     additional_args = parser.parse_args()
-    train(args, additional_args.local_rank)
+
+    args = get_args()
+    args.local_rank = additional_args.local_rank  # Merge the local_rank argument
+
+    train(args, args.local_rank)
     # args = get_args()
     # train(args)

@@ -11,9 +11,6 @@ from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 
-torch.distributed.init_process_group(backend='nccl')
-
-
 class RewardModel:
     def __init__(self, args):
         args.T2I_model = 'DMD'
@@ -110,5 +107,6 @@ def train(args):
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
 
 if __name__ == '__main__':
+    torch.distributed.init_process_group(backend='nccl')
     args = get_args()
     train(args)

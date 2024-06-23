@@ -8,6 +8,7 @@ from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from tqdm import tqdm
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 
 class RewardModel:
@@ -44,6 +45,7 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
+    model = DDP(model)
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -102,7 +104,7 @@ def train(args):
             print('reward:', rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
-            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_1"))
+            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
 
 if __name__ == '__main__':
     args = get_args()

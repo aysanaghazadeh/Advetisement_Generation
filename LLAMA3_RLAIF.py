@@ -8,9 +8,6 @@ from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from tqdm import tqdm
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-import argparse
 
 
 class RewardModel:
@@ -60,9 +57,7 @@ def get_model():
     return model, tokenizer, ref_model
 
 
-def train(args, local_rank):
-    dist.init_process_group(backend='nccl')
-    device = torch.device(f'cuda:{local_rank}')
+def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-1,
@@ -72,8 +67,6 @@ def train(args, local_rank):
     )
     model, tokenizer, ref_model = get_model()
     reward_model = RewardModel(args)
-    model = DDP(model.to(device), device_ids=[local_rank])
-    ref_model = DDP(ref_model.to(device), device_ids=[local_rank])
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
         model=model,
@@ -109,13 +102,5 @@ def train(args, local_rank):
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--local_rank", type=int, default=-1, help="Local rank for distributed training")
-    additional_args = parser.parse_args()
-
     args = get_args()
-    args.local_rank = additional_args.local_rank  # Merge the local_rank argument
-
-    train(args, args.local_rank)
-    # args = get_args()
-    # train(args)
+    train(args)

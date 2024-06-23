@@ -8,6 +8,7 @@ from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from tqdm import tqdm
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
+import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 
@@ -41,15 +42,12 @@ def get_model():
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        # device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device=args.device)
-    model = DDP(model)
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
-        # device_map='auto',
         peft_config=lora_config,
         load_in_4bit=True
     ).to(device='cuda:1')
@@ -62,16 +60,20 @@ def get_model():
 
 
 def train(args):
+    dist.init_process_group(backend='nccl')
+    rank = dist.get_rank()
+    device = torch.device(f'cuda:{rank}')
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-1,
         batch_size=2,
         mini_batch_size=2,
         log_with='wandb',
-        # remove_unused_columns = False
     )
     model, tokenizer, ref_model = get_model()
     reward_model = RewardModel(args)
+    model = DDP(model.to(device), device_ids=[rank])
+    ref_model = DDP(ref_model.to(device), device_ids=[rank])
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
         model=model,
@@ -107,6 +109,5 @@ def train(args):
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
 
 if __name__ == '__main__':
-    torch.distributed.init_process_group(backend='nccl')
     args = get_args()
     train(args)

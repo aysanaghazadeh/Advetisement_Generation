@@ -10,6 +10,12 @@ from tqdm import tqdm
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from accelerate import Accelerator
 from transformers import Adafactor
+import torch.multiprocessing as mp
+from torch.utils.data.distributed import DistributedSampler
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.distributed import init_process_group, destroy_process_group
+import os
+
 
 class RewardModel:
     def __init__(self, args):
@@ -45,13 +51,13 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True,
         device_map={"": current_device}
-    ).to(device=args.device)
+    )#.to(device=args.device)
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
         peft_config=lora_config,
         load_in_4bit=True,
-        device_map='auto'
+        device_map={"": current_device}
     )
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),

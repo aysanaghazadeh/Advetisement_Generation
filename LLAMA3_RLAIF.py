@@ -8,7 +8,8 @@ from T2I_models.T2I_model import T2IModel
 from Evaluation.metrics import PersuasivenessMetric
 from tqdm import tqdm
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
-
+from accelerate import Accelerator
+from transformers import Adafactor
 
 class RewardModel:
     def __init__(self, args):
@@ -24,8 +25,8 @@ class RewardModel:
         image = self.T2I_model(prompt)
 
         persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
-                         self.reward_function.get_persuasiveness_score(image)) / 4
-        return (persuasiveness - 3)
+                          self.reward_function.get_persuasiveness_score(image)) / 4
+        return persuasiveness - 3
 
 
 def get_model():
@@ -36,12 +37,14 @@ def get_model():
         bias="none",
         task_type="CAUSAL_LM",
     )
+    current_device = Accelerator().local_process_index
     model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
         peft_config=lora_config,
-        load_in_4bit=True
+        load_in_4bit=True,
+        device_map={"": current_device}
     ).to(device=args.device)
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
@@ -67,6 +70,13 @@ def train(args):
         log_with='wandb',
     )
     model, tokenizer, ref_model = get_model()
+    optimizer = Adafactor(
+        filter(lambda p: p.requires_grad, model.parameters()),
+        scale_parameter=False,
+        relative_step=False,
+        warmup_init=False,
+        lr=config.learning_rate,
+    )
     reward_model = RewardModel(args)
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
@@ -75,6 +85,7 @@ def train(args):
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,
+        optimizer=optimizer
     )
     generation_kwargs = {
         "min_length": 1,
@@ -86,21 +97,28 @@ def train(args):
     }
     for epoch in tqdm(range(args.epochs), "epoch: "):
         for batch in tqdm(ppo_trainer.dataloader):
-            batch["input_ids"] = [tokenizer.encode(batch['query']['query'][i], max_length=125) for i in range(len(batch['query']['query']))]
+            batch["input_ids"] = [tokenizer.encode(batch['query']['query'][i], max_length=125) for i in
+                                  range(len(batch['query']['query']))]
             query_tensors = batch["input_ids"]
-            query_tensors = [torch.stack([torch.tensor(tensor) for tensor in query_tensor]) for query_tensor in query_tensors]
-            response_tensors = [ppo_trainer.generate(query_tensor, **generation_kwargs) for query_tensor in query_tensors]
-            response_tensors = [torch.stack([r.squeeze() for r in response_tensor]).squeeze() for response_tensor in response_tensors ]
-            batch["response"] = [''.join([tokenizer.decode(r) for r in response_tensor]) for response_tensor in response_tensors]
+            query_tensors = [torch.stack([torch.tensor(tensor) for tensor in query_tensor]) for query_tensor in
+                             query_tensors]
+            response_tensors = [ppo_trainer.generate(query_tensor, **generation_kwargs) for query_tensor in
+                                query_tensors]
+            response_tensors = [torch.stack([r.squeeze() for r in response_tensor]).squeeze() for response_tensor in
+                                response_tensors]
+            batch["response"] = [''.join([tokenizer.decode(r) for r in response_tensor]) for response_tensor in
+                                 response_tensors]
             # print(batch['response'])
             texts = [r for r in batch["response"]]
             print(texts)
-            pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in range(len(texts))]
+            pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in
+                            range(len(texts))]
             rewards = [torch.tensor(pipe_output).float() for pipe_output in pipe_outputs]
             print('reward:', rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
             ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
+
 
 if __name__ == '__main__':
     args = get_args()

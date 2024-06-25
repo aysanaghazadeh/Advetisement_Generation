@@ -70,8 +70,8 @@ def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-1,
-        batch_size=2,
-        mini_batch_size=2,
+        batch_size=1,
+        mini_batch_size=1,
         log_with='wandb',
     )
     model, tokenizer, ref_model = get_model()

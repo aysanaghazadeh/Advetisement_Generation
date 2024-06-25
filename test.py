@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llama3_ppo_generated_description_test_set_persuasiveness_alignment.json_SDXL_20240621_183233_persuasiveness_alignment.json'))
+llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llama3_ppo_generated_description_test_set_persuasiveness.json_SDXL_20240621_183233_persuasiveness.json'))
 # ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631.json'))
 
 values = []

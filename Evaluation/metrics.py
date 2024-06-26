@@ -268,7 +268,7 @@ class PersuasivenessMetric:
             bnb_8bit_compute_dtype=torch.float16
         )
         model_id_map = {
-            'LLAVA': 'llava-hf/llava-1.5-13b-hf',
+            'LLAVA': "llava-hf/llava-1.5-13b-hf",
             'VILA': "Efficient-Large-Model/VILA1.5-13b"
         }
         model_id = model_id_map[args.VLM]

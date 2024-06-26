@@ -27,6 +27,7 @@ class RewardModel:
         # args.T2I_model = 'DMD'
         # self.T2I_model = T2IModel(args)
         # self.reward_function = PersuasivenessMetric(args)
+        pass
 
     def get_reward(self, prompt, action_reason):
         # action_reason = [ar for ar in action_reason.split('\n')]

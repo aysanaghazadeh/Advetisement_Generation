@@ -267,8 +267,18 @@ class PersuasivenessMetric:
             load_in_8bit=True,
             bnb_8bit_compute_dtype=torch.float16
         )
-        self.pipe = pipeline("image-to-text",
-                             model='llava-hf/llava-1.5-13b-hf',
+        model_id_map = {
+            'LLAVA': 'llava-hf/llava-1.5-13b-hf',
+            'VILA': "Efficient-Large-Model/Llama-3-VILA1.5-8B"
+        }
+        model_id = model_id_map[args.VLM]
+        task_map = {
+            'LLAVA': "image-to-text",
+            'VILA': "text-generation"
+        }
+        task = task_map[args.VLM]
+        self.pipe = pipeline(task,
+                             model=model_id,
                              model_kwargs={"quantization_config": quantization_config},
                              device_map='auto')
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))

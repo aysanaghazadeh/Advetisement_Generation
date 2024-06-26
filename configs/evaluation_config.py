@@ -119,6 +119,9 @@ def parse_args():
                         type=str,
                         default='train_images_total',
                         help='Relative path to the original images for the test set from root')
+    parser.add_argument('--VLM',
+                        type=str,
+                        default='VILA')
     return parser.parse_args()
 
 

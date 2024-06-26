@@ -17,7 +17,7 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 
 from accelerate import Accelerator
-accelerator = Accelerator()
+accelerator = Accelerator(mixed_precision='fp16')
 
 
 
@@ -55,14 +55,15 @@ def get_model():
         token='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',
         peft_config=lora_config,
         load_in_4bit=True,
-        device_map={"": current_device}
+        device_map='auto'
     )#.to(device=args.device)
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
         peft_config=lora_config,
-        load_in_4bit=True
-    ).to(device='cuda:1')
+        load_in_4bit=True,
+        device_map='auto'
+    )#.to(device='cuda:1')
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),
                                               token='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')
@@ -75,8 +76,8 @@ def train(args):
     config = PPOConfig(
         model_name="RLHFlow/LLaMA3-SFT",
         learning_rate=1.41e-1,
-        batch_size=1,
-        mini_batch_size=1,
+        batch_size=2,
+        mini_batch_size=2,
         log_with='wandb',
     )
     model, tokenizer, ref_model = get_model()

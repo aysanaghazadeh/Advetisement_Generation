@@ -16,6 +16,11 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 import os
 
+from accelerate import Accelerator
+accelerator = Accelerator()
+
+
+
 
 class RewardModel:
     def __init__(self, args):
@@ -84,6 +89,7 @@ def train(args):
     )
     reward_model = RewardModel(args)
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
+    model, optimizer = accelerator.prepare(model, optimizer)
     ppo_trainer = PPOTrainer(
         model=model,
         ref_model=ref_model,
@@ -100,8 +106,9 @@ def train(args):
         "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
     }
+    data_loader = accelerator.prepare_data_loader(ppo_trainer.dataloader)
     for epoch in tqdm(range(args.epochs), "epoch: "):
-        for batch in tqdm(ppo_trainer.dataloader):
+        for batch in tqdm(data_loader):
             batch["input_ids"] = [tokenizer.encode(batch['query']['query'][i], max_length=125) for i in
                                   range(len(batch['query']['query']))]
             query_tensors = batch["input_ids"]

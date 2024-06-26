@@ -198,15 +198,15 @@ class Evaluation:
 
     def evaluate_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
-        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
+        # baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
+        # baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
         self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '.json')
         creativity_scores = {}
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
-            if image_url not in baseline_results:
-                continue
+            # if image_url not in baseline_results:
+            #     continue
             generated_image_path = results.generated_image_url.values[row]
             action_reason = results.action_reason.values[row]
             directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
@@ -224,8 +224,8 @@ class Evaluation:
 
     def evaluate_persuasiveness_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
-        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
+        # baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
+        # baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
         self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                args.text_alignment_file.split('_')[-1].split('.')[0] +
@@ -235,8 +235,8 @@ class Evaluation:
                                                                   args.text_alignment_file)))
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
-            if image_url not in baseline_results:
-                continue
+            # if image_url not in baseline_results:
+            #     continue
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]
             directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])

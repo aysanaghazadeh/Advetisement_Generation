@@ -269,7 +269,7 @@ class PersuasivenessMetric:
         )
         model_id_map = {
             'LLAVA': 'llava-hf/llava-1.5-13b-hf',
-            'VILA': "Efficient-Large-Model/Llama-3-VILA1.5-8B"
+            'VILA': "Efficient-Large-Model/VILA1.5-13b"
         }
         model_id = model_id_map[args.VLM]
         task_map = {

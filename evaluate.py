@@ -279,7 +279,7 @@ class Evaluation:
     def evaluate_image_text_alignment(args):
         QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_image_text_alignment.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_image_text_alignment.json')
         if os.path.exists(saving_path):
             image_text_alignment_scores = json.load(open(saving_path))
         else:

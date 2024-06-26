@@ -24,21 +24,21 @@ accelerator = Accelerator(mixed_precision='fp16')
 
 class RewardModel:
     def __init__(self, args):
-        args.T2I_model = 'DMD'
-        self.T2I_model = T2IModel(args)
-        self.reward_function = PersuasivenessMetric(args)
+        # args.T2I_model = 'DMD'
+        # self.T2I_model = T2IModel(args)
+        # self.reward_function = PersuasivenessMetric(args)
 
     def get_reward(self, prompt, action_reason):
-        action_reason = [ar for ar in action_reason.split('\n')]
-        print('action-reason:', action_reason)
-        print('prompt:', prompt.split(':')[-1])
-        prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
-        image = self.T2I_model(prompt)
-
-        persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
-                          self.reward_function.get_persuasiveness_score(image)) / 4
-        return persuasiveness - 3
-
+        # action_reason = [ar for ar in action_reason.split('\n')]
+        # print('action-reason:', action_reason)
+        # print('prompt:', prompt.split(':')[-1])
+        # prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
+        # image = self.T2I_model(prompt)
+        #
+        # persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
+        #                   self.reward_function.get_persuasiveness_score(image)) / 4
+        # return persuasiveness - 3
+        return 4
 
 def get_model():
     lora_config = LoraConfig(

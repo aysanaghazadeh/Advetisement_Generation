@@ -108,7 +108,7 @@ def train(args):
             batch["input_ids"] = [tokenizer.encode(batch['query']['query'][i], max_length=125) for i in
                                   range(len(batch['query']['query']))]
             query_tensors = batch["input_ids"]
-            query_tensors = [torch.stack([accelerator.prepare(torch.tensor(tensor)) for tensor in query_tensor]) for query_tensor in
+            query_tensors = [torch.stack([accelerator.prepare(torch.tensor(tensor).to('cuda')) for tensor in query_tensor]) for query_tensor in
                              query_tensors]
             response_tensors = [ppo_trainer.generate(query_tensor, **generation_kwargs) for query_tensor in
                                 query_tensors]

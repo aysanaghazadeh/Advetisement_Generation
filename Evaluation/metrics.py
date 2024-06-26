@@ -8,7 +8,6 @@ import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig
 import re
-from transformers import AutoModel, AutoProcessor
 
 
 # Function to convert an image file to a tensor
@@ -278,13 +277,10 @@ class PersuasivenessMetric:
             'VILA': "text-generation"
         }
         task = task_map[args.VLM]
-        self.model = AutoModel.from_pretrained("Efficient-Large-Model/Llama-3-VILA1.5-8b-AWQ")
-        self.processor = AutoProcessor.from_pretrained("Efficient-Large-Model/Llama-3-VILA1.5-8b-AWQ")
-
-        # self.pipe = pipeline(task,
-        #                      model=model_id,
-        #                      model_kwargs={"quantization_config": quantization_config},
-        #                      device_map='auto')
+        self.pipe = pipeline(task,
+                             model=model_id,
+                             model_kwargs={"quantization_config": quantization_config},
+                             device_map='auto')
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):
@@ -309,17 +305,6 @@ class PersuasivenessMetric:
         Your output format is only Answer: score\n form, no other form. Empty is not allowed.
         ASSISTANT:
         """
-        prompts = [
-            "<image> describe the image",
-        ]
-        images = [image]
-        inputs = self.processor(text=prompts, images=images, padding=True, return_tensors="pt")
-        inputs = {k: v.to('cuda') for k, v in inputs.items()}
-
-        # Generate
-        generated_ids = self.model.generate(**inputs, max_new_tokens=500)
-        generated_texts = self.processor.batch_decode(generated_ids, skip_special_tokens=True)
-        print(generated_texts)
         output = self.pipe(image, prompt=prompt,
                            generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"].split(':')[-1]

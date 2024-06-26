@@ -8,6 +8,7 @@ import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig
 import re
+from transformers import AutoModel
 
 
 # Function to convert an image file to a tensor
@@ -277,6 +278,7 @@ class PersuasivenessMetric:
             'VILA': "text-generation"
         }
         task = task_map[args.VLM]
+        model = AutoModel.from_pretrained("Efficient-Large-Model/Llama-3-VILA1.5-8b-AWQ")
         self.pipe = pipeline(task,
                              model=model_id,
                              model_kwargs={"quantization_config": quantization_config},

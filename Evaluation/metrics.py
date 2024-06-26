@@ -279,7 +279,7 @@ class PersuasivenessMetric:
             'InternVL': "visual-question-answering"
         }
         task = task_map[args.VLM]
-        self.pipe = pipeline(task,
+        self.pipe = pipeline(#task,
                              model=model_id,
                              model_kwargs={"quantization_config": quantization_config},
                              trust_remote_code=True,

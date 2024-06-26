@@ -121,7 +121,7 @@ def train(args):
             print(texts)
             pipe_outputs = [reward_model.get_reward(texts[i], batch["query"]['action_reason'][i]) for i in
                             range(len(texts))]
-            rewards = [accelerator.prepare(torch.tensor(pipe_output).float()) for pipe_output in pipe_outputs]
+            rewards = [accelerator.prepare(torch.tensor(pipe_output).float().to('cuda')) for pipe_output in pipe_outputs]
             print('reward:', rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)

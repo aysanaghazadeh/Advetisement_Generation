@@ -18,7 +18,7 @@ import os
 
 from accelerate import Accelerator
 accelerator = Accelerator(mixed_precision='fp16')
-
+print(accelerator.device)
 
 
 

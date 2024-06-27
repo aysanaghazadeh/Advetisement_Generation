@@ -233,6 +233,7 @@ class Evaluation:
                                                                   args.text_alignment_file)))
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
+            print(f'image url: {image_url}')
             # if image_url not in baseline_results:
             #     continue
             image_text_alignment_score = image_text_alignment_scores[image_url]

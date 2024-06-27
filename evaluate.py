@@ -14,7 +14,7 @@ from util.data.trian_test_split import get_test_data
 class Evaluation:
     def __init__(self, metrics, args):
         self.metrics = metrics
-        if args.evaluation_type == 'creativity' and args.image_generation:
+        if args.evaluation_type in ['creativity', 'persuasiveness_creativity'] and args.image_generation:
             self.image_generator = AdvertisementImageGeneration(args)
         if args.evaluation_type == 'action_reason_llava':
             self.ar_llava = ActionReasonLlava(args)

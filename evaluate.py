@@ -182,12 +182,10 @@ class Evaluation:
         print('*' * 80)
 
     def generate_product_images(self, args, results):
-        baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
-        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             image_path = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
-            if os.path.exists(image_path) or image_url not in baseline_results:
+            if os.path.exists(image_path):
                 continue
             else:
                 print(image_path)

@@ -236,10 +236,14 @@ class Evaluation:
             print(f'image url: {image_url}')
             # if image_url not in baseline_results:
             #     continue
+            no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]
             directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
             product_image_files = os.listdir(directory)
+            if len(product_image_files) == 0:
+                no_product_image_count += 1
+                continue
             product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
                                    for file in product_image_files]
             creativity_scores[image_url] = self.metrics.get_persuasiveness_creativity_score(text_alignment_score=image_text_alignment_score,
@@ -250,6 +254,7 @@ class Evaluation:
                 f'creativity score for image {image_url} is {creativity_scores[image_url]}')
             with open(saving_path, "w") as outfile:
                 json.dump(creativity_scores, outfile)
+        print(f'number of images with no product image is: {no_product_image_count}')
 
     def evaluate_action_reason_llava(self, args):
         results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0,

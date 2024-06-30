@@ -317,7 +317,9 @@ class Evaluation:
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        dataset = load_dataset('nlphuji/whoops', use_auth_token='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')
+        dataset = load_dataset('nlphuji/whoops',
+                               cache_dir=None,
+                               use_auth_token='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')
         QA_file = json.load(open(os.path.join(args.data_path, 'whoops_caption.json')))
         if os.path.exists(QA_file):
             QAs = json.load(QA_file)

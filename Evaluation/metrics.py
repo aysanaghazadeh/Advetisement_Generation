@@ -401,3 +401,70 @@ class PersuasivenessMetric:
             print('reason:', output)
             reason_numeric_value += extract_number(output)
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)
+
+
+class Whoops:
+    def __init__(self, args):
+        quantization_config = BitsAndBytesConfig(
+            load_in_8bit=True,
+            bnb_8bit_compute_dtype=torch.float16
+        )
+        model_id_map = {
+            'LLAVA': "llava-hf/llava-1.5-13b-hf",
+            'VILA': "Efficient-Large-Model/VILA1.5-13b",
+            'InternVL': "OpenGVLab/InternVL-Chat-V1-5"
+        }
+        model_id = model_id_map[args.VLM]
+        task_map = {
+            'LLAVA': "image-to-text",
+            'VILA': "text-generation",
+            'InternVL': "visual-question-answering"
+        }
+        task = task_map[args.VLM]
+        self.pipe = pipeline(task,
+                             model=model_id,
+                             model_kwargs={"quantization_config": quantization_config},
+                             trust_remote_code=True,
+                             device_map='auto')
+        self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+
+    @staticmethod
+    def parse_options(options):
+        return '\n'.join([f'{str(i)}. {option}' for i, option in enumerate(options)])
+
+    @staticmethod
+    def get_answer_format():
+        answer_format = """
+        Answer: ${index of the best option}\n
+        """
+        return answer_format
+
+    def get_prompt(self, options):
+        answer_format = self.get_answer_format()
+        options = self.parse_options(options)
+        prompt = (f"USER:<image>\n"
+                  f"Question: What is the index best interpretations among the options for this image?\n"
+                  f"Options: {options}\n"
+                  f"your answer must follow the format of {answer_format}\n"
+                  f"Assistant: ")
+        return prompt
+
+    def get_prediction(self, image, QA):
+        answers = []
+        options = QA[1]
+        prompt = self.get_prompt(options)
+        output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
+        output = output[0]["generated_text"]
+        print(output)
+        answer = ''.join(i for i in output if i.isdigit())
+        if answer != '':
+            answers.append(int(answer))
+        predictions = set()
+        for ind in answers:
+            if len(options) > ind:
+                predictions.add(options[ind])
+                if len(predictions) == 3:
+                    break
+        answers = list(predictions)
+        return answers
+

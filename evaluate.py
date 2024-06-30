@@ -1,6 +1,8 @@
-import os.path
-import pandas as pd
 import json
+import os.path
+import random
+
+import pandas as pd
 from collections import Counter
 from Evaluation.metrics import *
 from configs.evaluation_config import get_args
@@ -9,6 +11,7 @@ from model.pipeline import AdvertisementImageGeneration
 from Evaluation.action_reason_evaluation import ActionReasonLlava
 import csv
 from util.data.trian_test_split import get_test_data
+from datasets import load_dataset
 
 
 class Evaluation:
@@ -18,6 +21,8 @@ class Evaluation:
             self.image_generator = AdvertisementImageGeneration(args)
         if args.evaluation_type == 'action_reason_llava':
             self.ar_llava = ActionReasonLlava(args)
+        if args.evaluation_type == 'whoops_llava':
+            self.whoops = Whoops(args)
 
     @staticmethod
     def evaluate_topic_based(args):
@@ -303,6 +308,43 @@ class Evaluation:
             print('-' * 80)
             with open(saving_path, "w") as outfile:
                 json.dump(image_text_alignment_scores, outfile)
+
+    def evaluate_whoops_llava(self, args):
+        results = {'acc@1': 0}
+        fieldnames = ['id', 'acc@1']
+        # csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
+        csv_file_path = os.path.join(args.result_path, 'whoops_llava_without_description.csv')
+        with open(csv_file_path, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+        dataset = load_dataset('nlphuji/whoops', use_auth_token='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')
+        QA_file = json.load(open(os.path.join(args.data_path, 'whoops_caption.json')))
+        if os.path.exists(QA_file):
+            QAs = json.load(QA_file)
+        else:
+            QAs = {}
+            for i in range(len(dataset['test'])):
+                options = set([dataset['test']['selected_caption'][i]])
+                while len(options) < 15:
+                    j = random.randint(0, len(dataset['test']))
+                    options.add(dataset['test']['selected_caption'][j])
+                QAs[i] = [[dataset['test']['selected_caption'][i]], list(options)]
+            with open(QA_file, "w") as outfile:
+                json.dump(QAs, outfile)
+        for i in QAs:
+            answers = self.whoops.get_prediction(dataset['test']['image'][i], QAs[i])
+            result = 1 if answers[0] in QAs[i][0] else 0
+            row = {}
+            with open(csv_file_path, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                row['id'] = i
+                row['acc@1'] = result
+                writer.writerow(list(row.values()))
+
+            for metric in results:
+                results[metric] += result[metric]
+        for metric in results:
+            print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 
     @staticmethod
     def evaluate_image_text_ranking(args):

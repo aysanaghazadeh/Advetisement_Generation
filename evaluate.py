@@ -345,7 +345,7 @@ class Evaluation:
                 writer.writerow(list(row.values()))
 
             for metric in results:
-                results[metric] += result[metric]
+                results[metric] += result
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 

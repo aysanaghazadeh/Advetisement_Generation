@@ -454,7 +454,7 @@ class Whoops:
         options = QA[1]
         prompt = self.get_prompt(options)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
-        output = output[0]["generated_text"].split('Assistant:')
+        output = output[0]["generated_text"].split(':')[-1]
         print(output)
         answer = ''.join(i for i in output if i.isdigit())
         if answer != '':

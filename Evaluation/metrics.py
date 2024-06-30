@@ -459,6 +459,7 @@ class Whoops:
         answer = ''.join(i for i in output if i.isdigit())
         if answer != '':
             answers.append(int(answer))
+        print(answers)
         predictions = set()
         for ind in answers:
             if len(options) > ind:

@@ -439,10 +439,17 @@ class Whoops:
         """
         return answer_format
 
-    def get_prompt(self, options):
+    def get_prompt(self, options, question=None):
         answer_format = self.get_answer_format()
         options = self.parse_options(options)
-        prompt = (f"USER:<image>\n"
+        if question:
+            prompt = (f"USER:<image>\n"
+                      f"Question: {question}\n"
+                      f"Options: {options}\n"
+                      f"your answer must follow the format of {answer_format}\n"
+                      f"Assistant: ")
+        else:
+            prompt = (f"USER:<image>\n"
                   f"Question: What is the index best interpretations among the options for the type of unusualness image?\n"
                   f"Options: {options}\n"
                   f"your answer must follow the format of {answer_format}\n"
@@ -451,8 +458,12 @@ class Whoops:
 
     def get_prediction(self, image, QA):
         answers = []
-        options = QA[1]
-        prompt = self.get_prompt(options)
+        options = QA[-1]
+        if len(QA) == 3:
+            question = QA[0]
+        else:
+            question = None
+        prompt = self.get_prompt(options, question)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"].split(':')[-1]
         # print(output)

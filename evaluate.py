@@ -339,7 +339,10 @@ class Evaluation:
             if len(answers) == 0:
                 result = 0
             else:
-                result = 1 if answers[0] in QAs[i][0] else 0
+                if len(QAs[i]) == 3:
+                    result = 1 if answers[0] in QAs[i][1] else 0
+                else:
+                    result = 1 if answers[0] in QAs[i][0] else 0
             print(result)
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:

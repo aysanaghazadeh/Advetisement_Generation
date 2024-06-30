@@ -320,7 +320,7 @@ class Evaluation:
         # dataset = load_dataset('nlphuji/whoops',
         #                        cache_dir=None,
         #                        use_auth_token='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')
-        QA_file = os.path.join(args.data_path, 'train/whoops_commonsense_category.json')
+        QA_file = os.path.join(args.data_path, 'train/whoops_commonsense_category_unusualness.json')
         QAs = json.load(open(QA_file))
 
         # QAs = {}

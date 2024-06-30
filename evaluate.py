@@ -336,7 +336,10 @@ class Evaluation:
             image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{i}.png'))
             answers = self.whoops.get_prediction(image, QAs[i])
             print(answers)
-            result = 1 if answers[0] in QAs[i][0] else 0
+            if len(answers) == 0:
+                result = 0
+            else:
+                result = 1 if answers[0] in QAs[i][0] else 0
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)

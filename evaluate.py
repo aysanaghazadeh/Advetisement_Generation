@@ -1,7 +1,7 @@
 import json
 import os.path
 import random
-
+from PIL import Image
 import pandas as pd
 from collections import Counter
 from Evaluation.metrics import *
@@ -317,24 +317,25 @@ class Evaluation:
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        dataset = load_dataset('nlphuji/whoops',
-                               cache_dir=None,
-                               use_auth_token='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')
+        # dataset = load_dataset('nlphuji/whoops',
+        #                        cache_dir=None,
+        #                        use_auth_token='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')
         QA_file = json.load(open(os.path.join(args.data_path, 'whoops_caption.json')))
-        if os.path.exists(QA_file):
-            QAs = json.load(QA_file)
-        else:
-            QAs = {}
-            for i in range(len(dataset['test'])):
-                options = set([dataset['test']['selected_caption'][i]])
-                while len(options) < 15:
-                    j = random.randint(0, len(dataset['test']))
-                    options.add(dataset['test']['selected_caption'][j])
-                QAs[i] = [[dataset['test']['selected_caption'][i]], list(options)]
-            with open(QA_file, "w") as outfile:
-                json.dump(QAs, outfile)
+        # if os.path.exists(QA_file):
+        QAs = json.load(QA_file)
+        # else:
+        #     QAs = {}
+        #     for i in range(len(dataset['test'])):
+        #         options = set([dataset['test']['selected_caption'][i]])
+        #         while len(options) < 15:
+        #             j = random.randint(0, len(dataset['test']))
+        #             options.add(dataset['test']['selected_caption'][j])
+        #         QAs[i] = [[dataset['test']['selected_caption'][i]], list(options)]
+        #     with open(QA_file, "w") as outfile:
+        #         json.dump(QAs, outfile)
         for i in QAs:
-            answers = self.whoops.get_prediction(dataset['test']['image'][i], QAs[i])
+            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{i}.png'))
+            answers = self.whoops.get_prediction(image, QAs[i])
             result = 1 if answers[0] in QAs[i][0] else 0
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:

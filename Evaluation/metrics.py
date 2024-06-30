@@ -443,7 +443,7 @@ class Whoops:
         answer_format = self.get_answer_format()
         options = self.parse_options(options)
         prompt = (f"USER:<image>\n"
-                  f"Question: What is the index best interpretations among the options for this image?\n"
+                  f"Question: What is the index best interpretations among the options for the type of unusualness image?\n"
                   f"Options: {options}\n"
                   f"your answer must follow the format of {answer_format}\n"
                   f"Assistant: ")

@@ -8,7 +8,11 @@ import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig
 import re
+from openai import OpenAI
+import base64
+import requests
 
+api_key = "sk-proj-zfkbSHxUNuF7Ev8TEWWRT3BlbkFJieFKktR5T8tIUVNAJRBz"
 
 # Function to convert an image file to a tensor
 def image_to_tensor(image_path):
@@ -397,6 +401,89 @@ class PersuasivenessMetric:
 
             output = self.pipe(image, prompt=reason_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
+            output = output[0]["generated_text"].split(':')[-1]
+            print('reason:', output)
+            reason_numeric_value += extract_number(output)
+        return (reason_numeric_value + action_numeric_value) / (2 * statements_count)
+
+    def get_GPT4v_persuasiveness_alignment(self, generated_image, action_reasons=None):
+        def extract_number(string_number):
+            match = re.search(r'-?\d+', string_number)
+            if match:
+                return int(match.group(0))
+            else:
+                print("No numeric value found in the input string")
+                return 0
+
+        def encode_image(image):
+            return base64.b64encode(image).decode('utf-8')
+
+        def get_payload(prompt, base64_image):
+            payload = {
+                "model": "gpt-4o",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": prompt
+                            },
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{base64_image}"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "max_tokens": 300
+            }
+            return payload
+
+        if type(generated_image) != str:
+            image = generated_image
+        else:
+            image = Image.open(generated_image).convert("RGB")
+            print(generated_image.split('/'))
+            image_url = '/'.join(generated_image.split('/')[-2:])
+            action_reasons = self.QA[image_url][0]
+        base64_image = encode_image(image)
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+        statements_count = len(action_reasons)
+        action_numeric_value = 0
+        reason_numeric_value = 0
+        for action_reason in action_reasons:
+            print(action_reason)
+            action = action_reason.lower().split('because')[0]
+            reason = action_reason.lower().split('because')[-1]
+            answer_format = 'Answer: ${score}'
+            action_score_prompt = f"""
+                    Imagine you are a human evaluating how convincing is an image. Your task is to score how convincing an image is given an action on a scale from -5 to 5. 
+                    Context: If the image convinces the audience to take an action considered convincing.
+                    Question: Given the message of {action} provide the score in the following format: {answer_format}
+                    """
+            payload = get_payload(action_score_prompt, base64_image)
+            output = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
+            print(output)
+            output = output[0]["generated_text"].split(':')[-1]
+            print('action:', output)
+            action_numeric_value += extract_number(output)
+            reason_score_prompt = \
+                f"""
+                Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relatedness of an image and a reason on a scale from -5 to 5. 
+                Context: Imagine the image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given message in the next sentence, the score is 5 and if it is totally irrelevant the score is -5.
+                Question: Given the message of {reason} and the image, provide the score in the following format: {answer_format}. 
+                """
+
+            payload = get_payload(reason_score_prompt, base64_image)
+            output = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
+            print(output)
             output = output[0]["generated_text"].split(':')[-1]
             print('reason:', output)
             reason_numeric_value += extract_number(output)

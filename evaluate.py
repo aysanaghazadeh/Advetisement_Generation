@@ -64,7 +64,10 @@ class Evaluation:
         for row in results:
             image_url = row[0]
             generated_image_path = row[3]
-            persuasiveness_alignment_score = persuasiveness.get_persuasiveness_alignment(generated_image_path)
+            if args.VLM == 'GPT4v':
+                persuasiveness_alignment_score = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)
+            else:
+                persuasiveness_alignment_score = persuasiveness.get_persuasiveness_alignment(generated_image_path)
             print(f'persuasiveness score of the image {image_url} is {persuasiveness_alignment_score} out of 5')
             print('*' * 80)
             persuasiveness_alignment_scores[image_url] = persuasiveness_alignment_score

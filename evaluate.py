@@ -313,14 +313,14 @@ class Evaluation:
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
         # csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
-        csv_file_path = os.path.join(args.result_path, 'whoops_commonsense_llava.csv')
+        csv_file_path = os.path.join(args.result_path, 'whoops_commonsense_llava_unusualness.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
         # dataset = load_dataset('nlphuji/whoops',
         #                        cache_dir=None,
         #                        use_auth_token='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')
-        QA_file = os.path.join(args.data_path, 'train/whoops_commonsense_category_unusualness.json')
+        QA_file = os.path.join(args.data_path, 'train/whoops_commonsense_category.json')
         QAs = json.load(open(QA_file))
 
         # QAs = {}
@@ -340,6 +340,7 @@ class Evaluation:
                 result = 0
             else:
                 result = 1 if answers[0] in QAs[i][0] else 0
+            print(result)
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)

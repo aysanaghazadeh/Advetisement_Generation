@@ -474,7 +474,7 @@ class PersuasivenessMetric:
                     """
             payload = get_payload(action_score_prompt, base64_image)
             output = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
-            print(output)
+            # print(output)
             output = output['choices'][0]["message"]['content'].split(':')[-1]
             print('action:', output)
             action_numeric_value += extract_number(output)

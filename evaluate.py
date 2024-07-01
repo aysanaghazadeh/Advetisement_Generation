@@ -57,7 +57,7 @@ class Evaluation:
     @staticmethod
     def evaluate_persuasiveness_alignment(args):
         persuasiveness = PersuasivenessMetric(args)
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_persuasiveness_alignment.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_persuasiveness_alignment.json')
         print(saving_path)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         persuasiveness_alignment_scores = {}

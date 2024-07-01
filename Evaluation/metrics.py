@@ -276,18 +276,19 @@ class PersuasivenessMetric:
             'VILA': "Efficient-Large-Model/VILA1.5-13b",
             'InternVL': "OpenGVLab/InternVL-Chat-V1-5"
         }
-        model_id = model_id_map[args.VLM]
         task_map = {
             'LLAVA': "image-to-text",
             'VILA': "text-generation",
             'InternVL': "visual-question-answering"
         }
-        task = task_map[args.VLM]
-        self.pipe = pipeline(task,
-                             model=model_id,
-                             model_kwargs={"quantization_config": quantization_config},
-                             trust_remote_code=True,
-                             device_map='auto')
+        if args.VLM != 'GPT4v':
+            model_id = model_id_map[args.VLM]
+            task = task_map[args.VLM]
+            self.pipe = pipeline(task,
+                                 model=model_id,
+                                 model_kwargs={"quantization_config": quantization_config},
+                                 trust_remote_code=True,
+                                 device_map='auto')
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):

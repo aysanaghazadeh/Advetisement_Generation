@@ -316,14 +316,14 @@ class Evaluation:
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
         # csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
-        csv_file_path = os.path.join(args.result_path, 'whoops_QA_llava.csv')
+        csv_file_path = os.path.join(args.result_path, 'symbolic_QA_llava.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
         # dataset = load_dataset('nlphuji/whoops',
         #                        cache_dir=None,
         #                        use_auth_token='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')
-        QA_file = os.path.join(args.data_path, 'train/whoops_QA.json')
+        QA_file = os.path.join(args.data_path, 'train/symbolic_QA.json')
         QAs = json.load(open(QA_file))
 
         # QAs = {}
@@ -336,7 +336,7 @@ class Evaluation:
         # with open(QA_file, "w") as outfile:
         #     json.dump(QAs, outfile)
         for i in QAs:
-            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{i}.png'))
+            image = Image.open(os.path.join(args.data_path, 'train_images', i))
             answers = self.whoops.get_prediction(image, QAs[i])
             print(answers)
             if len(answers) == 0:

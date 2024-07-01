@@ -11,6 +11,7 @@ import re
 from openai import OpenAI
 import base64
 import requests
+from io import BytesIO
 
 api_key = "sk-proj-zfkbSHxUNuF7Ev8TEWWRT3BlbkFJieFKktR5T8tIUVNAJRBz"
 
@@ -416,8 +417,9 @@ class PersuasivenessMetric:
                 print("No numeric value found in the input string")
                 return 0
 
-        def encode_image(image):
-            return base64.b64encode(image).decode('utf-8')
+        def encode_image(image_path):
+            with open(image_path, "rb") as image_file:
+                return base64.b64encode(image_file.read()).decode('utf-8')
 
         def get_payload(prompt, base64_image):
             payload = {
@@ -450,7 +452,7 @@ class PersuasivenessMetric:
             print(generated_image.split('/'))
             image_url = '/'.join(generated_image.split('/')[-2:])
             action_reasons = self.QA[image_url][0]
-        base64_image = encode_image(image)
+        base64_image = encode_image(generated_image)
 
         headers = {
             "Content-Type": "application/json",

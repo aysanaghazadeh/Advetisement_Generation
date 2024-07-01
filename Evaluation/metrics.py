@@ -488,7 +488,7 @@ class PersuasivenessMetric:
             payload = get_payload(reason_score_prompt, base64_image)
             output = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
             print(output)
-            output = output[0]["generated_text"].split(':')[-1]
+            output = output['choices'][0]["message"]['content'].split(':')[-1]
             print('reason:', output)
             reason_numeric_value += extract_number(output)
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)

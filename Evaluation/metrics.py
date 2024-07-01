@@ -381,7 +381,7 @@ class PersuasivenessMetric:
             answer_format = 'Answer: ${score}'
             action_score_prompt = f"""
                     <image>\n USER:
-                    Imagine you are a human evaluating how convincing is an image. Your task is to score how convincing an image is given an action on a scale from -5 to 5. 
+                    Imagine you are a human evaluating how convincing is an image. Your task is to score how convincing an image is given an action on a scale from -10 to 10. 
                     Context: If the image convinces the audience to take an action considered convincing.
                     Question: Given the message of {action} provide the score in the following format: {answer_format}
                     ASSISTANT:
@@ -394,7 +394,7 @@ class PersuasivenessMetric:
             reason_score_prompt = \
                 f"""
                 <image>\n USER:
-                Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relatedness of an image and a reason on a scale from -5 to 5. 
+                Imagine you are a human evaluating how related an image is to a reason. Your task is to score the relatedness of an image and a reason on a scale from -10 to 10. 
                 Context: Imagine the image is convincing the audience to take the action in the message of {action}. If the reason in the image is the same as the given message in the next sentence, the score is 5 and if it is totally irrelevant the score is -5.
                 Question: Given the message of {reason} and the image, provide the score in the following format: {answer_format}. 
                 ASSISTANT:

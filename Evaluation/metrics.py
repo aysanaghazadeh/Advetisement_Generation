@@ -441,7 +441,7 @@ class PersuasivenessMetric:
                         ]
                     }
                 ],
-                "max_tokens": 300
+                "max_tokens": 20
             }
             return payload
 
@@ -465,16 +465,17 @@ class PersuasivenessMetric:
             print(action_reason)
             action = action_reason.lower().split('because')[0]
             reason = action_reason.lower().split('because')[-1]
-            answer_format = 'Answer: ${score}'
+            answer_format = 'Answer: score'
             action_score_prompt = f"""
-                    Imagine you are a human evaluating how convincing is an image. Your task is to score how convincing an image is given an action on a scale from -5 to 5. 
+                    Imagine you are a human evaluating how convincing is an image ignoring the dictations and misspelling. 
+                    Your task is to score how convincing an image is given an action on a scale from -5 to 5. 
                     Context: If the image convinces the audience to take an action considered convincing.
                     Question: Given the message of {action} provide the score in the following format: {answer_format}
                     """
             payload = get_payload(action_score_prompt, base64_image)
             output = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
             print(output)
-            output = output[0]["generated_text"].split(':')[-1]
+            output = output['choices'][0]["message"]['content'].split(':')[-1]
             print('action:', output)
             action_numeric_value += extract_number(output)
             reason_score_prompt = \

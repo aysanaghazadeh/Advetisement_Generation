@@ -1,14 +1,14 @@
 import json
 import pandas as pd
 
-llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llama3_FT_generated_description_new_test_setGPT4v_persuasiveness_alignment.json_SDXL_20240616_232723GPT4v_persuasiveness_alignment.json'))
+llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llama3_ppo_generated_description_8000steps_test_set_persuasiveness_alignment.json_SDXL_20240623_141219_persuasiveness_alignment.json'))
 # ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631.json'))
 
 values = []
 above_5_count = 0
 below_neg_5_count = 0
 print(len(llama_file))
-for filename in list(llama_file.keys()):
+for filename in list(llama_file.keys())[:200]:
     if llama_file[filename] > 5:
         above_5_count += 1
     elif llama_file[filename] < -5:
@@ -93,5 +93,4 @@ print(sum(list(persuasiveness.values())[0:5000])/len(list(persuasiveness.values(
 import os
 root_directory = '../Data/PittAd/test_set'
 count = 0
-
 

@@ -316,14 +316,14 @@ class Evaluation:
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
         # csv_file_path = os.path.join(args.result_path, ''.join(['action_reason_llava_', args.description_file]))
-        csv_file_path = os.path.join(args.result_path, 'whoops_caption_hard.csv')
+        csv_file_path = os.path.join(args.result_path, 'whoops_caption_new_hard.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
         # dataset = load_dataset('nlphuji/whoops',
         #                        cache_dir=None,
         #                        use_auth_token='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')
-        QA_file = os.path.join(args.data_path, 'train/whoops_caption_hard.json')
+        QA_file = os.path.join(args.data_path, 'train/whoops_caption_new_hard.json')
         QAs = json.load(open(QA_file))
 
         # QAs = {}

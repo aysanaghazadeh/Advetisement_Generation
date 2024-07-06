@@ -36,11 +36,14 @@ def get_single_description(args, image_url, pipe):
 def get_descriptions(args):
     if args.task == 'whoops':
         images = [f'{i}.png' for i in range(500)]
+        description_file = os.path.join(args.data_path, 'PittAd/train',
+                                        f'{args.description_type}_llava_description_{args.task}.csv')
     else:
         images = get_train_data(args)['ID'].values
+        description_file = os.path.join(args.data_path, 'train',
+                                        f'{args.description_type}_llava_description_{args.task}.csv')
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
-    description_file = os.path.join(args.data_path, 'train', f'{args.description_type}_llava_description_{args.task}.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:

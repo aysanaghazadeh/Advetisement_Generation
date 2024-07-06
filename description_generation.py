@@ -1,5 +1,5 @@
 import json
-
+from jinja2 import Environment, FileSystemLoader
 from transformers import pipeline
 from util.data.trian_test_split import get_test_data, get_train_data
 from PIL import Image
@@ -10,11 +10,12 @@ from configs.inference_config import get_args
 from util.prompt_engineering.prompt_generation import PromptGenerator
 
 
-def get_model():
+def get_model(args):
     # Load model directly
     model_id = "llava-hf/llava-1.5-13b-hf"
     pipe = pipeline("image-to-text", model=model_id, device_map='auto')
     return pipe
+
 
 def get_llm(args):
     model = PromptGenerator(args)
@@ -22,27 +23,37 @@ def get_llm(args):
     return model
 
 
+def get_single_description(args, image_url, pipe):
+    image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
+    env = Environment(loader=FileSystemLoader(args.prompt_path))
+    template = env.get_template(args.VLM_prompt)
+    prompt = template.render()
+    outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 512})
+    description = outputs[0]['generated_text'].split('ASSISTANT: ')[-1]
+    return description
+
+
 def get_descriptions(args):
-    train_images = get_train_data(args)['ID'].values
-    print(f'number of images in train set: {len(train_images)}')
+    if args.task == 'whoops':
+        images = [f'{i}.png' for i in range(500)]
+    else:
+        images = get_train_data(args)['ID'].values
+    print(f'number of images in the set: {len(images)}')
     print('*' * 100)
-    description_file = os.path.join(args.data_path, 'train/simple_llava_description_large_train_set.csv')
+    description_file = os.path.join(args.data_path, 'train', f'{args.description_type}_llava_description_{args.task}.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:
         writer = csv.writer(file)
         # Write the header
         writer.writerow(['ID', 'description'])
-    pipe = get_model()
+    pipe = get_model(args)
     processed_images = set()
-    for image_url in train_images:
+    for image_url in images:
         if image_url in processed_images:
             continue
         processed_images.add(image_url)
-        image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
-        prompt = f"USER:<image>\nDescribe the image in detail.\nASSISTANT:"
-        outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 300})
-        description = outputs[0]['generated_text'].split('ASSISTANT: ')[-1]
+        description = get_single_description(args, image_url, pipe)
         print(f'output of image {image_url} is {description}')
         print('-' * 80)
         pair = [image_url, description]

@@ -34,6 +34,17 @@ def parse_args():
                         required=True,
                         help='Choose among ARGS for commandline arguments, DEFAULT for default values, or YAML for '
                              'config file')
+    parser.add_argument('--task',
+                        type=str,
+                        default='PittAd',
+                        help='Choose between PittAd, whoops')
+    parser.add_argument('--description_type',
+                        type=str,
+                        default='IN',
+                        help='Choose among IN, UH, combine')
+    parser.add_argument('--VLM_prompt',
+                        type=str,
+                        default='IN_description_generation.jinja')
     parser.add_argument('--llm_prompt',
                          type=str,
                          default='LLM_input.jinja',

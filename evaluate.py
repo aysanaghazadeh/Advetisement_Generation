@@ -370,11 +370,11 @@ class Evaluation:
 
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, 'whoops_caption_new_hard.csv')
+        csv_file_path = os.path.join(args.result_path, f'whoops_caption_new_hard_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, f'train/whoops_caption_new_hard_{args.description_type}_{args.VLM}_description_{args.LLM}.json')
+        QA_file = os.path.join(args.data_path, f'train/whoops_caption_new_hard.json')
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train', f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))

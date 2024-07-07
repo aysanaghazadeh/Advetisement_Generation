@@ -45,7 +45,7 @@ def get_combine_description(args, image_url, pipe):
     IN_description = IN_descriptions.loc[IN_descriptions['ID'] == image_url]['description'].values[0]
     UH_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/UH_llava_description_{args.task}_version_2.csv'))
     UH_description = UH_descriptions.loc[UH_descriptions['ID'] == image_url]['description'].values[0]
-    v_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/v_llava_description_{args.task}_version_2.csv'))
+    v_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/v_llava_description_{args.task}.csv'))
     v_description = v_descriptions.loc[v_descriptions['ID'] == image_url]['description'].values[0]
     data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'token_length':None}
     env = Environment(loader=FileSystemLoader(args.prompt_path))

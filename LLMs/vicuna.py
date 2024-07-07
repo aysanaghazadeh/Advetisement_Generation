@@ -28,6 +28,6 @@ class Vicuna(nn.Module):
             output = output.replace("']", '')
             output = output.replace('["', '')
             output = output.replace('"]', '')
-            output = output.split('Description of the image:')[-1]
+            output = output.split('Summary:')[-1]
             return output
         # return self.model(**inputs)

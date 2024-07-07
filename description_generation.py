@@ -58,7 +58,7 @@ def get_combine_description(args, image_url, pipe):
     env = Environment(loader=FileSystemLoader(args.prompt_path))
     template = env.get_template(args.VLM_prompt)
     prompt = template.render(**data)
-    description = pipe(prompt=prompt)
+    description = pipe(inputs=prompt)
     return description
 
 

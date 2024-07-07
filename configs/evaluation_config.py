@@ -43,9 +43,6 @@ def parse_args():
                         type=str,
                         default='IN',
                         help='Choose among IN, UH, combine')
-    parser.add_argument('--VLM',
-                        type=str,
-                        default='llava')
     parser.add_argument('--VLM_prompt',
                         type=str,
                         default='IN_description_generation.jinja')

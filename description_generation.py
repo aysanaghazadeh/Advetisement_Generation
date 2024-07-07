@@ -24,7 +24,7 @@ def get_model(args):
         pipe = pipe_map[args.LLM](args)
         return pipe
     model_map = {
-        'llava': 'llava-hf/llava-1.5-13b-hf'
+        'LLAVA': 'llava-hf/llava-1.5-13b-hf'
     }
     model_id = model_map[args.VLM]
     pipe = pipeline("image-to-text", model=model_id, device_map='auto')

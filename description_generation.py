@@ -83,7 +83,10 @@ def get_descriptions(args):
         if image_url in processed_images:
             continue
         processed_images.add(image_url)
-        description = get_single_description(args, image_url, pipe)
+        if args.description_type == 'combine':
+            description = get_combine_description(args, image_url)
+        else:
+            description = get_single_description(args, image_url, pipe)
         print(f'output of image {image_url} is {description}')
         print('-' * 80)
         pair = [image_url, description]

@@ -8,20 +8,13 @@ import csv
 import pandas as pd
 from configs.inference_config import get_args
 from util.prompt_engineering.prompt_generation import PromptGenerator
-from LLMs.vicuna import Vicuna
-from LLMs.LLAMA3 import LLAMA3
-from LLMs.phi import Phi
+from LLMs.LLM import LLM
 
 
 def get_model(args):
     # Load model directly
     if args.description_type == 'combine':
-        pipe_map = {
-            'vicuna': Vicuna,
-            'LLAMA3': LLAMA3,
-            'phi': Phi
-        }
-        pipe = pipe_map[args.LLM](args)
+        pipe = LLM(args)
         return pipe
     model_map = {
         'LLAVA': 'llava-hf/llava-1.5-13b-hf'

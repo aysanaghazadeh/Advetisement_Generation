@@ -3,6 +3,7 @@ from LLMs.Mistral7B import Mistral7B
 from LLMs.LLAMA3 import LLAMA3
 from LLMs.phi import Phi
 from LLMs.Mistral7BInstruct import Mistral7BInstruct
+from LLMs.vicuna import Vicuna
 
 
 class LLM(nn.Module):
@@ -12,7 +13,8 @@ class LLM(nn.Module):
             'Mistral7B': Mistral7B,
             'LLAMA3': LLAMA3,
             'phi': Phi,
-            'Mistral7BInstruct': Mistral7BInstruct
+            'Mistral7BInstruct': Mistral7BInstruct,
+            'vicuna': Vicuna
         }
         self.model = model_map[args.LLM](args)
 

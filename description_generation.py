@@ -63,7 +63,7 @@ def get_descriptions(args):
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     description_file = os.path.join(args.data_path, 'train',
-                                    f'{args.description_type}_{args.VLM}_description_{args.task}.csv')
+                                    f'{args.description_type}_{args.VLM}_description_{args.task}_version_2.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:

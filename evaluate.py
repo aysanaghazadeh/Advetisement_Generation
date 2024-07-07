@@ -356,6 +356,7 @@ class Evaluation:
         def get_prediction(prompt, options, pipe):
             answers = []
             output = pipe(prompt)
+            print(output)
             answer = ''.join(i for i in output if i.isdigit())
             if answer != '':
                 answers.append(int(answer))

@@ -8,11 +8,25 @@ import csv
 import pandas as pd
 from configs.inference_config import get_args
 from util.prompt_engineering.prompt_generation import PromptGenerator
+from LLMs.vicuna import Vicuna
+from LLMs.LLAMA3 import LLAMA3
+from LLMs.phi import Phi
 
 
 def get_model(args):
     # Load model directly
-    model_id = "llava-hf/llava-1.5-13b-hf"
+    if args.description_type == 'combine':
+        pipe_map = {
+            'vicuna': Vicuna,
+            'LLAMA3': LLAMA3,
+            'phi': Phi
+        }
+        pipe = pipe_map[args.LLM](args)
+        return pipe
+    model_map = {
+        'llava': 'llava-hf/llava-1.5-13b-hf'
+    }
+    model_id = model_map[args.VLM]
     pipe = pipeline("image-to-text", model=model_id, device_map='auto')
     return pipe
 
@@ -33,6 +47,21 @@ def get_single_description(args, image_url, pipe):
     return description
 
 
+def get_combine_description(args, image_url, pipe):
+    IN_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/IN_llava_description_{args.task}.csv'))
+    IN_description = IN_descriptions.loc[IN_descriptions['ID'] == image_url]['description'].values[0]
+    UH_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/UH_llava_description_{args.task}.csv'))
+    UH_description = UH_descriptions.loc[UH_descriptions['ID'] == image_url]['description'].values[0]
+    v_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/v_llava_description_{args.task}.csv'))
+    v_description = v_descriptions.loc[v_descriptions['ID'] == image_url]['description'].values[0]
+    data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'token_length':None}
+    env = Environment(loader=FileSystemLoader(args.prompt_path))
+    template = env.get_template(args.VLM_prompt)
+    prompt = template.render(**data)
+    description = pipe(prompt=prompt)
+    return description
+
+
 def get_descriptions(args):
     if args.task == 'whoops':
         images = [f'{i}.png' for i in range(500)]
@@ -41,7 +70,7 @@ def get_descriptions(args):
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     description_file = os.path.join(args.data_path, 'train',
-                                    f'{args.description_type}_llava_description_{args.task}.csv')
+                                    f'{args.description_type}_{args.VLM}_description_{args.task}.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:

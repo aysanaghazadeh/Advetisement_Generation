@@ -84,7 +84,7 @@ def get_descriptions(args):
             continue
         processed_images.add(image_url)
         if args.description_type == 'combine':
-            description = get_combine_description(args, image_url)
+            description = get_combine_description(args, image_url, pipe)
         else:
             description = get_single_description(args, image_url, pipe)
         print(f'output of image {image_url} is {description}')

@@ -381,7 +381,7 @@ class Evaluation:
         for i in QAs:
             image_url = f'{i}.png'
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
-            options = QAs[image_url][1]
+            options = QAs[i][1]
             env = Environment(loader=FileSystemLoader(args.prompt_path))
             template = env.get_template(args.VLM_prompt)
             data = {'description': description, 'options': parse_options(options)}

@@ -378,8 +378,6 @@ class Evaluation:
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train', f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))
-        print(os.path.join(args.data_path, 'train', f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))
-        print(descriptions)
         for i in QAs:
             image_url = f'{i}.png'
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]

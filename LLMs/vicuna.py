@@ -28,6 +28,6 @@ class Vicuna(nn.Module):
             output = output.replace("']", '')
             output = output.replace('["', '')
             output = output.replace('"]', '')
-            output = output.split('Answer:')[-1]
+            output = output.split('Assistant:')[-1]
             return output
         # return self.model(**inputs)

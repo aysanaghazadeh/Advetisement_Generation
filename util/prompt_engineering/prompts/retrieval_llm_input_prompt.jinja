@@ -1,0 +1,11 @@
+USER:
+Context:
+{{description}}.
+Question:
+Based on the context return the index of the best options among the given options to interpret the described image.
+Separate the answers by comma and even without enough information return the 3 best indices among the options:
+Options:
+{{options}}
+None of the above is not allowed. Even without enough information choose the best interpretation.
+Your output format is only {answer_format} form, no other form.
+ASSISTANT:

@@ -124,35 +124,6 @@ class Evaluation:
         print(saving_path)
         root_directory = os.path.join(args.data_path, 'train_images_total')
         persuasiveness_scores = {}
-        # image_list = [
-        #     "60880.jpg",
-        #     "100170.jpg",
-        #     "65170.jpg",
-        #     "86630.jpg",
-        #     "13470.jpg",
-        #     "95690.jpg",
-        #     "121490.jpg",
-        #     "12080.jpg",
-        #     "11160.jpg",
-        #     "66680.jpg",
-        #     "66340.jpg",
-        #     "132590.jpg",
-        #     "133370.jpg",
-        #     "100270.jpg",
-        #     "133370.jpg",
-        #     "36080.jpg",
-        #     "100520.jpg",
-        #     "26400.jpg",
-        #     "53640.jpg",
-        #     "158750.jpg",
-        #     "69420.jpg",
-        #     "127260.jpg",
-        #     "134110.jpg",
-        #     "60380.jpg",
-        #     "58030.jpg",
-        #     "38390.jpg",
-        #     "132590.jpg"
-        # ]
 
         for dirpath, _, filenames in os.walk(root_directory):
             for filename in filenames:
@@ -317,15 +288,15 @@ class Evaluation:
     def evaluate_whoops_llava(self, args):
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, 'whoops_caption_new_hard.csv')
+        csv_file_path = os.path.join(args.result_path, 'symbolic.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, 'train/whoops_caption_new_hard.json')
+        QA_file = os.path.join(args.data_path, 'train/symbolic_mapped.json')
         QAs = json.load(open(QA_file))
 
         for i in QAs:
-            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{i}.png'))
+            image = Image.open(os.path.join(args.data_path, 'train_images_total', f'{i}'))
             answers = self.whoops.get_prediction(image, QAs[i])
             print(answers)
             if len(answers) == 0:
@@ -401,6 +372,69 @@ class Evaluation:
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 row['id'] = i
+                row['acc@1'] = result
+                writer.writerow(list(row.values()))
+
+            for metric in results:
+                results[metric] += result
+        for metric in results:
+            print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
+
+    @staticmethod
+    def evaluate_action_reason_LLM(args):
+        def parse_options(options):
+            return '\n'.join([f'{str(i)}. {option}' for i, option in enumerate(options)])
+
+        def get_prediction(prompt, options, pipe):
+            answers = []
+            output = pipe(prompt)
+            print(output)
+            answer = ''.join(i for i in output if i.isdigit())
+            if answer != '':
+                answers.append(int(answer))
+            predictions = set()
+            for ind in answers:
+                if len(options) > ind:
+                    predictions.add(options[ind])
+                    if len(predictions) == 3:
+                        break
+            answers = list(predictions)
+            return answers
+
+        results = {'acc@1': 0}
+        fieldnames = ['id', 'prediction', 'acc@1']
+        csv_file_path = os.path.join(args.result_path,
+                                     f'symbols_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
+        with open(csv_file_path, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+        QA_file = os.path.join(args.data_path, f'train/symbol.json')
+        QAs = json.load(open(QA_file))
+        pipe = LLM(args)
+        descriptions = pd.read_csv(os.path.join(args.data_path, 'train',
+                                                f'simple_llava_description.csv'))
+        for image_url in QAs:
+            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
+            options = QAs[image_url][1]
+            env = Environment(loader=FileSystemLoader(args.prompt_path))
+            template = env.get_template(args.VLM_prompt)
+            data = {'description': description, 'options': parse_options(options)}
+            prompt = template.render(**data)
+            answers = get_prediction(prompt, options, pipe)
+            print(answers)
+            if len(answers) == 0:
+                result = 0
+            else:
+                if len(QAs[image_url]) == 3:
+                    result = 1 if answers[0] in QAs[image_url][1] else 0
+                else:
+                    result = 1 if answers[0] in QAs[image_url][0] else 0
+            print(result)
+            row = {}
+            with open(csv_file_path, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                row['id'] = image_url
+                row['prediction'] = answers
                 row['acc@1'] = result
                 writer.writerow(list(row.values()))
 

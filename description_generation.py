@@ -60,7 +60,7 @@ def get_descriptions(args):
         images = [f'{i}.png' for i in range(500)]
     else:
         # images = get_train_data(args)['ID'].values
-        images = list(json.load(open(os.path.join(args.data_path, 'train', 'symbolic_random_50.csv'))).keys())
+        images = list(json.load(open(os.path.join(args.data_path, 'train', 'symbolic_random_50.json'))).keys())
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     description_file = os.path.join(args.data_path, 'train',

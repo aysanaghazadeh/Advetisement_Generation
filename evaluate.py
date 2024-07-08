@@ -404,11 +404,11 @@ class Evaluation:
         results = {'acc@1': 0}
         fieldnames = ['id', 'prediction', 'acc@1']
         csv_file_path = os.path.join(args.result_path,
-                                     f'symbolic_random_50_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
+                                     f'whoops_commonsense_category_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, f'train/symbolic_random_50.json')
+        QA_file = os.path.join(args.data_path, f'train/whoops_commonsense_category.json')
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train',

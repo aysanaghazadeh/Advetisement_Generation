@@ -10,10 +10,15 @@ class Vicuna(nn.Module):
         super(Vicuna, self).__init__()
         self.args = args
         if not args.train:
+            quantization_config = BitsAndBytesConfig(
+                load_in_8bit=True,
+                bnb_8bit_compute_dtype=torch.float16
+            )
             self.tokenizer = AutoTokenizer.from_pretrained("lmsys/vicuna-13b-v1.5",
                                                            token='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')
             self.model = AutoModelForCausalLM.from_pretrained("lmsys/vicuna-13b-v1.5",
                                                               token='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',
+                                                              model_kwargs={"quantization_config": quantization_config},
                                                               device_map="auto")
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_ppo_model_DMD_batch_size_1'))

@@ -542,10 +542,10 @@ class Whoops:
                       f"Assistant: ")
         else:
             prompt = (f"USER:<image>\n"
-                  f"Question: What is the index of best symbolic interpretations among the options for the image?\n"
-                  f"Options: {options}\n"
-                  f"your answer must follow the format of {answer_format}\n"
-                  f"Assistant: ")
+                      f"Question: What is the index of best symbolic interpretations among the options for the image?\n"
+                      f"Options: {options}\n"
+                      f"your answer must follow the format of {answer_format}\n"
+                      f"Assistant: ")
         return prompt
 
     def get_prediction(self, image, QA):

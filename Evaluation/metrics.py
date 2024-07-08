@@ -542,7 +542,7 @@ class Whoops:
                       f"Assistant: ")
         else:
             prompt = (f"USER:<image>\n"
-                  f"Question: What is the index of best interpretations among the options for the image?\n"
+                  f"Question: What is the index of best symbolic interpretations among the options for the image?\n"
                   f"Options: {options}\n"
                   f"your answer must follow the format of {answer_format}\n"
                   f"Assistant: ")
@@ -558,7 +558,7 @@ class Whoops:
         prompt = self.get_prompt(options, question)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"].split(':')[-1]
-        # print(output)
+        print(output)
         answer = ''.join(i for i in output if i.isdigit())
         if answer != '':
             answers.append(int(answer))

@@ -416,7 +416,9 @@ class Evaluation:
         print(descriptions)
         for image_url in QAs:
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
-            print(description)
+            if len(description) == 0:
+                continue
+            description = description[0]
             options = QAs[image_url][1]
             env = Environment(loader=FileSystemLoader(args.prompt_path))
             template = env.get_template(args.VLM_prompt)

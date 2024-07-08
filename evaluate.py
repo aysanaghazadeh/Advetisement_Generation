@@ -415,7 +415,8 @@ class Evaluation:
                                                 f'simple_llava_description.csv'))
         print(descriptions)
         for image_url in QAs:
-            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
+            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
+            print(description)
             options = QAs[image_url][1]
             env = Environment(loader=FileSystemLoader(args.prompt_path))
             template = env.get_template(args.VLM_prompt)

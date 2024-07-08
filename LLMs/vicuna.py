@@ -18,8 +18,8 @@ class Vicuna(nn.Module):
                                                            token='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')
             self.model = AutoModelForCausalLM.from_pretrained("lmsys/vicuna-13b-v1.5",
                                                               token='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',
+                                                              quantization_config=quantization_config,
                                                               device_map="auto")
-            self.model.quantize(self.tokenizer, quant_config=quantization_config)
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_ppo_model_DMD_batch_size_1'))
 

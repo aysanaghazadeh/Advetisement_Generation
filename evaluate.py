@@ -413,13 +413,8 @@ class Evaluation:
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train',
                                                 f'UH_LLAVA_description_symbols.csv'))
-        print(descriptions)
         for image_url in QAs:
-            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
-            if len(description) == 0:
-                print(image_url)
-                continue
-            description = description[0]
+            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             options = QAs[image_url][1]
             env = Environment(loader=FileSystemLoader(args.prompt_path))
             template = env.get_template(args.VLM_prompt)
@@ -434,7 +429,7 @@ class Evaluation:
                     result = 1 if answers[0] in QAs[image_url][1] else 0
                 else:
                     result = 1 if answers[0] in QAs[image_url][0] else 0
-            # print(result)
+            print(result)
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)

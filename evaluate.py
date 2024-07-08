@@ -288,11 +288,11 @@ class Evaluation:
     def evaluate_whoops_llava(self, args):
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, 'symbolic.csv')
+        csv_file_path = os.path.join(args.result_path, 'symbolic_random_50.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, 'train/symbolic_mapped.json')
+        QA_file = os.path.join(args.data_path, 'train/symbolic_random_50.json')
         QAs = json.load(open(QA_file))
 
         for i in QAs:

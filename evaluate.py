@@ -417,6 +417,7 @@ class Evaluation:
         for image_url in QAs:
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
             if len(description) == 0:
+                print(image_url)
                 continue
             description = description[0]
             options = QAs[image_url][1]
@@ -425,7 +426,7 @@ class Evaluation:
             data = {'description': description, 'options': parse_options(options)}
             prompt = template.render(**data)
             answers = get_prediction(prompt, options, pipe)
-            print(answers)
+            # print(answers)
             if len(answers) == 0:
                 result = 0
             else:
@@ -433,7 +434,7 @@ class Evaluation:
                     result = 1 if answers[0] in QAs[image_url][1] else 0
                 else:
                     result = 1 if answers[0] in QAs[image_url][0] else 0
-            print(result)
+            # print(result)
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)

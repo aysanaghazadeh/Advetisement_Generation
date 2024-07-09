@@ -133,6 +133,9 @@ def parse_args():
     parser.add_argument('--VLM',
                         type=str,
                         default='VILA')
+    parser.add_argument('--top_k',
+                        type=int,
+                        default=1)
     return parser.parse_args()
 
 

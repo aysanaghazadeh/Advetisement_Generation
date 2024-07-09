@@ -49,6 +49,6 @@ class LLAMA3(nn.Module):
             output = output.replace("']", '')
             output = output.replace('["', '')
             output = output.replace('"]', '')
-            output = output.split('Description of the image:')[-1]
+            output = output.split(':')[-1]
             return output
         # return self.model(**inputs)

@@ -14,11 +14,16 @@ class LLAMA3(nn.Module):
             #     "language_model": 1,
             #     "language_projection": 2
             # }
+            quantization_config = BitsAndBytesConfig(
+                load_in_8bit=True,
+                bnb_8bit_compute_dtype=torch.float16
+            )
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                            token='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')
             self.model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                               token='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',
-                                                              device_map="auto")
+                                                              device_map="auto",
+                                                              quantization_config=quantization_config)
                                                               # device_map=device_map)
             # self.model = self.model.to(device='cuda:1')
             if args.fine_tuned:

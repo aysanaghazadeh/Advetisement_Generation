@@ -288,11 +288,11 @@ class Evaluation:
     def evaluate_whoops_llava(self, args):
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, 'symbolic_random_50.csv')
+        csv_file_path = os.path.join(args.result_path, 'whoops_explanation_hard.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, 'train/symbolic_random_50.json')
+        QA_file = os.path.join(args.data_path, 'train/whoops_explanation_hard.json')
         QAs = json.load(open(QA_file))
 
         for i in QAs:
@@ -342,11 +342,11 @@ class Evaluation:
 
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, f'whoops_commonsense_category_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
+        csv_file_path = os.path.join(args.result_path, f'whoops_explanation_hard_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, f'train/whoops_commonsense_category.json')
+        QA_file = os.path.join(args.data_path, f'train/whoops_explanation_hard.json')
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train', f'{args.description_type}_{args.VLM}_description_{args.task}_version_2.csv'))

@@ -16,6 +16,7 @@ import csv
 from util.data.trian_test_split import get_test_data
 from LLMs.LLM import LLM
 
+
 class Evaluation:
     def __init__(self, metrics, args):
         self.metrics = metrics
@@ -301,10 +302,13 @@ class Evaluation:
             writer.writeheader()
         QA_file = os.path.join(args.data_path, args.test_set_QA)
         QAs = json.load(open(QA_file))
-
+        descriptions = pd.read_csv(os.path.join(args.data_path,
+                                                'train',
+                                                f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))
         for image_index in QAs:
+            description = descriptions.loc[descriptions['ID'] == image_index]['description'].values[0]
             image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{image_index}.png'))
-            answers = self.whoops.get_prediction(image, QAs[image_index])
+            answers = self.whoops.get_prediction(image, description, QAs[image_index])
             correct_options = QAs[image_index][1] if len(QAs[image_index][0]) == 3 else QAs[image_index][0]
             print(answers)
             if len(answers) == 0:

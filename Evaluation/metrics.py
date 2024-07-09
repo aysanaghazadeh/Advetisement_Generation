@@ -537,22 +537,22 @@ class Whoops:
         """
         return answer_format
 
-    def get_prompt(self, options, question=None):
+    def get_prompt(self, options, question=None, description=None):
         options = self.parse_options(options)
-        data = {'options': options, 'question': question}
+        data = {'options': options, 'question': question, 'description': description}
         env = Environment(loader=FileSystemLoader(self.args.prompt_path))
         template = env.get_template(self.args.VLM_prompt)
         prompt = template.render(**data)
         return prompt
 
-    def get_prediction(self, image, QA):
+    def get_prediction(self, image, description, QA):
         answers = []
         options = QA[-1]
         if len(QA) == 3:
             question = QA[0]
         else:
             question = None
-        prompt = self.get_prompt(options, question)
+        prompt = self.get_prompt(options, question, description)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"].split(':')[-1]
         print(output)

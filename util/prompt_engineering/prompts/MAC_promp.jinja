@@ -1,0 +1,12 @@
+USER: You are a highly intelligent multi-label classification system. You will be given an Image Description and a Question. Answer the question based on the Image Description:"""
+Image Description:
+{{description}
+Question:
+Detect the the type unusualness categories:
+You should select multiple unusualness categories ONLY if multiple unusualness are correct about the image.
+If none of the unusualness categories exist, one of the predicted labels has to be the index of closest type of unusualness to the image.
+{{options}}
+You must choose the index of detected unusualness from the following options and the acceptable output format is only Answer: ${indexes of the correct options sepreated by comma} form, no other form. Do NOT output any extra information or explanation.
+Strictly follow this format to response: Output predicted options from the given options.  Seperat the predictions by comma. Do NOT output any extra information or explanation.
+ASSISTANT:
+)

@@ -286,38 +286,50 @@ class Evaluation:
                 json.dump(image_text_alignment_scores, outfile)
 
     def evaluate_whoops_llava(self, args):
-        results = {'acc@1': 0}
-        fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, 'whoops_commonsense_category_MAC.csv')
+        results = {}
+        for i in range(0, args.top_k):
+            results[f'acc@{i + 1}'] = 0
+        fieldnames = ['id']
+        for i in range(0, args.top_k):
+            fieldnames.append(f'acc@{i + 1}')
+        csv_file_path = os.path.join(args.result_path, f'{args.test_set_QA.split("/")[-1].replace(".json", "")}'
+                                                       f'_{args.description_type}'
+                                                       f'_{args.VLM}_description_{args.LLM}_'
+                                                       f'{args.VLM_prompt.replace(".jinja", "")}.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, 'train/whoops_commonsense_category.json')
+        QA_file = os.path.join(args.data_path, args.test_set_QA)
         QAs = json.load(open(QA_file))
 
-        for i in QAs:
-            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{i}.png'))
-            answers = self.whoops.get_prediction(image, QAs[i])
-
-            correct_options = QAs[i][1] if len(QAs[0]) == 3 else QAs[i][0]
+        for image_index in QAs:
+            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{image_index}.png'))
+            answers = self.whoops.get_prediction(image, QAs[image_index])
+            correct_options = QAs[image][1] if len(QAs[image][0]) == 3 else QAs[image][0]
             print(answers)
             if len(answers) == 0:
-                result = 0
+                result = {}
+                for i in range(0, args.top_k):
+                    result[f'acc@{i + 1}'] = 0
             else:
-                result = 0
-                for answer in answers[0: args.top_k]:
+                result = {}
+                for i in range(0, args.top_k):
+                    result[f'acc@{i + 1}'] = 0
+                for i, answer in enumerate(answers[0: args.top_k]):
                     if answer in correct_options:
-                        result = 1
+                        for j in range(i, args.top_k):
+                            result[f'acc@{j + 1}'] = 1
             print(result)
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 row['id'] = i
-                row['acc@1'] = result
+                for metric in result:
+                    row[metric] = result[metric]
                 writer.writerow(list(row.values()))
 
             for metric in results:
-                results[metric] += result
+                results[metric] += result[metric]
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 

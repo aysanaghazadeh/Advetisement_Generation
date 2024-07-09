@@ -1,4 +1,6 @@
 import json
+
+from jinja2 import Environment, FileSystemLoader
 from transformers import CLIPProcessor, CLIPModel, AutoTokenizer, AutoModelForCausalLM
 from PIL import Image
 import torch
@@ -497,6 +499,7 @@ class PersuasivenessMetric:
 
 class Whoops:
     def __init__(self, args):
+        self.args = args
         quantization_config = BitsAndBytesConfig(
             load_in_8bit=True,
             bnb_8bit_compute_dtype=torch.float16
@@ -532,20 +535,11 @@ class Whoops:
         return answer_format
 
     def get_prompt(self, options, question=None):
-        answer_format = self.get_answer_format()
         options = self.parse_options(options)
-        if question:
-            prompt = (f"USER:<image>\n"
-                      f"Question: {question}\n"
-                      f"Options: {options}\n"
-                      f"your answer must follow the format of {answer_format}\n"
-                      f"Assistant: ")
-        else:
-            prompt = (f"USER:<image>\n"
-                      f"Question: What is the index of best symbolic interpretations among the options for the image?\n"
-                      f"Options: {options}\n"
-                      f"your answer must follow the format of {answer_format}\n"
-                      f"Assistant: ")
+        data = {'options': options, 'question': question}
+        env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+        template = env.get_template(self.args.VLM_prompt)
+        prompt = template.render(**data)
         return prompt
 
     def get_prediction(self, image, QA):
@@ -559,16 +553,15 @@ class Whoops:
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
         output = output[0]["generated_text"].split(':')[-1]
         print(output)
-        answer = ''.join(i for i in output if i.isdigit())
-        if answer != '':
-            answers.append(int(answer))
-        # print(answers)
+        predictions = [''.join(i for i in prediction if i.isdigit()) for prediction in output.split(',')]
+        for prediction in predictions:
+            if prediction != '':
+                answers.append(int(prediction))
         predictions = set()
         for ind in answers:
             if len(options) > ind:
                 predictions.add(options[ind])
-                if len(predictions) == 3:
-                    break
         answers = list(predictions)
+        return answers
         return answers
 

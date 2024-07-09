@@ -376,7 +376,7 @@ class Evaluation:
                     result[f'acc@{i + 1}'] = 0
                 for i, answer in enumerate(answers[0: args.top_k]):
                     if answer in correct_options:
-                        for j in range(0, i):
+                        for j in range(i, args.top_k):
                             result[f'acc@{j+1}'] = 1
             print(result)
             row = {}

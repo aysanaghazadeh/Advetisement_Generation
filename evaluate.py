@@ -305,10 +305,10 @@ class Evaluation:
         descriptions = pd.read_csv(os.path.join(args.data_path,
                                                 'train',
                                                 f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))
-        print(descriptions)
         for image_index in QAs:
-            description = descriptions.loc[descriptions['ID'] == image_index]['description'].values[0]
-            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{image_index}.png'))
+            image_url = f'{image_index}.png'
+            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
+            image = Image.open(os.path.join(args.data_path, 'whoops_images', image_url))
             answers = self.whoops.get_prediction(image, description, QAs[image_index])
             correct_options = QAs[image_index][1] if len(QAs[image_index][0]) == 3 else QAs[image_index][0]
             print(answers)

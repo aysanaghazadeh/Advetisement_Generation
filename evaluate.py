@@ -296,7 +296,7 @@ class Evaluation:
         QAs = json.load(open(QA_file))
 
         for i in QAs:
-            image = Image.open(os.path.join(args.data_path, 'train_images_total', f'{i}'))
+            image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{i}.png'))
             answers = self.whoops.get_prediction(image, QAs[i])
             print(answers)
             if len(answers) == 0:

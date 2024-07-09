@@ -288,11 +288,11 @@ class Evaluation:
     def evaluate_whoops_llava(self, args):
         results = {'acc@1': 0}
         fieldnames = ['id', 'acc@1']
-        csv_file_path = os.path.join(args.result_path, 'whoops_explanation_hard.csv')
+        csv_file_path = os.path.join(args.result_path, 'whoops_commonsense_category_MAC.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, 'train/whoops_explanation_hard.json')
+        QA_file = os.path.join(args.data_path, 'train/whoops_commonsense_category.json')
         QAs = json.load(open(QA_file))
 
         for i in QAs:

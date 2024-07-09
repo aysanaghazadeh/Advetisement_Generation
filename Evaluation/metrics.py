@@ -506,7 +506,7 @@ class Whoops:
         )
         model_id_map = {
             'LLAVA': "llava-hf/llava-1.5-13b-hf",
-            'LLAVA_LLAMA': "xtuner/llava-llama-3-8b",
+            'LLAVA_phi': "xtuner/llava-phi-3-mini-hf",
             'VILA': "Efficient-Large-Model/VILA1.5-13b",
             'InternVL': "OpenGVLab/InternVL-Chat-V1-5"
         }

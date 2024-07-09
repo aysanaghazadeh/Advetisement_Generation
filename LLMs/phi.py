@@ -24,6 +24,5 @@ class Phi(nn.Module):
         if not self.args.train:
             inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
             generated_ids = self.model.generate(**inputs, max_new_tokens=10)
-            first_line = 'Describe an advertisement image that conveys the following message in 2 sentences:'
-            return self.tokenizer.batch_decode(generated_ids)[0].split(first_line)[-1].split('<|assistant|>')[0]
+            return self.tokenizer.batch_decode(generated_ids)[0].split(':')[-1].split('<|assistant|>')[0]
         # return self.model(**inputs)

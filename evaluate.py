@@ -305,7 +305,7 @@ class Evaluation:
         for image_index in QAs:
             image = Image.open(os.path.join(args.data_path, 'whoops_images', f'{image_index}.png'))
             answers = self.whoops.get_prediction(image, QAs[image_index])
-            correct_options = QAs[image][1] if len(QAs[image][0]) == 3 else QAs[image][0]
+            correct_options = QAs[image_index][1] if len(QAs[image_index][0]) == 3 else QAs[image_index][0]
             print(answers)
             if len(answers) == 0:
                 result = {}

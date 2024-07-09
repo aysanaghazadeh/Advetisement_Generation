@@ -343,7 +343,9 @@ class Evaluation:
         results = {}
         for i in range(0, args.top_k):
             results[f'acc@{i+1}'] = 0
-        fieldnames = ['id', 'acc@1']
+        fieldnames = ['id']
+        for i in range(0, args.top_k):
+            fieldnames.append(f'acc@{i+1}')
         csv_file_path = os.path.join(args.result_path, f'{args.test_set_QA.split("/")[-1].replace(".json", "")}'
                                                        f'_{args.description_type}'
                                                        f'_{args.VLM}_description_{args.LLM}_'

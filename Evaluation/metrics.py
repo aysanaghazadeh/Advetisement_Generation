@@ -1,7 +1,7 @@
 import json
 from jinja2 import Environment, FileSystemLoader
 # from transformers import CLIPProcessor, CLIPModel,
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from PIL import Image
 import torch
 # from torchvision.transforms import functional as TF

@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 from transformers import AutoModelForCausalLM
 from PIL import Image
 import torch
-from torchvision.transforms import functional as TF
+# from torchvision.transforms import functional as TF
 from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
 import tempfile

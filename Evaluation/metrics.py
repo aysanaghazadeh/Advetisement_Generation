@@ -522,9 +522,9 @@ class Whoops:
         task = task_map[args.VLM]
         self.pipe = pipeline(task,
                              model=model_id,
-                             model_kwargs={"quantization_config": quantization_config},
-                             trust_remote_code=True,
-                             device_map='auto',
+                             # model_kwargs={"quantization_config": quantization_config},
+                             # trust_remote_code=True,
+                             # device_map='auto',
                              token='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',)
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 

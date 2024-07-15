@@ -1,11 +1,11 @@
 import json
 from jinja2 import Environment, FileSystemLoader
-# from transformers import CLIPProcessor, CLIPModel,
+from transformers import CLIPProcessor, CLIPModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from PIL import Image
 import torch
-# from torchvision.transforms import functional as TF
-# from pytorch_fid.fid_score import calculate_fid_given_paths
+from torchvision.transforms import functional as TF
+from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig

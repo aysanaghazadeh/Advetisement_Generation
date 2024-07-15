@@ -503,7 +503,8 @@ class Whoops:
         self.args = args
         quantization_config = BitsAndBytesConfig(
             load_in_8bit=True,
-            bnb_8bit_compute_dtype=torch.float16
+            bnb_8bit_compute_dtype=torch.float16,
+            torch_dtype="float16"
         )
         model_id_map = {
             'LLAVA': "llava-hf/llava-1.5-13b-hf",

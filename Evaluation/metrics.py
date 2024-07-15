@@ -509,7 +509,7 @@ class Whoops:
         model_id_map = {
             'LLAVA': "llava-hf/llava-1.5-13b-hf",
             'LLAVA_phi': "xtuner/llava-phi-3-mini-hf",
-            'VILA': "Efficient-Large-Model/VILA1.5-13b",
+            'VILA': "Efficient-Large-Model/VILA-7b",
             'InternVL': "OpenGVLab/InternVL-Chat-V1-5"
         }
         model_id = model_id_map[args.VLM]

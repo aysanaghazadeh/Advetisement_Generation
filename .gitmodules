@@ -4,3 +4,6 @@
 [submodule "llmblueprint"]
 	path = llmblueprint
 	url = https://github.com/aysanaghazadeh/llmblueprint.git
+[submodule "VLMs/VILA"]
+	path = VLMs/VILA
+	url = https://github.com/NVlabs/VILA.git

@@ -1,12 +1,6 @@
-import json
 import os.path
-import random
-from PIL import Image
 import pandas as pd
 from collections import Counter
-
-from jinja2 import Environment, FileSystemLoader
-
 from Evaluation.metrics import *
 from configs.evaluation_config import get_args
 from util.data.mapping import TOPIC_MAP as topic_map

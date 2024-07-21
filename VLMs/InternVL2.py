@@ -84,16 +84,16 @@ class InternVL(nn.Module):
             processed_images.append(thumbnail_img)
         return processed_images
 
-    def load_image(self, image_file, input_size=448, max_num=6):
-        image = Image.open(image_file).convert('RGB')
+    def load_image(self, image, input_size=448, max_num=6):
+        image = image.convert('RGB')
         transform = self.build_transform(input_size=input_size)
         images = self.dynamic_preprocess(image, image_size=input_size, use_thumbnail=True, max_num=max_num)
         pixel_values = [transform(image) for image in images]
         pixel_values = torch.stack(pixel_values)
         return pixel_values
 
-    def forward(self, image_path, prompt, generate_kwargs):
-        pixel_values = self.load_image(image_path, max_num=6).to(torch.bfloat16).cuda(self.args.device)
+    def forward(self, image, prompt, generate_kwargs):
+        pixel_values = self.load_image(image, max_num=6).to(torch.bfloat16).cuda(self.args.device)
         generation_config = dict(
             num_beams=1,
             max_new_tokens=1024,

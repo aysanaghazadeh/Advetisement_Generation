@@ -2,13 +2,7 @@ from torch import nn
 from torchvision.transforms.functional import InterpolationMode
 from transformers import AutoModel, AutoTokenizer
 import torch
-from peft import PeftModel
-import os
-import math
-import numpy as np
-import torch
 import torchvision.transforms as T
-from decord import VideoReader, cpu
 from PIL import Image
 
 
@@ -98,7 +92,7 @@ class InternVL(nn.Module):
         pixel_values = torch.stack(pixel_values)
         return pixel_values
 
-    def forward(self, image_path, prompt):
+    def forward(self, image_path, prompt, generate_kwargs):
         pixel_values = self.load_image(image_path, max_num=6).to(torch.bfloat16).cuda(self.args.device)
         generation_config = dict(
             num_beams=1,

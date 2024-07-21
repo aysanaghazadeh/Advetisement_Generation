@@ -10,10 +10,9 @@ import os
 import tempfile
 from transformers import pipeline, BitsAndBytesConfig
 import re
-from openai import OpenAI
 import base64
 import requests
-from io import BytesIO
+from VLMs.InternVL2 import InternVL
 
 api_key = "sk-proj-zfkbSHxUNuF7Ev8TEWWRT3BlbkFJieFKktR5T8tIUVNAJRBz"
 
@@ -286,13 +285,16 @@ class PersuasivenessMetric:
             'InternVL': "visual-question-answering"
         }
         if args.VLM != 'GPT4v':
-            model_id = model_id_map[args.VLM]
-            task = task_map[args.VLM]
-            self.pipe = pipeline(task,
-                                 model=model_id,
-                                 model_kwargs={"quantization_config": quantization_config},
-                                 trust_remote_code=True,
-                                 device_map='auto')
+            if args.VLM in model_id_map:
+                model_id = model_id_map[args.VLM]
+                task = task_map[args.VLM]
+                self.pipe = pipeline(task,
+                                     model=model_id,
+                                     model_kwargs={"quantization_config": quantization_config},
+                                     trust_remote_code=True,
+                                     device_map='auto')
+            else:
+                self.pipe = InternVL(args)
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):

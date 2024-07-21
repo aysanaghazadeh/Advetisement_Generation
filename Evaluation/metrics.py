@@ -393,7 +393,7 @@ class PersuasivenessMetric:
                     """
             output = self.pipe(image, prompt=action_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]["generated_text"].split(':')[-1]
+            output = output.split(':')[-1]
             print('action:', output)
             action_numeric_value += extract_number(output)
             reason_score_prompt = \
@@ -408,7 +408,7 @@ class PersuasivenessMetric:
 
             output = self.pipe(image, prompt=reason_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]["generated_text"].split(':')[-1]
+            output = output.split(':')[-1]
             print('reason:', output)
             reason_numeric_value += extract_number(output)
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)

@@ -276,13 +276,11 @@ class PersuasivenessMetric:
         )
         model_id_map = {
             'LLAVA': "llava-hf/llava-1.5-13b-hf",
-            'VILA': "Efficient-Large-Model/VILA1.5-13b",
-            'InternVL': "OpenGVLab/InternVL-Chat-V1-5"
+            'VILA': "Efficient-Large-Model/VILA1.5-13b"
         }
         task_map = {
             'LLAVA': "image-to-text",
-            'VILA': "text-generation",
-            'InternVL': "visual-question-answering"
+            'VILA': "text-generation"
         }
         if args.VLM != 'GPT4v':
             if args.VLM in model_id_map:

@@ -550,7 +550,7 @@ class PersuasivenessMetric:
                                generate_kwargs={"max_new_tokens": 45})
             output = output.split(':')[-1]
             print('Which category is the image appealing to:', output)
-            appealing_type += output
+            appealing_type.append(output)
             appealing_score_prompt = \
                 f"""
                 <image>\n USER:

@@ -442,7 +442,7 @@ class PersuasivenessMetric:
         maslow_pyramid_needs = []
         for action_reason in action_reasons:
             print(action_reason)
-            binary_answer_format = 'Answer: (0 for No, and 1 for Yes)'
+            binary_answer_format = 'Answer: ${answer}'
             string_answer_format = 'Answer: ${answer}'
             score_answer_format = 'Answer: ${score}'
             has_story_prompt = f"""

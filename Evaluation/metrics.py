@@ -429,7 +429,8 @@ class PersuasivenessMetric:
             print(generated_image.split('/'))
             image_url = '/'.join(generated_image.split('/')[-2:])
             action_reasons = self.QA[image_url][0]
-        statements_count = len(action_reasons)
+        # statements_count = len(action_reasons)
+        statements_count = 1
         has_story = 0
         is_unusual = 0
         properties_score = 0
@@ -440,7 +441,7 @@ class PersuasivenessMetric:
         appealing_score = 0
         appealing_type = []
         maslow_pyramid_needs = []
-        for action_reason in action_reasons:
+        for action_reason in action_reasons[:1]:
             print(action_reason)
             binary_answer_format = 'Answer: ${answer}'
             string_answer_format = 'Answer: ${answer}'

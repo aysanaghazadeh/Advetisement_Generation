@@ -1,17 +1,17 @@
 import json
 import pandas as pd
 
-llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llama3_ppo_generated_description_8000steps_test_set_persuasiveness_alignment.json_SDXL_20240623_141219_persuasiveness_alignment.json'))
+llama_file = json.load(open('/Users/aysanaghazadeh/experiments/results/llama3_ppo_generated_description_8000steps_test_setInterVL_persuasiveness_alignment_10.json_SDXL_20240623_141219InterVL_persuasiveness_alignment_10.json'))
 # ar_file = json.load(open('/Users/aysanaghazadeh/experiments/results/AR_PixArt_20240505_231631.json'))
 
 values = []
 above_5_count = 0
 below_neg_5_count = 0
 print(len(llama_file))
-for filename in list(llama_file.keys())[:200]:
-    if llama_file[filename] > 5:
+for filename in list(llama_file.keys()):
+    if llama_file[filename] > 10:
         above_5_count += 1
-    elif llama_file[filename] < -5:
+    elif llama_file[filename] < -10:
         below_neg_5_count += 1
     else:
         values.append(llama_file[filename])

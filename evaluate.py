@@ -77,18 +77,19 @@ class Evaluation:
     def evaluate_multi_question(args):
         persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
-                                                                               f'{args.VLM}_multi_question.csv')
+                                                                               f'{args.VLM}_multi_question_new.csv')
         fieldnames = [
-            'has_story',
-            'is_unusual',
+            'image_url',
+            # 'has_story',
+            # 'is_unusual',
             'properties_score',
             'audience_score',
             'audiences',
-            'memorability_score',
+            # 'memorability_score',
             'benefit_score',
             'appealing_score',
             'appealing_type',
-            'maslow_pyramid_needs'
+            # 'maslow_pyramid_needs'
         ]
         with open(saving_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -105,6 +106,7 @@ class Evaluation:
             for question in QA_pairs:
                 print(f'Answer of {question} question is: {QA_pairs[question]}')
             answers = list(QA_pairs.values())
+            answers = [image_url] + answers
             with open(saving_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(answers)

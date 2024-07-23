@@ -13,6 +13,7 @@ import re
 import base64
 import requests
 from VLMs.InternVL2 import InternVL
+import itertools
 
 api_key = "sk-proj-zfkbSHxUNuF7Ev8TEWWRT3BlbkFJieFKktR5T8tIUVNAJRBz"
 
@@ -412,6 +413,22 @@ class PersuasivenessMetric:
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)
 
     def get_multi_question_evaluation(self, generated_image):
+        def parse_options(options):
+            return '\n-'.join(options)
+
+        def get_audience_list():
+            age = ['baby', 'child', 'young adult', 'middle age', 'retired']
+            gender = ['woman', 'man', 'nonbinary', 'everyone']
+            education = ['with college degree', 'without college degree']
+            marital_status = ['single', 'married', 'married with kids']
+            combinations = list(itertools.product(gender, age, education, marital_status))
+            people_strings = [
+                f" {m} {a} {g} {e}"
+                for g, a, e, m in combinations
+            ]
+            people_strings.append('family')
+            return people_strings
+
         def extract_number(string_number):
             match = re.search(r'-?\d+', string_number)
             if match:
@@ -429,12 +446,12 @@ class PersuasivenessMetric:
             action_reasons = self.QA[image_url][0]
         # statements_count = len(action_reasons)
         statements_count = 1
-        has_story = 0
-        is_unusual = 0
+        # has_story = 0
+        # is_unusual = 0
         properties_score = 0
         audience_score = 0
         audiences = []
-        memorability_score = 0
+        # memorability_score = 0
         benefit_score = 0
         appealing_score = 0
         appealing_type = []
@@ -444,52 +461,54 @@ class PersuasivenessMetric:
             binary_answer_format = 'Answer: ${answer}'
             string_answer_format = 'Answer: ${answer}'
             score_answer_format = 'Answer: ${score}'
-            has_story_prompt = f"""
-                    <image>\n USER:
-                    Context: This is an advertisement image convincing the audience to take an action. 
-                    The image might show only the product being advetised or it can be creative and have a story.
-                    Question: Does this image has a story? 
-                    Your output must either be 1 for Yes or 0 for No without any further explanation. Follow the answer format of {binary_answer_format}.
-                    ASSISTANT: 
-                    """
-            output = self.pipe(image, prompt=has_story_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('Does the image have story:', output)
-            has_story += extract_number(output)
-            is_unusual_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take an action.
-                Question: Is there any unusual object/objects in the image?
-                Your output must either be 1 for Yes or 0 for No without any further explanation. Follow the answer format of {binary_answer_format}.
-                ASSISTANT:
-                """
-
-            output = self.pipe(image, prompt=is_unusual_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('Does the image have any unusual objects:', output)
-            is_unusual += extract_number(output)
-            properties_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take an action.
-                Question: How strong of an association does it create between product and properties?
-                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-                ASSISTANT:
-                """
-
-            output = self.pipe(image, prompt=properties_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('How strong of an association does it create between product and properties:', output)
-            properties_score += extract_number(output)
+            # has_story_prompt = f"""
+            #         <image>\n USER:
+            #         Context: This is an advertisement image convincing the audience to take an action.
+            #         The image might show only the product being advetised or it can be creative and have a story.
+            #         Question: Does this image has a story?
+            #         Your output must either be 1 for Yes or 0 for No without any further explanation. Follow the answer format of {binary_answer_format}.
+            #         ASSISTANT:
+            #         """
+            # output = self.pipe(image, prompt=has_story_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('Does the image have story:', output)
+            # has_story += extract_number(output)
+            # is_unusual_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is an advertisement image convincing the audience to take an action.
+            #     Question: Is there any unusual object/objects in the image?
+            #     Your output must either be 1 for Yes or 0 for No without any further explanation. Follow the answer format of {binary_answer_format}.
+            #     ASSISTANT:
+            #     """
+            #
+            # output = self.pipe(image, prompt=is_unusual_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('Does the image have any unusual objects:', output)
+            # is_unusual += extract_number(output)
+            # properties_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is an advertisement image convincing the audience to take an action.
+            #     Question: How strong of an association does it create between product and properties?
+            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+            #     ASSISTANT:
+            #     """
+            #
+            # output = self.pipe(image, prompt=properties_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('How strong of an association does it create between product and properties:', output)
+            # properties_score += extract_number(output)
             audience_prompt = \
                 f"""
                 <image>\n USER:
                 Context: This is the message of an advertisement image convincing the audience to take the action in the sentence. The message is: {action_reason}.
-                Question: Who is the possible audience for this advertisement?
+                Question: Choose the best option describing the audience of this advertisement?
+                Options:
+                {parse_options(get_audience_list())}
                 Your output must be the possible audience for the advertisement without considering the image without any further explanation. Follow the answer format of {string_answer_format}.
                 ASSISTANT:
                 """
@@ -502,6 +521,7 @@ class PersuasivenessMetric:
                 f"""
                 <image>\n USER:
                 Context: This is an advertisement image convincing the audience to take the action in the sentence. The audience of this image is {output}.
+                You are a human rating how well the image resonate with the given audience, considering the needs of the described audience.
                 Question:  How well does it resonate with its audience?
                 Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
                 ASSISTANT:
@@ -511,23 +531,24 @@ class PersuasivenessMetric:
             output = output.split(':')[-1]
             print('How well does it resonate with its audience:', output)
             audience_score += extract_number(output)
-            memorability_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence.
-                Question:  How memorable is the image?
-                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-                ASSISTANT:
-                """
-            output = self.pipe(image, prompt=memorability_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('How memorable is the image:', output)
-            memorability_score += extract_number(output)
+            # memorability_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is an advertisement image convincing the audience to take the action in the sentence.
+            #     Question:  How memorable is the image?
+            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+            #     ASSISTANT:
+            #     """
+            # output = self.pipe(image, prompt=memorability_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('How memorable is the image:', output)
+            # memorability_score += extract_number(output)
             benefit_prompt = \
                 f"""
                 <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence.
+                Context: In advertisement designers try to show the features of their product into benefits for consumers to show how well their product improves consumers life.
+                You are given an advertisement image convincing the audience to take an action, while trying to turn the features of the product into benefits.
                 Question:  How well does it turn features into benefits?
                 Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
                 ASSISTANT:
@@ -540,8 +561,9 @@ class PersuasivenessMetric:
             appealing_type_prompt = \
                 f"""
                 <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence.
-                Question:  Which category is the image appealing to? Emotion, ethics, or logic?
+                Context: This is an advertisement image convincing the audience to take the action in the sentence. 
+                Each advertisement image, aims to either target the audiences' emotion, ethics, or logic.
+                Question:  Which category is the image appealing to? emotion, ethics, or logic?
                 Your output must be the category among emotion, ethics, and logic, without any further explanation. Follow the answer format of {string_answer_format}.
                 ASSISTANT:
                 """
@@ -554,7 +576,7 @@ class PersuasivenessMetric:
                 f"""
                 <image>\n USER:
                 Context: This is an advertisement image convincing the audience to take the action in the sentence.
-                Question:  How appealing is the image to {output}?
+                Question:  How much does the image appeal to {output}?
                 Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
                 ASSISTANT:
                 """
@@ -566,8 +588,14 @@ class PersuasivenessMetric:
             maslow_pyramid_needs_prompt = \
                 f"""
                 <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence.
-                Question:  What needs does it appeal to in Maslow’s pyramid? Choose among (physiological needs, safety needs, love needs, steem needs, self actualization needs)
+                Context: This is an advertisement image convincing the audience to take the action in the sentence. 
+                Each ad image is designed to target one of the Maslow’s pyramid needs. The needs are: 
+                    - self actualisation: meeting one's full potential in life
+                    - esteem: For example, respect, status, recognition, strength
+                    - love/belonging: For example, friendship, intimacy, family, connections
+                    - safety: For example, security, health, finance
+                    - biological & physiological: For example, food, sleep, water
+                Question:  What needs does it appeal to in Maslow’s pyramid? Choose among (self actualisation, esteem, love/belonging, saftey, biological & physiological)
                 Your output must be the category among options, without any further explanation. Follow the answer format of {string_answer_format}.
                 ASSISTANT:
                 """
@@ -577,12 +605,12 @@ class PersuasivenessMetric:
             print('What needs does it appeal to in Maslow’s pyramid:', output)
             maslow_pyramid_needs.append(output)
         outputs = {
-            'has_story': has_story/statements_count,
-            'is_unusual': is_unusual/statements_count,
+            # 'has_story': has_story/statements_count,
+            # 'is_unusual': is_unusual/statements_count,
             'properties_score': properties_score/statements_count,
             'audience_score': audience_score/statements_count,
             'audiences': audiences,
-            'memorability_score': memorability_score/statements_count,
+            # 'memorability_score': memorability_score/statements_count,
             'benefit_score': benefit_score/statements_count,
             'appealing_score': appealing_score/statements_count,
             'appealing_type': appealing_type,

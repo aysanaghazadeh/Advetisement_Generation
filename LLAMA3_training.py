@@ -41,7 +41,7 @@ def get_model():
         bnb_8bit_compute_dtype=torch.bfloat16
     )
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                 token='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',
+                                                 token='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',
                                                  device_map='auto',
                                                  quantization_config=bnb_config)
     model.gradient_checkpointing_enable()
@@ -58,7 +58,7 @@ def get_model():
         model.is_parallelizable = True
         model.model_parallel = True
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                              token='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')
+                                              token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
     return model, tokenizer

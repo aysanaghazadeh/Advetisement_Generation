@@ -11,10 +11,10 @@ class Phi(nn.Module):
         self.args = args
         if not args.train:
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
-                                                           token='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',
+                                                           token='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',
                                                            trust_remote_code=True)
             self.model = AutoModelForCausalLM.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
-                                                              token='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',
+                                                              token='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',
                                                               device_map="auto",
                                                               trust_remote_code=True)
             if args.fine_tuned:

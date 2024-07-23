@@ -34,14 +34,14 @@ def get_model():
     model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
-        token='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',
+        token='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',
         device_map='auto',
         # peft_config=lora_config,
         # load_in_8bit=True
     )#.to(device=args.device)
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),
-                                              token='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')
+                                              token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
     return model, tokenizer

@@ -56,7 +56,7 @@ class LLAMA3RLAIF(Dataset):
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         self.image_urls = image_urls
         self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                  token='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')
+                                                  token='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')
 
     def __getitem__(self, item):
         image_url = self.image_urls[item]

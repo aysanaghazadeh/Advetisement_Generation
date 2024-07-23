@@ -42,7 +42,7 @@ def get_model():
         bnb_8bit_compute_dtype=torch.bfloat16
     )
     model = AutoModelForCausalLM.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
-                                                 token='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',
+                                                 token='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',
                                                  device_map="auto",
                                                  trust_remote_code=True,
                                                  quantization_config=bnb_config)
@@ -59,7 +59,7 @@ def get_model():
         model.is_parallelizable = True
         model.model_parallel = True
     tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
-                                              token='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',
+                                              token='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',
                                               trust_remote_code=True)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"

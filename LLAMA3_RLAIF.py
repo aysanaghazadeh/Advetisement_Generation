@@ -47,19 +47,19 @@ def get_model():
     model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
-        token='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',
+        token='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',
         peft_config=lora_config,
         load_in_4bit=True,
     ).to(device=args.device)
     ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
-        token='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',
+        token='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',
         peft_config=lora_config,
         load_in_4bit=True,
     ).to(device='cuda:1')
     tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                                                             '-4350/'),
-                                              token='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')
+                                              token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
     return model, tokenizer, ref_model

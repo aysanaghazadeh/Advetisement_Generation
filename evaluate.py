@@ -139,23 +139,23 @@ class Evaluation:
             image_url = row['media_url']
             if 'persuasion_mode' not in row:
                 continue
-            # try:
-            generated_image_path = requests.get(image_url, stream=True).raw
-            if args.VLM == 'GPT4v':
-                QA_pairs = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)
-            else:
-                QA_pairs = persuasiveness.get_multi_question_evaluation(generated_image_path)
-            print(f'The answers for image {image_url} is:')
-            for question in QA_pairs:
-                print(f'Answer of {question} question is: {QA_pairs[question]}')
-            answers = list(QA_pairs.values())
-            answers = [image_url] + answers
-            with open(saving_path, 'a', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(answers)
-            # except:
-            #     print
-            #     continue
+            try:
+                generated_image_path = requests.get(image_url, stream=True).raw
+                if args.VLM == 'GPT4v':
+                    QA_pairs = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)
+                else:
+                    QA_pairs = persuasiveness.get_multi_question_evaluation(generated_image_path)
+                print(f'The answers for image {image_url} is:')
+                for question in QA_pairs:
+                    print(f'Answer of {question} question is: {QA_pairs[question]}')
+                answers = list(QA_pairs.values())
+                answers = [image_url] + answers
+                with open(saving_path, 'a', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(answers)
+            except:
+                # print
+                continue
 
 
     @staticmethod

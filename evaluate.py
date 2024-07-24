@@ -1,6 +1,9 @@
 import os.path
 import pandas as pd
 from collections import Counter
+
+import requests
+
 from Evaluation.metrics import *
 from configs.evaluation_config import get_args
 from util.data.mapping import TOPIC_MAP as topic_map
@@ -138,6 +141,8 @@ class Evaluation:
             writer.writeheader()
         for row in data:
             image_url = row['media_url']
+            print(image_url)
+            print(requests.get(image_url))
             if 'persuasion_mode' not in row:
                 continue
             try:

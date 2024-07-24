@@ -159,7 +159,7 @@ class Evaluation:
                     writer = csv.writer(csvfile)
                     writer.writerow(answers)
             except:
-            print
+            # print
                 continue
 
 

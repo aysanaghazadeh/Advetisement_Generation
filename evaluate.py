@@ -113,7 +113,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_multi_question_ImageARG(args):
-        data = json.load(open(args.data_path, args.test_set_QA))
+        data = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                f'ImageARG_'

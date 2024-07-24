@@ -111,6 +111,46 @@ class Evaluation:
                 writer = csv.writer(csvfile)
                 writer.writerow(answers)
 
+    @staticmethod
+    def evaluate_multi_question_ImageARG(args):
+        data = json.load(open(args.data_path, args.test_set_QA))
+        persuasiveness = PersuasivenessMetric(args)
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               f'ImageARG_'
+                                                                               f'{args.VLM}_'
+                                                                               f'multi_question.csv')
+        fieldnames = [
+            'image_url',
+            # 'has_story',
+            # 'is_unusual',
+            # 'properties_score',
+            # 'audience_score',
+            # 'audiences',
+            # 'memorability_score',
+            # 'benefit_score',
+            # 'appealing_score',
+            'appealing_type',
+            # 'maslow_pyramid_needs'
+        ]
+        with open(saving_path, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+        for row in data:
+            image_url = row['media_url']
+            generated_image_path = requests.get(image_url, stream=True).raw
+            if args.VLM == 'GPT4v':
+                QA_pairs = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)
+            else:
+                QA_pairs = persuasiveness.get_multi_question_evaluation(generated_image_path)
+            print(f'The answers for image {image_url} is:')
+            for question in QA_pairs:
+                print(f'Answer of {question} question is: {QA_pairs[question]}')
+            answers = list(QA_pairs.values())
+            answers = [image_url] + answers
+            with open(saving_path, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(answers)
+
 
     @staticmethod
     def evaluate_persuasiveness(args):

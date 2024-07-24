@@ -448,14 +448,14 @@ class PersuasivenessMetric:
         statements_count = 1
         # has_story = 0
         # is_unusual = 0
-        properties_score = 0
-        audience_score = 0
-        audiences = []
+        # properties_score = 0
+        # audience_score = 0
+        # audiences = []
         # memorability_score = 0
-        benefit_score = 0
-        appealing_score = 0
+        # benefit_score = 0
+        # appealing_score = 0
         appealing_type = []
-        maslow_pyramid_needs = []
+        # maslow_pyramid_needs = []
         for action_reason in action_reasons[:1]:
             print(action_reason)
             binary_answer_format = 'Answer: ${answer}'
@@ -502,35 +502,35 @@ class PersuasivenessMetric:
             # output = output.split(':')[-1]
             # print('How strong of an association does it create between product and properties:', output)
             # properties_score += extract_number(output)
-            audience_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is the message of an advertisement image convincing the audience to take the action in the sentence. The message is: {action_reason}.
-                Question: Choose the best option describing the audience of this advertisement?
-                Options:
-                {parse_options(get_audience_list())}
-                Your output must be the possible audience for the advertisement without considering the image without any further explanation. Follow the answer format of {string_answer_format}.
-                ASSISTANT:
-                """
-            output = self.pipe(image, prompt=audience_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('Who is the audience of the advertisement message:', output)
-            audiences.append(output)
-            audience_score_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence. The audience of this image is {output}.
-                You are a human rating how well the image resonate with the given audience, considering the needs of the described audience.
-                Question:  How well does it resonate with its audience?
-                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-                ASSISTANT:
-                """
-            output = self.pipe(image, prompt=audience_score_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('How well does it resonate with its audience:', output)
-            audience_score += extract_number(output)
+            # audience_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is the message of an advertisement image convincing the audience to take the action in the sentence. The message is: {action_reason}.
+            #     Question: Choose the best option describing the audience of this advertisement?
+            #     Options:
+            #     {parse_options(get_audience_list())}
+            #     Your output must be the possible audience for the advertisement without considering the image without any further explanation. Follow the answer format of {string_answer_format}.
+            #     ASSISTANT:
+            #     """
+            # output = self.pipe(image, prompt=audience_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('Who is the audience of the advertisement message:', output)
+            # audiences.append(output)
+            # audience_score_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is an advertisement image convincing the audience to take the action in the sentence. The audience of this image is {output}.
+            #     You are a human rating how well the image resonate with the given audience, considering the needs of the described audience.
+            #     Question:  How well does it resonate with its audience?
+            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+            #     ASSISTANT:
+            #     """
+            # output = self.pipe(image, prompt=audience_score_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('How well does it resonate with its audience:', output)
+            # audience_score += extract_number(output)
             # memorability_prompt = \
             #     f"""
             #     <image>\n USER:
@@ -544,20 +544,20 @@ class PersuasivenessMetric:
             # output = output.split(':')[-1]
             # print('How memorable is the image:', output)
             # memorability_score += extract_number(output)
-            benefit_prompt = \
-                f"""
-                <image>\n USER:
-                Context: In advertisement designers try to show the features of their product into benefits for consumers to show how well their product improves consumers life.
-                You are given an advertisement image convincing the audience to take an action, while trying to turn the features of the product into benefits.
-                Question:  How well does it turn features into benefits?
-                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-                ASSISTANT:
-                """
-            output = self.pipe(image, prompt=benefit_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('How well does it turn features into benefits:', output)
-            benefit_score += extract_number(output)
+            # benefit_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: In advertisement designers try to show the features of their product into benefits for consumers to show how well their product improves consumers life.
+            #     You are given an advertisement image convincing the audience to take an action, while trying to turn the features of the product into benefits.
+            #     Question:  How well does it turn features into benefits?
+            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+            #     ASSISTANT:
+            #     """
+            # output = self.pipe(image, prompt=benefit_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('How well does it turn features into benefits:', output)
+            # benefit_score += extract_number(output)
             appealing_type_prompt = \
                 f"""
                 <image>\n USER:
@@ -572,49 +572,49 @@ class PersuasivenessMetric:
             output = output.split(':')[-1]
             print('Which category is the image appealing to:', output)
             appealing_type.append(output)
-            appealing_score_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence.
-                Question:  How much does the image appeal to {output}?
-                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-                ASSISTANT:
-                """
-            output = self.pipe(image, prompt=appealing_score_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('How appealing is the image:', output)
-            appealing_score += extract_number(output)
-            maslow_pyramid_needs_prompt = \
-                f"""
-                <image>\n USER:
-                Context: This is an advertisement image convincing the audience to take the action in the sentence. 
-                Each ad image is designed to target one of the Maslow’s pyramid needs. The needs are: 
-                    - self actualisation: meeting one's full potential in life
-                    - esteem: For example, respect, status, recognition, strength
-                    - love/belonging: For example, friendship, intimacy, family, connections
-                    - safety: For example, security, health, finance
-                    - biological & physiological: For example, food, sleep, water
-                Question:  What needs does it appeal to in Maslow’s pyramid? Choose among (self actualisation, esteem, love/belonging, saftey, biological & physiological)
-                Your output must be the category among options, without any further explanation. Follow the answer format of {string_answer_format}.
-                ASSISTANT:
-                """
-            output = self.pipe(image, prompt=maslow_pyramid_needs_prompt,
-                               generate_kwargs={"max_new_tokens": 45})
-            output = output.split(':')[-1]
-            print('What needs does it appeal to in Maslow’s pyramid:', output)
-            maslow_pyramid_needs.append(output)
+            # appealing_score_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is an advertisement image convincing the audience to take the action in the sentence.
+            #     Question:  How much does the image appeal to {output}?
+            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+            #     ASSISTANT:
+            #     """
+            # output = self.pipe(image, prompt=appealing_score_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('How appealing is the image:', output)
+            # appealing_score += extract_number(output)
+            # maslow_pyramid_needs_prompt = \
+            #     f"""
+            #     <image>\n USER:
+            #     Context: This is an advertisement image convincing the audience to take the action in the sentence.
+            #     Each ad image is designed to target one of the Maslow’s pyramid needs. The needs are:
+            #         - self actualisation: meeting one's full potential in life
+            #         - esteem: For example, respect, status, recognition, strength
+            #         - love/belonging: For example, friendship, intimacy, family, connections
+            #         - safety: For example, security, health, finance
+            #         - biological & physiological: For example, food, sleep, water
+            #     Question:  What needs does it appeal to in Maslow’s pyramid? Choose among (self actualisation, esteem, love/belonging, saftey, biological & physiological)
+            #     Your output must be the category among options, without any further explanation. Follow the answer format of {string_answer_format}.
+            #     ASSISTANT:
+            #     """
+            # output = self.pipe(image, prompt=maslow_pyramid_needs_prompt,
+            #                    generate_kwargs={"max_new_tokens": 45})
+            # output = output.split(':')[-1]
+            # print('What needs does it appeal to in Maslow’s pyramid:', output)
+            # maslow_pyramid_needs.append(output)
         outputs = {
             # 'has_story': has_story/statements_count,
             # 'is_unusual': is_unusual/statements_count,
-            'properties_score': properties_score/statements_count,
-            'audience_score': audience_score/statements_count,
-            'audiences': audiences,
+            # 'properties_score': properties_score/statements_count,
+            # 'audience_score': audience_score/statements_count,
+            # 'audiences': audiences,
             # 'memorability_score': memorability_score/statements_count,
-            'benefit_score': benefit_score/statements_count,
-            'appealing_score': appealing_score/statements_count,
+            # 'benefit_score': benefit_score/statements_count,
+            # 'appealing_score': appealing_score/statements_count,
             'appealing_type': appealing_type,
-            'maslow_pyramid_needs': maslow_pyramid_needs
+            # 'maslow_pyramid_needs': maslow_pyramid_needs
         }
         return outputs
 

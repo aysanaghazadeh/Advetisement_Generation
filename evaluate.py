@@ -9,6 +9,7 @@ from Evaluation.action_reason_evaluation import ActionReasonLlava
 import csv
 from util.data.trian_test_split import get_test_data
 from LLMs.LLM import LLM
+from io import BytesIO
 
 
 class Evaluation:
@@ -140,7 +141,11 @@ class Evaluation:
             if 'persuasion_mode' not in row:
                 continue
             try:
-                generated_image_path = requests.get(image_url, stream=True).raw
+                # generated_image_path = requests.get(image_url, stream=True).raw
+                response = requests.get(image_url)
+                response.raise_for_status()  # Check if the request was successful
+                generated_image_path = BytesIO(response.content)
+                # Open the image with Pillow
                 if args.VLM == 'GPT4v':
                     QA_pairs = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)
                 else:
@@ -154,7 +159,7 @@ class Evaluation:
                     writer = csv.writer(csvfile)
                     writer.writerow(answers)
             except:
-                # print
+            print
                 continue
 
 

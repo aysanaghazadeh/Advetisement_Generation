@@ -143,7 +143,7 @@ class Evaluation:
             image_url = row['media_url']
             print(image_url)
             print(requests.get(image_url))
-            print(image = Image.open(BytesIO(response.content)))
+            print(image = Image.open(BytesIO(requests.get(image_url).content)))
             if 'persuasion_mode' not in row:
                 continue
             try:

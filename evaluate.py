@@ -153,8 +153,9 @@ class Evaluation:
                 with open(saving_path, 'a', newline='') as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerow(answers)
-            except:
-                continue
+            # except:
+            #     print
+            #     continue
 
 
     @staticmethod

@@ -437,13 +437,14 @@ class PersuasivenessMetric:
                 print("No numeric value found in the input string")
                 return 0
 
-        if type(generated_image) != str:
-            image = generated_image
-        else:
-            image = Image.open(generated_image).convert("RGB")
-            print(generated_image.split('/'))
-            image_url = '/'.join(generated_image.split('/')[-2:])
-            action_reasons = self.QA[image_url][0]
+        # if type(generated_image) != str:
+        #     image = generated_image
+        # else:
+        image = Image.open(generated_image).convert("RGB")
+        print(generated_image.split('/'))
+        # image_url = '/'.join(generated_image.split('/')[-2:])
+        # action_reasons = self.QA[image_url][0]
+        action_reasons = ['aysan']
         # statements_count = len(action_reasons)
         statements_count = 1
         # has_story = 0

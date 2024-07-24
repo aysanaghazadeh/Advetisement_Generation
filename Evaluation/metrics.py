@@ -454,7 +454,7 @@ class PersuasivenessMetric:
         # audiences = []
         # memorability_score = 0
         # benefit_score = 0
-        # appealing_score = 0
+        appealing_score = 0
         appealing_type = []
         # maslow_pyramid_needs = []
         for action_reason in action_reasons[:1]:
@@ -573,19 +573,19 @@ class PersuasivenessMetric:
             output = output.split(':')[-1]
             print('Which category is the image appealing to:', output)
             appealing_type.append(output)
-            # appealing_score_prompt = \
-            #     f"""
-            #     <image>\n USER:
-            #     Context: This is an advertisement image convincing the audience to take the action in the sentence.
-            #     Question:  How much does the image appeal to {output}?
-            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-            #     ASSISTANT:
-            #     """
-            # output = self.pipe(image, prompt=appealing_score_prompt,
-            #                    generate_kwargs={"max_new_tokens": 45})
-            # output = output.split(':')[-1]
-            # print('How appealing is the image:', output)
-            # appealing_score += extract_number(output)
+            appealing_score_prompt = \
+                f"""
+                <image>\n USER:
+                Context: This is an advertisement image convincing the audience to take the action in the sentence.
+                Question:  How much does the image appeal to {output}?
+                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+                ASSISTANT:
+                """
+            output = self.pipe(image, prompt=appealing_score_prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            output = output.split(':')[-1]
+            print('How appealing is the image:', output)
+            appealing_score += extract_number(output)
             # maslow_pyramid_needs_prompt = \
             #     f"""
             #     <image>\n USER:
@@ -613,7 +613,7 @@ class PersuasivenessMetric:
             # 'audiences': audiences,
             # 'memorability_score': memorability_score/statements_count,
             # 'benefit_score': benefit_score/statements_count,
-            # 'appealing_score': appealing_score/statements_count,
+            'appealing_score': appealing_score/statements_count,
             'appealing_type': appealing_type,
             # 'maslow_pyramid_needs': maslow_pyramid_needs
         }

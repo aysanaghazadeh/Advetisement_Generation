@@ -122,7 +122,7 @@ class Evaluation:
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                f'ImageARG_'
                                                                                f'{args.VLM}_'
-                                                                               f'multi_question.csv')
+                                                                               f'multi_question_new.csv')
         fieldnames = [
             'image_url',
             # 'has_story',
@@ -132,7 +132,7 @@ class Evaluation:
             # 'audiences',
             # 'memorability_score',
             # 'benefit_score',
-            # 'appealing_score',
+            'appealing_score',
             'appealing_type',
             # 'maslow_pyramid_needs'
         ]

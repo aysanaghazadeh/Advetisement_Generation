@@ -143,13 +143,13 @@ class Evaluation:
             image_url = row['media_url']
             print(image_url)
             print(requests.get(image_url))
-            print(image = Image.open(BytesIO(requests.get(image_url).content)))
+            print(Image.open(BytesIO(requests.get(image_url).content)))
             if 'persuasion_mode' not in row:
                 continue
             try:
                 # generated_image_path = requests.get(image_url, stream=True).raw
                 response = requests.get(image_url)
-                response.raise_for_status()  # Check if the request was successful
+                response.raise_for_status()
                 generated_image_path = BytesIO(response.content)
                 # Open the image with Pillow
                 if args.VLM == 'GPT4v':

@@ -148,6 +148,7 @@ class Evaluation:
                 response = requests.get(image_url)
                 response.raise_for_status()
                 generated_image_path = BytesIO(response.content)
+                print(generated_image_path)
                 # Open the image with Pillow
                 if args.VLM == 'GPT4v':
                     QA_pairs = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)

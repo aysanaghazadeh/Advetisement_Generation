@@ -18,8 +18,8 @@ class SDXL(nn.Module):
             self.pipe = self.pipe.to(device='cuda:1')
 
     def forward(self, prompt):
-        negative_prompt = "typical,(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, " \
-                          "extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected " \
-                          "limbs, mutation, mutated, ugly, disgusting, blurry, amputation, NSFW "
-        image = self.pipe(prompt, num_inference_steps=15, guidance_scale=6, negative_prompt=negative_prompt).images[0]
+        # negative_prompt = "typical,(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, " \
+        #                   "extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected " \
+        #                   "limbs, mutation, mutated, ugly, disgusting, blurry, amputation, NSFW "
+        image = self.pipe(prompt, num_inference_steps=15, guidance_scale=15).images[0]
         return image

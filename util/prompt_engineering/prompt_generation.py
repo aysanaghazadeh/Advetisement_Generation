@@ -215,6 +215,10 @@ class PromptGenerator:
         if args.with_audience:
             if image_filename in self.audiences:
                 audience = self.audiences[image_filename]
+                if len(audience.split(':')) > 1:
+                    audience = audience.split(':')[-1].split('-')[-1]
+                else:
+                    audience = 'everyone'
             else:
                 print(f'there is no audience for image: {image_filename}')
         QA_path = args.test_set_QA if not args.train else args.train_set_QA

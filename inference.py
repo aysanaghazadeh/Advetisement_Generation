@@ -114,12 +114,12 @@ def generate_images(args):
             continue
         topics = test_set.loc[test_set['ID'] == filename]['topic'].values
         # topics = []
-        # action_reasons = content[0]
-        action_reasons = []
-        for AR in content[1]:
-            if AR not in content[0]:
-                action_reasons.append(AR)
-                break
+        action_reasons = content[0]
+        # action_reasons = []
+        # for AR in content[1]:
+        #     if AR not in content[0]:
+        #         action_reasons.append(AR)
+        #         break
         image, prompt = AdImageGeneration(filename)
         save_image(args, filename, image, experiment_datetime)
         scores = evaluate(metrics, args, action_reasons, filename, experiment_datetime)

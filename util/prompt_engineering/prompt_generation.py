@@ -13,10 +13,12 @@ class PromptGenerator:
         self.descriptions = None
         self.sentiments = None
         self.topics = None
+        self.audiences = None
         self.set_LLM(args)
         self.set_descriptions(args)
         self.set_sentiments(args)
         self.set_topics(args)
+        self.set_audience(args)
 
     def set_LLM(self, args):
         if args.text_input_type == 'LLM':
@@ -33,6 +35,10 @@ class PromptGenerator:
     def set_topics(self, args):
         if args.with_sentiment:
             self.topics = self.get_all_topics(args)
+
+    def set_audience(self, args):
+        if args.with_audience:
+            self.audiences = self.get_all_audience(args)
 
     @staticmethod
     def get_all_sentiments(args):
@@ -51,6 +57,15 @@ class PromptGenerator:
         return topics
 
     @staticmethod
+    def get_all_audience(args):
+        if not args.with_audience:
+            return None
+        audience_file = os.path.join(args.data_path, 'train/get_audience.csv')
+        audiences = pd.read_csv(audience_file)
+        audiences = audiences.set_index('ID')['description'].to_dict()
+        return audiences
+
+    @staticmethod
     def get_all_descriptions(args):
         if args.text_input_type in ['AR', 'LLM']:
             return None
@@ -62,8 +77,8 @@ class PromptGenerator:
         return descriptions.loc[descriptions['ID'] == image_filename]['description'].values[0]
 
     @staticmethod
-    def get_LLM_input_prompt(args, action_reason, sentiment, topic):
-        data = {'action_reason': action_reason, 'sentiment': sentiment, 'topic': topic}
+    def get_LLM_input_prompt(args, action_reason, sentiment=None, topic=None, audience=None):
+        data = {'action_reason': action_reason, 'sentiment': sentiment, 'topic': topic, 'audience': audience}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.llm_prompt)
         output = template.render(**data)
@@ -84,11 +99,6 @@ class PromptGenerator:
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
         action_reason = QA[image_filename][0]
-        # action_reason = []
-        # for AR in QA[image_filename][1]:
-        #     if AR not in QA[image_filename][0]:
-        #         action_reason.append(AR)
-        #         break
         sentiment = ''
         if args.with_sentiment:
             if image_filename in self.sentiments:
@@ -104,13 +114,20 @@ class PromptGenerator:
                 topic_ids = self.topics[image_filename]
                 topic_id = self.get_most_frequent([topic_ids])
                 if topic_id in TOPIC_MAP:
-                    sentiment = TOPIC_MAP[topic_id]
+                    topic = TOPIC_MAP[topic_id]
             else:
                 print(f'there is no topic for image: {image_filename}')
+        audience = ''
+        if args.with_audience:
+            if image_filename in self.audiences:
+                audience = self.audiences[image_filename]
+            else:
+                print(f'there is no audience for image: {image_filename}')
         data = {'action_reason': action_reason,
                 'description': self.get_description(image_filename, self.descriptions),
                 'sentiment': sentiment,
-                'topic': topic}
+                'topic': topic,
+                'audience': audience}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)
         output = template.render(**data)
@@ -132,7 +149,7 @@ class PromptGenerator:
                 topic_ids = self.topics[image_filename]
                 topic_id = self.get_most_frequent([topic_ids])
                 if topic_id in TOPIC_MAP:
-                    sentiment = TOPIC_MAP[topic_id]
+                    topic = TOPIC_MAP[topic_id]
             else:
                 print(f'there is no topic for image: {image_filename}')
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
@@ -187,9 +204,15 @@ class PromptGenerator:
                 topic_ids = self.topics[image_filename]
                 topic_id = self.get_most_frequent([topic_ids])
                 if topic_id in TOPIC_MAP:
-                    sentiment = TOPIC_MAP[topic_id]
+                    topic = TOPIC_MAP[topic_id]
             else:
                 print(f'there is no topic for image: {image_filename}')
+        audience = ''
+        if args.with_audience:
+            if image_filename in self.audiences:
+                audience = self.audiences[image_filename]
+            else:
+                print(f'there is no audience for image: {image_filename}')
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
@@ -199,7 +222,7 @@ class PromptGenerator:
         #     if AR not in QA[image_filename][0]:
         #         action_reason.append(AR)
         #         break
-        data = {'action_reason': action_reason, 'sentiment': sentiment, 'topic': topic}
+        data = {'action_reason': action_reason, 'sentiment': sentiment, 'topic': topic, 'audience': audience}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)
         output = template.render(**data)

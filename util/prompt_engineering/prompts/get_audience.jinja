@@ -1,0 +1,8 @@
+Context: This is the message of an advertisement image convincing the audience to take the action in the sentence. The messages are:
+{% for statement in action_reason %}
+    - {{statement}}
+{% endfor %}
+Question: Who is the audience of this advertisement? Return the gender, marital status, age, and etc of the audience or group of the audiences for this advertisement.
+Your output must be the possible audience for the advertisement without considering the image without any further explanation. Follow the answer format of {string_answer_format}.
+ASSISTANT:
+

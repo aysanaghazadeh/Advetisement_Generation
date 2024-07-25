@@ -83,12 +83,12 @@ class PromptGenerator:
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
-        # action_reason = QA[image_filename][0]
-        action_reason = []
-        for AR in QA[image_filename][1]:
-            if AR not in QA[image_filename][0]:
-                action_reason.append(AR)
-                break
+        action_reason = QA[image_filename][0]
+        # action_reason = []
+        # for AR in QA[image_filename][1]:
+        #     if AR not in QA[image_filename][0]:
+        #         action_reason.append(AR)
+        #         break
         sentiment = ''
         if args.with_sentiment:
             if image_filename in self.sentiments:
@@ -138,14 +138,14 @@ class PromptGenerator:
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
-        # action_reason = QA[image_filename][0]
-        if image_filename not in QA:
-            return ""
-        action_reason = []
-        for AR in QA[image_filename][1]:
-            if AR not in QA[image_filename][0]:
-                action_reason.append(AR)
-                break
+        action_reason = QA[image_filename][0]
+        # if image_filename not in QA:
+        #     return ""
+        # action_reason = []
+        # for AR in QA[image_filename][1]:
+        #     if AR not in QA[image_filename][0]:
+        #         action_reason.append(AR)
+        #         break
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment, topic)
         description = self.LLM_model(LLM_input_prompt)
         # description = f'{description}'
@@ -193,12 +193,12 @@ class PromptGenerator:
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
-        # action_reason = QA[image_filename][0]
-        action_reason = []
-        for AR in QA[image_filename][1]:
-            if AR not in QA[image_filename][0]:
-                action_reason.append(AR)
-                break
+        action_reason = QA[image_filename][0]
+        # action_reason = []
+        # for AR in QA[image_filename][1]:
+        #     if AR not in QA[image_filename][0]:
+        #         action_reason.append(AR)
+        #         break
         data = {'action_reason': action_reason, 'sentiment': sentiment, 'topic': topic}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)

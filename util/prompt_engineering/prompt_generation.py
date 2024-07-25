@@ -156,6 +156,16 @@ class PromptGenerator:
                     topic = TOPIC_MAP[topic_id]
             else:
                 print(f'there is no topic for image: {image_filename}')
+        audience = ''
+        if args.with_audience:
+            if image_filename in self.audiences:
+                audience = self.audiences[image_filename]
+                if len(audience.split(':')) > 1:
+                    audience = audience.split(':')[-1].split('-')[-1]
+                else:
+                    audience = 'everyone'
+            else:
+                print(f'there is no audience for image: {image_filename}')
         QA_path = args.test_set_QA if not args.train else args.train_set_QA
         QA_path = os.path.join(args.data_path, QA_path)
         QA = json.load(open(QA_path))
@@ -167,7 +177,7 @@ class PromptGenerator:
         #     if AR not in QA[image_filename][0]:
         #         action_reason.append(AR)
         #         break
-        LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment, topic)
+        LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment, topic, audience)
         description = self.LLM_model(LLM_input_prompt)
         # description = f'{description}'
         if 'objects:' in description:
@@ -185,7 +195,8 @@ class PromptGenerator:
                 'objects': objects,
                 'adjective': adjective,
                 'sentiment': sentiment,
-                'topic': topic}
+                'topic': topic,
+                'audience': audience}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)
         output = template.render(**data)

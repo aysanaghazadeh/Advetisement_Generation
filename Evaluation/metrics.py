@@ -489,14 +489,14 @@ class PersuasivenessMetric:
             # output = output.split(':')[-1]
             # print('Does the image have any unusual objects:', output)
             # is_unusual += extract_number(output)
-            # properties_prompt = \
-            #     f"""
-            #     <image>\n USER:
-            #     Context: This is an advertisement image convincing the audience to take an action.
-            #     Question: How strong of an association does it create between product and properties?
-            #     Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
-            #     ASSISTANT:
-            #     """
+            properties_prompt = \
+                f"""
+                <image>\n USER:
+                Context: This is an advertisement image convincing the audience to take an action.
+                Question: How strong of an association does it create between product and properties?
+                Your output must be a score between -5 to 5 without any further explanation. Follow the answer format of {score_answer_format}.
+                ASSISTANT:
+                """
             #
             # output = self.pipe(image, prompt=properties_prompt,
             #                    generate_kwargs={"max_new_tokens": 45})

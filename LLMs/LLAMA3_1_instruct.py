@@ -19,6 +19,7 @@ class LLAMA31(nn.Module):
             self.pipeline = pipeline(
                 "text-generation",
                 model=model_id,
+                token='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',
                 model_kwargs={"torch_dtype": torch.bfloat16},
                 device_map="auto",
             )
@@ -27,9 +28,10 @@ class LLAMA31(nn.Module):
     def forward(self, prompt):
         if not self.args.train:
             messages = [
+                {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},
             ]
-            output = self.pipeline(messages, max_new_tokens=256)[0]["generated_text"][-1]
+            output = self.pipeline(messages, max_new_tokens=256, tempreture=0.7, top_p=0.9)[0]["generated_text"][-1]
             output = output.replace('</s>', '')
             output = output.replace("['", '')
             output = output.replace("']", '')

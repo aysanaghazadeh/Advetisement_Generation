@@ -26,6 +26,6 @@ class AuraFlow(nn.Module):
                     width=1024,
                     num_inference_steps=28,
                     generator=torch.Generator().manual_seed(666),
-                    guidance_scale=3.5,
+                    guidance_scale=5,
                     ).images[0]
         return image

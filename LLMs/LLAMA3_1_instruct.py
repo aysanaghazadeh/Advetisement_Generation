@@ -24,7 +24,6 @@ class LLAMA31(nn.Module):
                 device_map="auto",
             )
 
-
     def forward(self, prompt):
         if not self.args.train:
             messages = [

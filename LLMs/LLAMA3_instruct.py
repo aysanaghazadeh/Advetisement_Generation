@@ -5,16 +5,16 @@ from peft import PeftModel
 import os
 
 
-class LLAMA31(nn.Module):
+class LLAMA3Instruct(nn.Module):
     def __init__(self, args):
-        super(LLAMA31, self).__init__()
+        super(LLAMA3Instruct, self).__init__()
         self.args = args
         if not args.train:
             quantization_config = BitsAndBytesConfig(
                 load_in_8bit=True,
                 bnb_8bit_compute_dtype=torch.float16
             )
-            model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+            model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
             self.pipeline = pipeline(
                 "text-generation",

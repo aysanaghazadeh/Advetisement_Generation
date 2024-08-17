@@ -128,7 +128,7 @@ class PromptGenerator:
             else:
                 print(f'there is no audience for image: {image_filename}')
         data = {'action_reason': action_reason,
-                'description': self.get_description(image_filename, self.descriptions),
+                'description': self.get_description(image_filename, self.descriptions).split(':')[-1],
                 'sentiment': sentiment,
                 'topic': topic,
                 'audience': audience}

@@ -31,6 +31,6 @@ class LLAMA3Instruct(nn.Module):
                 {"role": "user", "content": prompt},
             ]
             output = self.pipeline(messages, max_new_tokens=256)
-            output = output[0]["generated_text"][-1]['content']
+            output = output[0]["generated_text"][-1]['content'].split(':')[-1]
             return output
         # return self.model(**inputs)

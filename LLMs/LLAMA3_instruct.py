@@ -30,7 +30,7 @@ class LLAMA3Instruct(nn.Module):
                 {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},
             ]
-            output = self.pipeline(messages, max_new_tokens=256, tempreture=0.7, top_p=0.9)[0]["generated_text"][-1]
+            output = self.pipeline(messages, max_new_tokens=256)[0]["generated_text"][-1]
             output = output.replace('</s>', '')
             output = output.replace("['", '')
             output = output.replace("']", '')

@@ -1,3 +1,5 @@
+import pandas as pd
+
 from configs.inference_config import get_args
 from model.pipeline import AdvertisementImageGeneration
 from Evaluation.metrics import Metrics
@@ -100,6 +102,7 @@ def process_action_reason(action_reasons):
 
 
 def generate_images(args):
+    seen_files = set(pd.read_csv('../experiments/results/LLAMA3Instruct_descriptions.csv_AuraFlow_20240817_185858.csv').image_url.values)
     test_set = get_test_data(args)
     AdImageGeneration = AdvertisementImageGeneration(args)
     QA = get_QA(args)
@@ -109,6 +112,8 @@ def generate_images(args):
     test_set_image_url = list(test_set['ID'].values)
     test_set_image_url = test_set_image_url[:1340]
     for filename, content in QA.items():
+        if filename in seen_files:
+            continue
         if filename not in test_set_image_url:
         # if filename not in test_set:
             continue

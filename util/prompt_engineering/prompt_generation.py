@@ -78,7 +78,7 @@ class PromptGenerator:
 
     @staticmethod
     def get_LLM_input_prompt(args, action_reason, sentiment=None, topic=None, audience=None):
-        data = {'action_reason': action_reason, 'sentiment': sentiment, 'topic': topic, 'audience': audience}
+        data = {'action_reason': [action_reason[0]], 'sentiment': sentiment, 'topic': topic, 'audience': audience}
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.llm_prompt)
         output = template.render(**data)

@@ -96,13 +96,15 @@ def get_llm_generated_prompt(args, test_images):
     print('*' * 100)
     description_file = os.path.join(args.data_path, f'train/{args.llm_prompt.replace(".jinja", "_single_AR")}.csv')
     if os.path.exists(description_file):
-        return pd.read_csv(description_file)
-    with open(description_file, 'w', newline='') as file:
-        writer = csv.writer(file)
-        # Write the header
-        writer.writerow(['ID', 'description'])
+        processed_images = set(pd.read_csv(description_file).ID.values)
+        # return pd.read_csv(description_file)
+    else:
+        with open(description_file, 'w', newline='') as file:
+            writer = csv.writer(file)
+            # Write the header
+            writer.writerow(['ID', 'description'])
+        processed_images = set()
     prompt_generator = get_llm(args)
-    processed_images = set()
     for image_url in test_images:
         if image_url in processed_images:
             continue

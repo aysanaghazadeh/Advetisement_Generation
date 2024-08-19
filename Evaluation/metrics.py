@@ -293,6 +293,7 @@ class PersuasivenessMetric:
                                      trust_remote_code=True,
                                      device_map='auto')
             else:
+                print('InternVL')
                 self.pipe = InternVL(args)
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 

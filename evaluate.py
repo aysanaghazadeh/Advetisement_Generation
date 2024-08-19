@@ -60,7 +60,10 @@ class Evaluation:
         persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_persuasiveness_alignment_10.json')
         print(saving_path)
+        print(args.result_path)
+        print(args.result_file)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
+        print(results)
         persuasiveness_alignment_scores = {}
         for row in results:
             image_url = row[0]

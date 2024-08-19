@@ -62,8 +62,9 @@ class Evaluation:
         print(saving_path)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         persuasiveness_alignment_scores = {}
-        for row in results[0:200]:
+        for row in results:
             image_url = row[0]
+            print(image_url)
             generated_image_path = row[3]
             if args.VLM == 'GPT4v':
                 persuasiveness_alignment_score = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)

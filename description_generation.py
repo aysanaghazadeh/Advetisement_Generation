@@ -59,8 +59,8 @@ def get_descriptions(args):
     if args.task == 'whoops':
         images = [f'{i}.png' for i in range(500)]
     else:
-        # images = get_train_data(args)['ID'].values
-        images = list(json.load(open(os.path.join(args.data_path, 'train', 'whoops_commonsense_category.json'))).keys())
+        images = get_train_data(args)['ID'].values
+        # images = list(json.load(open(os.path.join(args.data_path, 'train', 'whoops_commonsense_category.json'))).keys())
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     description_file = os.path.join(args.data_path, 'train',
@@ -163,7 +163,7 @@ def get_negative_descriptions(args):
 if __name__ == '__main__':
     args = get_args()
     test_images = get_test_data(args)['ID'].values[:1340]
-    # descriptions = get_descriptions(args)
-    descriptions = get_llm_generated_prompt(args, test_images)
+    descriptions = get_descriptions(args)
+    # descriptions = get_llm_generated_prompt(args, test_images)
     # get_negative_descriptions(args)
 

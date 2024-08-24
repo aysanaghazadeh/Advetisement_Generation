@@ -15,7 +15,7 @@ class InternVL(nn.Module):
             torch_dtype=torch.bfloat16,
             # load_in_8bit=True,
             # low_cpu_mem_usage=True,
-            device_map=True,
+            device_map='auto',
             trust_remote_code=True).eval()
         self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-26B", trust_remote_code=True)
 

@@ -13,9 +13,10 @@ class InternVL(nn.Module):
         self.model = AutoModel.from_pretrained(
             "OpenGVLab/InternVL2-26B",
             torch_dtype=torch.bfloat16,
-            load_in_8bit=True,
+            # load_in_8bit=True,
             # low_cpu_mem_usage=True,
-            trust_remote_code=True).to(device='cuda').eval()
+            device_map=True,
+            trust_remote_code=True).eval()
         self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-26B", trust_remote_code=True)
 
     def build_transform(self, input_size):

@@ -9,6 +9,7 @@ import pandas as pd
 from configs.inference_config import get_args
 from util.prompt_engineering.prompt_generation import PromptGenerator
 from LLMs.LLM import LLM
+from VLMs.InternVL2 import InternVL
 
 
 def get_model(args):
@@ -19,8 +20,11 @@ def get_model(args):
     model_map = {
         'LLAVA': 'llava-hf/llava-1.5-13b-hf'
     }
-    model_id = model_map[args.VLM]
-    pipe = pipeline("image-to-text", model=model_id, device_map='auto')
+    if args.VLM in model_map:
+        model_id = model_map[args.VLM]
+        pipe = pipeline("image-to-text", model=model_id, device_map='auto')
+    else:
+        pipe = InternVL(args)
     return pipe
 
 

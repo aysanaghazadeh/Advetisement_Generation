@@ -55,6 +55,6 @@ class LLAMA3Instruct(nn.Module):
             output = output.replace("']", '')
             output = output.replace('["', '')
             output = output.replace('"]', '')
-            output = output.split(':')[-1]
+            output = output
             return output
         # return self.model(**inputs)

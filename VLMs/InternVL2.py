@@ -96,10 +96,11 @@ class InternVL(nn.Module):
         pixel_values = self.load_image(image, max_num=6).to(torch.bfloat16).cuda(self.args.device)
         generation_config = dict(
             num_beams=1,
-            max_new_tokens=1024,
+            max_new_tokens=generate_kwargs['max_new_tokens'],
             do_sample=False,
         )
         response = self.model.chat(self.tokenizer, pixel_values, prompt, generation_config)
         print(f'User: {prompt}')
         print(f'Assistant: {response}')
+        print('*' * 10)
         return response

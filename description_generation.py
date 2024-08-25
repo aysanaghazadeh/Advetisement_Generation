@@ -101,7 +101,8 @@ def get_descriptions(args):
 def get_llm_generated_prompt(args, test_images):
     print(f'number of images in test set: {len(test_images)}')
     print('*' * 100)
-    description_file = os.path.join(args.data_path, f'train/{args.llm_prompt.replace(".jinja", "_single_AR")}.csv')
+    description_file = os.path.join(args.data_path,
+                                    f'train/{args.llm_prompt.replace(".jinja", f"_{args.LLM}_{args.fine_tuned}")}.csv')
     if os.path.exists(description_file):
         processed_images = set(pd.read_csv(description_file).ID.values)
         # return pd.read_csv(description_file)

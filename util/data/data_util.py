@@ -75,6 +75,7 @@ def get_LLAMA3_training_data(args, image_urls):
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     dataset = {'QA': [], 'description': []}
     for image_url in image_urls:
+        image_url = image_url[0]
         QA = QAs[image_url]
         description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
         dataset['QA'].append(QA)

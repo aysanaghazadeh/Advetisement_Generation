@@ -57,7 +57,7 @@ def get_model():
         print(f'torch cuda count: {torch.cuda.device_count()}')
         model.is_parallelizable = True
         model.model_parallel = True
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-instruct",
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"

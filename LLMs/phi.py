@@ -10,12 +10,17 @@ class Phi(nn.Module):
         super(Phi, self).__init__()
         self.args = args
         if not args.train:
+            quantization_config = BitsAndBytesConfig(
+                load_in_8bit=True,
+                bnb_8bit_compute_dtype=torch.float16
+            )
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                            token='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',
                                                            trust_remote_code=True)
             self.model = AutoModelForCausalLM.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                               token='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',
                                                               device_map="auto",
+                                                              model_kwargs={"quantization_config": quantization_config},
                                                               trust_remote_code=True)
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_phi_model'))

@@ -684,6 +684,7 @@ class PersuasivenessMetric:
                     """
             output = self.pipe(image, prompt=has_story_prompt,
                                generate_kwargs={"max_new_tokens": 45})
+            print(output)
             output = output.split(':')[-1]
             print('Does the image have story:', output)
             has_story += extract_number(output)

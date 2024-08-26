@@ -293,6 +293,7 @@ class PersuasivenessMetric:
                                      model_kwargs={"quantization_config": quantization_config},
                                      trust_remote_code=True,
                                      device_map='auto')
+                self.LLM_model = LLM(args)
             else:
                 print('InternVL')
                 self.pipe = InternVL(args)

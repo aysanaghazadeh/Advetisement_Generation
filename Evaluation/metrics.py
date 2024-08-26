@@ -624,7 +624,6 @@ class PersuasivenessMetric:
         }
         return outputs
 
-
     def get_multi_question_score_evaluation(self, generated_image):
         def parse_options(options):
             return '\n-'.join(options)
@@ -686,7 +685,7 @@ class PersuasivenessMetric:
             output = self.pipe(image, prompt=has_story_prompt,
                                generate_kwargs={"max_new_tokens": 45})
             print(output)
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('Does the image have story:', output)
             has_story += extract_number(output)
             is_unusual_prompt = \
@@ -700,7 +699,7 @@ class PersuasivenessMetric:
 
             output = self.pipe(image, prompt=is_unusual_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('Does the image have any unusual objects:', output)
             is_unusual += extract_number(output)
             properties_prompt = \
@@ -714,7 +713,7 @@ class PersuasivenessMetric:
 
             output = self.pipe(image, prompt=properties_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('How strong of an association does it create between product and properties:', output)
             properties_score += extract_number(output)
             audience_prompt = \
@@ -729,7 +728,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=audience_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('Who is the audience of the advertisement message:', output)
             audiences.append(output)
             audience_score_prompt = \
@@ -743,7 +742,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=audience_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('How well does it resonate with its audience:', output)
             audience_score += extract_number(output)
             memorability_prompt = \
@@ -756,7 +755,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=memorability_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('How memorable is the image:', output)
             memorability_score += extract_number(output)
             benefit_prompt = \
@@ -770,7 +769,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=benefit_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('How well does it turn features into benefits:', output)
             benefit_score += extract_number(output)
             appealing_type_prompt = \
@@ -784,7 +783,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=appealing_type_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('Which category is the image appealing to:', output)
             appealing_type_prompt = \
                 f"""
@@ -808,7 +807,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=appealing_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('How appealing is the image:', output)
             appealing_score += extract_number(output)
             maslow_pyramid_needs_prompt = \
@@ -827,7 +826,7 @@ class PersuasivenessMetric:
                 """
             output = self.pipe(image, prompt=maslow_pyramid_needs_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]['generated_text'].split(':')[-1]
+            output = output.split(':')[-1]
             print('What needs does it appeal to in Maslow’s pyramid:', output)
             maslow_pyramid_needs_prompt = \
                 f"""

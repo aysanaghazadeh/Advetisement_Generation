@@ -296,8 +296,8 @@ class PersuasivenessMetric:
                 self.LLM_model = LLM(args)
             else:
                 print('InternVL')
-                self.pipe = InternVL(args)
                 self.LLM_model = LLM(args)
+                self.pipe = InternVL(args)
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):

@@ -20,7 +20,7 @@ class Phi(nn.Module):
             self.model = AutoModelForCausalLM.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                               token='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',
                                                               device_map="auto",
-                                                              model_kwargs={"quantization_config": quantization_config},
+                                                              quantization_config=quantization_config,
                                                               trust_remote_code=True)
             if args.fine_tuned:
                 self.model = PeftModel.from_pretrained(self.model, os.path.join(args.model_path, 'my_phi_model'))

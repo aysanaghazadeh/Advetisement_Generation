@@ -73,7 +73,7 @@ def get_descriptions(args):
     description_file = os.path.join(args.data_path, 'train',
                                     f'{args.description_type}'
                                     f'_{args.VLM}'
-                                    f'_{args.LLM.replace(".jinja", "")}'
+                                    f'_{args.VLM_prompt.replace(".jinja", "")}'
                                     f'_description_{args.task}.csv')
     if os.path.exists(description_file):
         return pd.read_csv(description_file)

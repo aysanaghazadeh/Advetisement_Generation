@@ -47,7 +47,7 @@ def get_train_Mistral7B_Dataloader(args):
 
 
 def get_LLAMA3_training_data(args, image_urls):
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-instruct",
                                               token='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',
                                               padding='right')
     tokenizer.pad_token = tokenizer.eos_token

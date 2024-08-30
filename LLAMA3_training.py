@@ -66,7 +66,7 @@ def get_model():
 
 def get_training_args(args):
     training_args = TrainingArguments(
-        output_dir=args.model_path+'/my_LLAMA3_instruct_large_sample_OnInternVL_model',
+        output_dir=args.model_path+'/my_LLAMA3_instruct_InternVL_model',
         remove_unused_columns=False,
         per_device_train_batch_size=args.batch_size,
         gradient_checkpointing=True,
@@ -124,5 +124,5 @@ if __name__ == '__main__':
         # callbacks=[PrintRandomTestExampleCallback(test_dataset, tokenizer, model)]
     )
     trainer.train()
-    model.save_pretrained(args.model_path + '/my_LLAMA3_instruct_large_sample_OnInternVL_model')
-    tokenizer.save_pretrained(args.model_path + '/my_LLAMA3_instruct_large_sample_OnInternVL_model')
+    model.save_pretrained(args.model_path + '/my_LLAMA3_instruct_OnInternVL_model')
+    tokenizer.save_pretrained(args.model_path + '/my_LLAMA3_instruct_OnInternVL_model')

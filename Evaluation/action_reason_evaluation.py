@@ -4,6 +4,7 @@ import torch
 import pandas as pd
 from PIL import Image
 import os
+from VLMs.InternVL2 import InternVL
 
 
 class ActionReasonLlava:
@@ -15,8 +16,11 @@ class ActionReasonLlava:
             load_in_8bit=True,
             bnb_8bit_compute_dtype=torch.float16
         )
-        self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
-                             model_kwargs={"quantization_config": quantization_config})
+        if args.VLM == 'LLAVA':
+            self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
+                                 model_kwargs={"quantization_config": quantization_config})
+        if args.VLM == 'InternVL':
+            self.pipe = InternVL(args)
         self.descriptions = None
         self.args = args
         self.QAs = json.load(open(os.path.join(self.args.data_path, self.args.test_set_QA)))

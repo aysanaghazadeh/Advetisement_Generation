@@ -7,7 +7,7 @@ import os
 from VLMs.InternVL2 import InternVL
 
 
-class ActionReasonLlava:
+class ActionReasonVLM:
     def __init__(self, args):
         # self.processor = AutoProcessor.from_pretrained("liuhaotian/llava-v1.5-13b")
         # self.model = AutoModelForCausalLM.from_pretrained("liuhaotian/llava-v1.5-13b",

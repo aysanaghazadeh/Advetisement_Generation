@@ -78,7 +78,8 @@ class ActionReasonVLM:
         prompt = self.get_prompt(options, answer_format, description)
         image = self.get_image(image_url)
         output = self.pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 45})
-        output = output[0]["generated_text"]
+        if self.args.VLM == 'LLAVA':
+            output = output[0]["generated_text"]
         print(output)
         options = self.QAs[image_url][1]
         predictions = output.split(',')

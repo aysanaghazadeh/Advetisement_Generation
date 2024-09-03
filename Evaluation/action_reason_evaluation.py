@@ -66,7 +66,7 @@ class ActionReasonVLM:
         return description
 
     def get_image(self, image_url):
-        image_path = os.path.join(self.args.test_set_images, image_url)
+        image_path = os.path.join(self.args.data_path, self.args.test_set_images, image_url)
         image = Image.open(image_path)
         return image
 

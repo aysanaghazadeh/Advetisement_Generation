@@ -20,7 +20,7 @@ class Evaluation:
         self.metrics = metrics
         if args.evaluation_type in ['creativity', 'persuasiveness_creativity'] and args.image_generation:
             self.image_generator = AdvertisementImageGeneration(args)
-        if args.evaluation_type == 'action_reason_llava':
+        if args.evaluation_type == 'action_reason_VLM':
             self.ar_VLM = ActionReasonVLM(args)
         if args.evaluation_type == 'whoops_llava':
             self.whoops = Whoops(args)

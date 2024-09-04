@@ -51,7 +51,7 @@ class ActionReasonVLM:
         #           "interpretations.\n "
         #           "Assistant:")
         prompt = (f"USER:<image>\n"
-         f"Question: What are the indices of the 3 best interpretations among the options for this image? Separate them by comma.\n"
+         f"Question: What are the indices of the 3 best interpretations in ranked form among the options for this image? Separate them by comma.\n"
          f"Options: {options}\n"
          f"your answer must follow the format of {answer_format}\n"
          f"Assistant: ")

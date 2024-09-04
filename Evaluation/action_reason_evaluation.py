@@ -53,7 +53,8 @@ class ActionReasonVLM:
         prompt = (f"USER:<image>\n"
          f"Question: What are the indices of the 3 best interpretations in ranked form among the options for this image? Separate them by comma.\n"
          f"Options: {options}\n"
-         f"your answer must follow the format of {answer_format}\n"
+         f"your answer must only follow the format of {answer_format} not any other format.\n"
+         f"Do not return include any explanation, only the indices of the three best options separated by comma."
          f"Assistant: ")
         return prompt
 

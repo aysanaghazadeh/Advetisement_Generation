@@ -1,6 +1,6 @@
 from torch import nn
 from torchvision.transforms.functional import InterpolationMode
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
 import torch
 import torchvision.transforms as T
 from PIL import Image
@@ -10,14 +10,24 @@ class InternVL(nn.Module):
     def __init__(self, args):
         super(InternVL, self).__init__()
         self.args = args
-        self.model = AutoModel.from_pretrained(
-            "OpenGVLab/InternVL2-8B",
+        # self.model = AutoModel.from_pretrained(
+        #     "OpenGVLab/InternVL2-8B",
+        #     torch_dtype=torch.bfloat16,
+        #     # load_in_8bit=True,
+        #     # low_cpu_mem_usage=True,
+        #     device_map='auto',
+        #     trust_remote_code=True).eval()
+        self.model = AutoModelForCausalLM.from_pretrained(
+            "OpenGVLab/InternVL-Chat-ViT-6B-Vicuna-7B",
             torch_dtype=torch.bfloat16,
             # load_in_8bit=True,
             # low_cpu_mem_usage=True,
             device_map='auto',
             trust_remote_code=True).eval()
-        self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-8B", trust_remote_code=True)
+        # self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-8B",
+        #                                                trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL-Chat-ViT-6B-Vicuna-7B",
+                                                       trust_remote_code=True)
 
     def build_transform(self, input_size):
         IMAGENET_MEAN = (0.485, 0.456, 0.406)

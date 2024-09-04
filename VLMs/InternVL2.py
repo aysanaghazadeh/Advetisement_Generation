@@ -27,7 +27,7 @@ class InternVL(nn.Module):
             use_flash_attn=True,
             load_in_8bit=True,
             trust_remote_code=True,
-            device_map=True).eval()
+            device_map='auto').eval()
         self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
 
     def build_transform(self, input_size):

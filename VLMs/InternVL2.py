@@ -25,6 +25,7 @@ class InternVL(nn.Module):
             torch_dtype=torch.bfloat16,
             low_cpu_mem_usage=True,
             use_flash_attn=True,
+            load_in_8bit=True,
             trust_remote_code=True).eval().cuda()
         self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
 

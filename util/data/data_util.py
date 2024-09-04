@@ -1,5 +1,5 @@
 import random
-
+from accelerate import PartialState
 from util.data.trian_test_split import get_train_data
 from transformers import AutoTokenizer
 from datasets import Dataset
@@ -93,6 +93,61 @@ def get_train_LLAMA3_Dataloader(args):
     dataset = get_LLAMA3_training_data(args, image_urls)
     return dataset
 
+
+def get_LLAMA3_CPO_training_data(args, image_urls):
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-instruct",
+                                              token='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',
+                                              padding='right')
+    tokenizer.pad_token = tokenizer.eos_token
+    if tokenizer.chat_template is None:
+        tokenizer.chat_template = "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+
+    def process(row):
+        row["chosen"] = tokenizer.apply_chat_template(row["chosen"], tokenize=False)
+        row["rejected"] = tokenizer.apply_chat_template(row["rejected"], tokenize=False)
+        return row
+
+    descriptions = pd.read_csv(args.description_file)
+    dataset = {'prompt': [], 'accpeted': [], 'rejected': []}
+    QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    negative_QAs = {}
+    negative_QAs['reason'] = json.load(
+        open(os.path.join(args.data_path, 'reason_hard_QA_Combined_Action_Reason_train.json')))
+    negative_QAs['action']= json.load(
+        open(os.path.join(args.data_path, 'action_hard_QA_Combined_Action_Reason_train.json')))
+    negative_QAs['adjective'] = json.load(
+        open(os.path.join(args.data_path, 'adjective_hard_QA_Combined_Action_Reason_train.json')))
+    negative_QAs['semantic'] = json.load(
+        open(os.path.join(args.data_path, 'semantic_hard_QA_Combined_Action_Reason_train.json')))
+
+    for image_url in image_urls:
+        if image_url in negative_QAs['reason']:
+            image_url = image_url[0]
+            QA = QAs[image_url]
+            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
+            prompt = f"""What is the correct interpretation for the described image:
+                                         Description: {description}"""
+            for AR in QA[0]:
+                for negative_type in negative_QAs:
+                    for negative_option in negative_QAs[negative_type][1]:
+                        if (negative_option in negative_QAs[negative_type][0]) or (negative_option in dataset['rejected']):
+                            continue
+                        dataset['prompt'].append(prompt)
+                        dataset['accepted'].append(AR)
+                        dataset['rejected'].append(negative_option)
+
+    dataset = Dataset.from_dict(dataset)
+    with PartialState().local_main_process_first():
+        ds = dataset.map(process)
+
+    train_dataset = ds
+    return train_dataset
+
+
+def get_train_LLAMA3_CPO_Dataloader(args):
+    image_urls = get_train_data(args)
+    dataset = get_LLAMA3_CPO_training_data(args, image_urls)
+    return dataset
 
 def get_LLAMA3_RLHF_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",

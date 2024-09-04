@@ -1,6 +1,6 @@
 from torch import nn
 from torchvision.transforms.functional import InterpolationMode
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel, CLIPImageProcessor
 import torch
 import torchvision.transforms as T
 from PIL import Image
@@ -10,18 +10,23 @@ class InternVL(nn.Module):
     def __init__(self, args):
         super(InternVL, self).__init__()
         self.args = args
-        self.model = AutoModel.from_pretrained(
-            # "OpenGVLab/InternVL2-8B",
-            "OpenGVLab/InternViT-6B-224px",
-            torch_dtype=torch.bfloat16,
-            # load_in_8bit=True,
-            # low_cpu_mem_usage=True,
-            device_map='auto',
-            trust_remote_code=True).eval()
-        # self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-8B",
+        # self.model = AutoModel.from_pretrained(
+        #     "OpenGVLab/InternVL2-26B",
+        #     torch_dtype=torch.bfloat16,
+        #     # load_in_8bit=True,
+        #     # low_cpu_mem_usage=True,
+        #     device_map='auto',
+        #     trust_remote_code=True).eval()
+        # self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-26B",
         #                                                trust_remote_code=True)
-        self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternViT-6B-224px",
-                                                       trust_remote_code=True)
+        path = "OpenGVLab/InternVL-Chat-V1-1"
+        self.model = AutoModel.from_pretrained(
+            path,
+            torch_dtype=torch.bfloat16,
+            low_cpu_mem_usage=True,
+            use_flash_attn=True,
+            trust_remote_code=True).eval().cuda()
+        self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
 
     def build_transform(self, input_size):
         IMAGENET_MEAN = (0.485, 0.456, 0.406)
@@ -97,14 +102,23 @@ class InternVL(nn.Module):
         return pixel_values
 
     def forward(self, image, prompt, generate_kwargs):
-        pixel_values = self.load_image(image, max_num=6).to(torch.bfloat16).cuda(self.args.device)
-        generation_config = dict(
-            num_beams=1,
-            max_new_tokens=generate_kwargs['max_new_tokens'],
-            do_sample=False,
-        )
-        response = self.model.chat(self.tokenizer, pixel_values, prompt, generation_config)
-        print(f'User: {prompt}')
+        # pixel_values = self.load_image(image, max_num=6).to(torch.bfloat16).cuda(self.args.device)
+        # generation_config = dict(
+        #     num_beams=1,
+        #     max_new_tokens=generate_kwargs['max_new_tokens'],
+        #     do_sample=False,
+        # )
+        # response = self.model.chat(self.tokenizer, pixel_values, prompt, generation_config)
+        # print(f'User: {prompt}')
+        # print(f'Assistant: {response}')
+        # print('*' * 10)
+        image_processor = CLIPImageProcessor.from_pretrained(path)
+        image = image.resize((448, 448))
+        pixel_values = image_processor(images=image, return_tensors='pt').pixel_values.to(torch.bfloat16).cuda()
+
+        generation_config = dict(max_new_tokens=1024, do_sample=True)
+        question = prompt
+        response = self.model.chat(self.tokenizer, pixel_values, question, generation_config)
+        print(f'User: {question}')
         print(f'Assistant: {response}')
-        print('*' * 10)
         return response

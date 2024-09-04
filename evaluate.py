@@ -564,15 +564,15 @@ class Evaluation:
         results = {'acc@1': 0}
         fieldnames = ['id', 'prediction', 'acc@1']
         csv_file_path = os.path.join(args.result_path,
-                                     f'symbolic_random_50_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
+                                     f'PittAd_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        QA_file = os.path.join(args.data_path, f'train/symbolic_random_50.json')
+        QA_file = os.path.join(args.data_path, args.test_set_QA)
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train',
-                                                f'UH_LLAVA_description_symbols.csv'))
+                                                f'IN_llava_description_PittAd.csv'))
         for image_url in QAs:
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             options = QAs[image_url][1]

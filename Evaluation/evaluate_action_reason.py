@@ -9,7 +9,7 @@ from Evaluation.metrics import *
 from configs.evaluation_config import get_args
 from util.data.mapping import TOPIC_MAP as topic_map
 from model.pipeline import AdvertisementImageGeneration
-from Evaluation.action_reason_evaluation import ActionReasonLlava
+from Evaluation.action_reason_evaluation import ActionReasonVLM
 import csv
 from util.data.trian_test_split import get_test_data
 from LLMs.LLM import LLM

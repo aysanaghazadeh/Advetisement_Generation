@@ -572,7 +572,7 @@ class Evaluation:
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train',
-                                                f'IN_llava_description_PittAd.csv'))
+                                                f'simple_llava_description.csv'))
         for image_url in QAs:
             print(image_url)
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values

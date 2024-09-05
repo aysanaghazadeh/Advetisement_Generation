@@ -49,11 +49,12 @@ class LLAMA3(nn.Module):
             # inputs = self.tokenizer(inputs, return_tensors="pt").to(device='cuda:1')
             generated_ids = self.model.generate(**inputs, max_new_tokens=250)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
-            output = output.replace('</s>', '')
-            output = output.replace("['", '')
-            output = output.replace("']", '')
-            output = output.replace('["', '')
-            output = output.replace('"]', '')
-            output = output.split(':')[-1]
+            # output = output.replace('</s>', '')
+            # output = output.replace("['", '')
+            # output = output.replace("']", '')
+            # output = output.replace('["', '')
+            # output = output.replace('"]', '')
+            # output = output.split(':')[-1]
+            print(output)
             return output
         # return self.model(**inputs)

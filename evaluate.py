@@ -549,9 +549,9 @@ class Evaluation:
             output = pipe(prompt)
             print(output)
             outputs = output.split(',')
-            answers = [''.join(i for i in output if i.isdigit()) for output in outputs]
-            print(answers)
-            for answer in answers:
+            predictions = [''.join(i for i in output if i.isdigit()) for output in outputs]
+            print(predictions)
+            for answer in predictions:
                 if answer != '':
                     answers.append(int(answer))
             predictions = set()

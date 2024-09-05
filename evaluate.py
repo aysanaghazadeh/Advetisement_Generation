@@ -574,7 +574,9 @@ class Evaluation:
         descriptions = pd.read_csv(os.path.join(args.data_path, 'train',
                                                 f'IN_llava_description_PittAd.csv'))
         for image_url in QAs:
-            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
+            print(image_url)
+            description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
+            print(description)
             options = QAs[image_url][1]
             env = Environment(loader=FileSystemLoader(args.prompt_path))
             template = env.get_template(args.VLM_prompt)

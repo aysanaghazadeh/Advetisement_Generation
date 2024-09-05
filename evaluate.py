@@ -595,8 +595,8 @@ class Evaluation:
                 result['p@2'] = correct_count/2
                 result['acc@3'] = correct_count/3
 
-            for key in result:
-                results[key] += result[key]
+            # for key in result:
+            #     results[key] += result[key]
             print(result)
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
@@ -606,7 +606,7 @@ class Evaluation:
                 writer.writerow(list(row.values()))
 
             for metric in results:
-                results[metric] += result
+                results[metric] += result[metric]
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 

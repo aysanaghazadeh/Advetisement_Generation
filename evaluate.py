@@ -596,7 +596,7 @@ class Evaluation:
                             result[f'acc@{i+1}'] = 1
                 result['p@1'] = correct_count
                 result['p@2'] = correct_count/2
-                result['acc@3'] = correct_count/3
+                result['p@3'] = correct_count/3
 
             # for key in result:
             #     results[key] += result[key]

@@ -585,7 +585,7 @@ class Evaluation:
             data = {'description': description, 'options': parse_options(options)}
             prompt = template.render(**data)
             answers = get_prediction(prompt, options, pipe)
-            result = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1' : 0, 'p@2' : 0, 'p@3' : 0}
+            result = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1': 0, 'p@2': 0, 'p@3': 0}
             print(answers)
             correct_count = 0
             if len(answers) != 0:

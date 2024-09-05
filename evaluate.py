@@ -548,9 +548,11 @@ class Evaluation:
             answers = []
             output = pipe(prompt)
             print(output)
-            answer = ''.join(i for i in output if i.isdigit())
-            if answer != '':
-                answers.append(int(answer))
+            outputs = output.split(',')
+            answers = [''.join(i for i in output if i.isdigit()) for output in outputs]
+            for answer in answers:
+                if answer != '':
+                    answers.append(int(answer))
             predictions = set()
             for ind in answers:
                 if len(options) > ind:

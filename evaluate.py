@@ -540,8 +540,7 @@ class Evaluation:
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
 
-    @staticmethod
-    def evaluate_action_reason_LLM(args):
+    def evaluate_action_reason_LLM(self, args):
         def parse_options(options):
             return '\n'.join([f'{str(i)}. {option}' for i, option in enumerate(options)])
 
@@ -561,8 +560,8 @@ class Evaluation:
             answers = list(predictions)
             return answers
 
-        results = {'acc@1': 0}
-        fieldnames = ['id', 'prediction', 'acc@1']
+        results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1' : 0, 'p@2' : 0, 'p@3' : 0}
+        fieldnames = ['acc@1', 'acc@2', 'acc@3', 'p@1', 'p@2', 'p@3', 'id', 'prediction']
         csv_file_path = os.path.join(args.result_path,
                                      f'PittAd_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')
         with open(csv_file_path, 'w', newline='') as csvfile:
@@ -577,32 +576,40 @@ class Evaluation:
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             print('description:', description)
             options = QAs[image_url][1]
+            correct_options = QAs[image_url][0]
             env = Environment(loader=FileSystemLoader(args.prompt_path))
             template = env.get_template(args.VLM_prompt)
             data = {'description': description, 'options': parse_options(options)}
             prompt = template.render(**data)
             answers = get_prediction(prompt, options, pipe)
-            # print(answers)
-            if len(answers) == 0:
-                result = 0
-            else:
-                if len(QAs[image_url]) == 3:
-                    result = 1 if answers[0] in QAs[image_url][1] else 0
-                else:
-                    result = 1 if answers[0] in QAs[image_url][0] else 0
+            result = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1' : 0, 'p@2' : 0, 'p@3' : 0}
+            print(answers)
+            correct_count = 0
+            if len(answers) != 0:
+                for i, answer in enumerate(answers[0:3]):
+                    if answer in correct_options:
+                        correct_count += 1
+                        for j in range(i, 3):
+                            result[f'acc@{i+1}'] = 1
+                result['p@1'] = correct_count
+                result['p@2'] = correct_count/2
+                result['acc@3'] = correct_count/3
+
+            for key in result:
+                results[key] += result[key]
             print(result)
-            row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
+                row = result
                 row['id'] = image_url
                 row['prediction'] = answers
-                row['acc@1'] = result
                 writer.writerow(list(row.values()))
 
             for metric in results:
                 results[metric] += result
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
+
 
     @staticmethod
     def evaluate_image_text_ranking(args):

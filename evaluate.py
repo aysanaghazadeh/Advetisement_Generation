@@ -594,9 +594,9 @@ class Evaluation:
                         correct_count += 1
                         for j in range(i, 3):
                             result[f'acc@{i+1}'] = 1
-                result['p@1'] = correct_count
-                result['p@2'] = correct_count/2
-                result['p@3'] = correct_count/3
+                result['p@1'] = min(correct_count, 1)
+                result['p@2'] = min(correct_count/2, 1)
+                result['p@3'] = min(correct_count/3, 1)
 
             # for key in result:
             #     results[key] += result[key]

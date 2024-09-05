@@ -550,6 +550,7 @@ class Evaluation:
             print(output)
             outputs = output.split(',')
             answers = [''.join(i for i in output if i.isdigit()) for output in outputs]
+            print(answers)
             for answer in answers:
                 if answer != '':
                     answers.append(int(answer))

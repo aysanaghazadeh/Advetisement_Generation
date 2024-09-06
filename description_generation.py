@@ -78,6 +78,7 @@ def get_descriptions(args):
                                     f'_{args.VLM_prompt.replace(".jinja", "")}'
                                     f'_description_{args.task}.csv')
     if os.path.exists(description_file):
+        print(description_file)
         return pd.read_csv(description_file)
     with open(description_file, 'w', newline='') as file:
         writer = csv.writer(file)

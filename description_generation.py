@@ -42,7 +42,8 @@ def get_single_description(args, image_url, pipe):
     template = env.get_template(args.VLM_prompt)
     prompt = template.render()
     outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 250})
-    if args.VLM == 'InternVL':
+    print(outputs)
+    if args.VLM == 'InternVL' or args.VLM == 'LLAVA16':
         description = outputs
     else:
         description = outputs[0]['generated_text'].split('ASSISTANT: ')[-1]

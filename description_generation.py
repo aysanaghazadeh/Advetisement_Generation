@@ -10,7 +10,7 @@ from configs.inference_config import get_args
 from util.prompt_engineering.prompt_generation import PromptGenerator
 from LLMs.LLM import LLM
 from VLMs.InternVL2 import InternVL
-
+from VLMs.LLAVA16 import LLAVA16
 
 def get_model(args):
     # Load model directly
@@ -23,8 +23,10 @@ def get_model(args):
     if args.VLM in model_map:
         model_id = model_map[args.VLM]
         pipe = pipeline("image-to-text", model=model_id, device_map='auto')
-    else:
+    elif args.VLM == 'InternVL':
         pipe = InternVL(args)
+    elif args.VLM == 'LLAVA16':
+        pipe = LLAVA16(args)
     return pipe
 
 
@@ -48,11 +50,11 @@ def get_single_description(args, image_url, pipe):
 
 
 def get_combine_description(args, image_url, pipe):
-    IN_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/IN_LLAVA_description_{args.task}.csv'))
+    IN_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/IN_LLAVA16_description_{args.task}.csv'))
     IN_description = IN_descriptions.loc[IN_descriptions['ID'] == image_url]['description'].values[0]
-    UH_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/UH_LLAVA_description_{args.task}.csv'))
+    UH_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/UH_LLAVA16_description_{args.task}.csv'))
     UH_description = UH_descriptions.loc[UH_descriptions['ID'] == image_url]['description'].values[0]
-    v_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/v_LLAVA_description_{args.task}.csv'))
+    v_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/v_LLAVA16_description_{args.task}.csv'))
     v_description = v_descriptions.loc[v_descriptions['ID'] == image_url]['description'].values[0]
     data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'token_length':None}
     env = Environment(loader=FileSystemLoader(args.prompt_path))
@@ -66,8 +68,8 @@ def get_descriptions(args):
     if args.task == 'whoops':
         images = [f'{i}.png' for i in range(500)]
     else:
-        images = get_train_data(args)['ID'].values
-        # images = list(json.load(open(os.path.join(args.data_path, 'train', 'whoops_commonsense_category.json'))).keys())
+        # images = get_train_data(args)['ID'].values
+        images = list(json.load(open(os.path.join(args.data_path, args.test_set_QA))).keys())
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     description_file = os.path.join(args.data_path, 'train',

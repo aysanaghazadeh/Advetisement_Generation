@@ -23,14 +23,9 @@ class InternLM(nn.Module):
 
     def forward(self, prompt):
         if not self.args.train:
-            inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
-            generated_ids = self.model.generate(**inputs, max_new_tokens=250)
-            output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
-            output = output.split(':')[-1]
-            print(output)
 
             length = 0
-            for response, history in model.stream_chat(tokenizer, prompt, history=[]):
+            for response, history in self.model.stream_chat(self.tokenizer, prompt, history=[]):
                 output = history[0][-1]
                 length = len(response)
             return output

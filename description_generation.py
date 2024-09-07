@@ -58,7 +58,7 @@ def get_combine_description(args, image_url, pipe):
                                                f'train/IN_LLAVA16_UH_description_generation_llava16_description_PittAd.csv'))
     UH_description = UH_descriptions.loc[UH_descriptions['ID'] == image_url]['description'].values[0]
     v_descriptions = pd.read_csv(os.path.join(args.data_path,
-                                              f'V_LLAVA16_v_description_generation_LLAVA16_description_PittAd.csv'))
+                                              f'train/V_LLAVA16_v_description_generation_LLAVA16_description_PittAd.csv'))
     v_description = v_descriptions.loc[v_descriptions['ID'] == image_url]['description'].values[0]
     T_descriptions = pd.read_csv(os.path.join(args.data_path,
                                               f'train/T_LLAVA16_T_description_generation_LLAVA16_description_PittAd.csv'))

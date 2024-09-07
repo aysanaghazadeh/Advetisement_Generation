@@ -26,7 +26,7 @@ class Vicuna(nn.Module):
     def forward(self, inputs):
         if not self.args.train:
             inputs = self.tokenizer(inputs, return_tensors="pt").to(device=self.args.device)
-            generated_ids = self.model.generate(**inputs, max_new_tokens=512)
+            generated_ids = self.model.generate(**inputs, max_new_tokens=512, temperature=0)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
             output = output.replace('</s>', '')
             output = output.replace("['", '')

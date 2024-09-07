@@ -25,7 +25,7 @@ class InternLM(nn.Module):
         if not self.args.train:
 
             length = 0
-            for response, history in self.model.stream_chat(self.tokenizer, prompt, history=[]):
+            for response, history in self.model.stream_chat(self.tokenizer, prompt, history=[], temperature=0):
                 output = history[0][-1]
                 length = len(response)
             return output

@@ -26,8 +26,7 @@ class LLAVA16(torch.nn.Module):
         prompt = self.processor.apply_chat_template(conversation, add_generation_prompt=True)
         inputs = self.processor(images=image, text=prompt, return_tensors="pt").to("cuda:0")
         output = self.model.generate(**inputs,
-                                     max_new_tokens=generate_kwargs["max_new_tokens"],
-                                     temperture=0)
+                                     max_new_tokens=generate_kwargs["max_new_tokens"])
         output = self.processor.decode(output[0], skip_special_tokens=True)
         output = output.split('ASSISTANT:')[-1]
         return output

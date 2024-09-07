@@ -575,6 +575,8 @@ class Evaluation:
         pipe = LLM(args)
         descriptions = pd.read_csv(args.description_file)
         for image_url in QAs:
+            if image_url not in descriptions.ID.values:
+                continue
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             print('description:', description)
             options = QAs[image_url][1]

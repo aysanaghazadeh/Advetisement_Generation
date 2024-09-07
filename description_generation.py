@@ -51,15 +51,19 @@ def get_single_description(args, image_url, pipe):
 
 
 def get_combine_description(args, image_url, pipe):
-    IN_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/IN_LLAVA16_description_{args.task}.csv'))
+    IN_descriptions = pd.read_csv(os.path.join(args.data_path,
+                                               f'train/IN_LLAVA16_IN_description_generation_LLAVA16_description_PittAd.csv'))
     IN_description = IN_descriptions.loc[IN_descriptions['ID'] == image_url]['description'].values[0]
-    UH_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/UH_LLAVA16_description_{args.task}.csv'))
+    UH_descriptions = pd.read_csv(os.path.join(args.data_path,
+                                               f'train/IN_LLAVA16_UH_description_generation_llava16_description_PittAd.csv'))
     UH_description = UH_descriptions.loc[UH_descriptions['ID'] == image_url]['description'].values[0]
-    v_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/v_LLAVA16_description_{args.task}.csv'))
+    v_descriptions = pd.read_csv(os.path.join(args.data_path,
+                                              f'V_LLAVA16_v_description_generation_LLAVA16_description_PittAd.csv'))
     v_description = v_descriptions.loc[v_descriptions['ID'] == image_url]['description'].values[0]
-    T_descriptions = pd.read_csv(os.path.join(args.data_path, f'train/T_LLAVA16_description_{args.task}.csv'))
-    T_description = T_descriptions.loc[v_descriptions['ID'] == image_url]['description'].values[0]
-    data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'token_length':None}
+    T_descriptions = pd.read_csv(os.path.join(args.data_path,
+                                              f'train/T_LLAVA16_T_description_generation_LLAVA16_description_PittAd.csv'))
+    T_description = T_descriptions.loc[T_descriptions['ID'] == image_url]['description'].values[0]
+    data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'T': T_description, 'token_length':None}
     env = Environment(loader=FileSystemLoader(args.prompt_path))
     template = env.get_template(args.VLM_prompt)
     prompt = template.render(**data)

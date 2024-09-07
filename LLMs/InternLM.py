@@ -31,6 +31,6 @@ class InternLM(nn.Module):
 
             length = 0
             for response, history in model.stream_chat(tokenizer, prompt, history=[]):
-                output = response[length:]
+                output = history[0][-1]
                 length = len(response)
             return output

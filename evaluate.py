@@ -583,7 +583,7 @@ class Evaluation:
             template = env.get_template(args.VLM_prompt)
             data = {'description': description, 'options': parse_options(options)}
             prompt = template.render(**data)
-            print(prmopt)
+            print(prompt)
             answers = get_prediction(prompt, options, pipe)
             result = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1': 0, 'p@2': 0, 'p@3': 0}
             print(answers)

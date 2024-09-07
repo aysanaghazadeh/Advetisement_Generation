@@ -592,7 +592,7 @@ class Evaluation:
                     if answer in correct_options:
                         correct_count += 1
                         for j in range(i, 3):
-                            result[f'acc@{i+1}'] = 1
+                            result[f'acc@{j+1}'] = 1
                 result['p@1'] = min(correct_count, 1)
                 result['p@2'] = min(correct_count/2, 1)
                 result['p@3'] = min(correct_count/3, 1)

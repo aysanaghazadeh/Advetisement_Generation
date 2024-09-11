@@ -1,4 +1,4 @@
-from util.data.data_util import get_train_LLAMA3_Dataloader
+from util.data.data_util import get_train_LLAMA3_CPO_Dataloader
 from configs.training_config import get_args
 from transformers import DataCollatorForLanguageModeling
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     model, tokenizer = get_model()
     cpo_config = CPOConfig(beta=0.1,
                            output_dir=args.model_path+'/my_LLAMA3_CPO',)
-    train_dataset = get_train_LLAMA3_Dataloader(args)
+    train_dataset = get_train_LLAMA3_CPO_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
     train_dataset = tmp["train"]
     eval_dataset = tmp["test"]

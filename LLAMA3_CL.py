@@ -67,7 +67,8 @@ if __name__ == '__main__':
     args = get_args()
     cpo_args = get_training_args(args)
     model, tokenizer = get_model()
-    cpo_config = CPOConfig(beta=0.1,)
+    cpo_config = CPOConfig(beta=0.1,
+                           output_dir=args.model_path+'/my_LLAMA3_CPO',)
     train_dataset = get_train_LLAMA3_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
     train_dataset = tmp["train"]

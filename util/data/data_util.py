@@ -140,7 +140,6 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
                         dataset['prompt'].append(prompt)
                         dataset['chosen'].append(chosen)
                         dataset['rejected'].append(rejected)
-    print(dataset)
     dataset = Dataset.from_dict(dataset)
     with PartialState().local_main_process_first():
         ds = dataset.map(process)

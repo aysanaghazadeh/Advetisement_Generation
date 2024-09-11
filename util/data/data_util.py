@@ -185,7 +185,7 @@ def get_LLAMA3_RLHF_training_data(args, image_urls):
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     dataset = {'QA': [], 'chosen': [], 'rejected': []}
     for image_url in image_urls:
-        QA = QAs[image_url[0]]
+        QA = QAs[image_url]
         chosen_description = chosen_descriptions.loc[chosen_descriptions['ID'] == image_url[0]]['description'].values[0]
         product_description = \
             product_descriptions.loc[product_descriptions['ID'] == image_url[0]]['description'].values[0]

@@ -131,9 +131,15 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
                     for negative_option in negative_QAs[negative_type][image_url][1]:
                         if (negative_option in negative_QAs[negative_type][image_url][0]) or (negative_option in dataset['rejected']):
                             continue
+                        chosen = [{'content': prompt, 'role': 'user'},
+                                  {'content': AR, 'role': 'assistant'}]
+                        rejected = [{'content': prompt,
+                                     'role': 'user'},
+                                    {'content': negative_option,
+                                     'role': 'assistant'}]
                         dataset['prompt'].append(prompt)
-                        dataset['chosen'].append(AR)
-                        dataset['rejected'].append(negative_option)
+                        dataset['chosen'].append(chosen)
+                        dataset['rejected'].append(rejected)
     print(dataset)
     dataset = Dataset.from_dict(dataset)
     with PartialState().local_main_process_first():

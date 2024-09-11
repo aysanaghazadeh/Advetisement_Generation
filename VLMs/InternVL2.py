@@ -10,25 +10,25 @@ class InternVL(nn.Module):
     def __init__(self, args):
         super(InternVL, self).__init__()
         self.args = args
-        # self.model = AutoModel.from_pretrained(
-        #     "OpenGVLab/InternVL2-26B",
-        #     torch_dtype=torch.bfloat16,
-        #     # load_in_8bit=True,
-        #     # low_cpu_mem_usage=True,
-        #     device_map='auto',
-        #     trust_remote_code=True).eval()
-        # self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-26B",
-        #                                                trust_remote_code=True)
-        path = "OpenGVLab/InternVL-Chat-V1-1"
         self.model = AutoModel.from_pretrained(
-            path,
+            "OpenGVLab/InternVL2-26B",
             torch_dtype=torch.bfloat16,
-            low_cpu_mem_usage=True,
-            use_flash_attn=True,
-            load_in_8bit=True,
-            trust_remote_code=True,
-            device_map='auto').eval()
-        self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
+            # load_in_8bit=True,
+            # low_cpu_mem_usage=True,
+            device_map='auto',
+            trust_remote_code=True).eval()
+        self.tokenizer = AutoTokenizer.from_pretrained("OpenGVLab/InternVL2-26B",
+                                                       trust_remote_code=True)
+        # path = "OpenGVLab/InternVL-Chat-V1-1"
+        # self.model = AutoModel.from_pretrained(
+        #     path,
+        #     torch_dtype=torch.bfloat16,
+        #     low_cpu_mem_usage=True,
+        #     use_flash_attn=True,
+        #     load_in_8bit=True,
+        #     trust_remote_code=True,
+        #     device_map='auto').eval()
+        # self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
 
     def build_transform(self, input_size):
         IMAGENET_MEAN = (0.485, 0.456, 0.406)
@@ -119,7 +119,7 @@ class InternVL(nn.Module):
         image = image.resize((448, 448))
         pixel_values = image_processor(images=image, return_tensors='pt').pixel_values.to(torch.bfloat16).cuda()
 
-        generation_config = dict(max_new_tokens=1024, do_sample=True)
+        generation_config = dict(max_new_tokens=1024, do_sample=True, temperture=0.8)
         question = prompt
         response = self.model.chat(self.tokenizer, pixel_values, question, generation_config)
         print(f'User: {question}')

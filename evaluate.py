@@ -563,7 +563,7 @@ class Evaluation:
             answers = list(predictions)
             return answers
 
-        results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1' : 0, 'p@2' : 0, 'p@3' : 0}
+        results = {'acc@1': 0, 'acc@2': 0, 'acc@3': 0, 'p@1': 0, 'p@2': 0, 'p@3': 0}
         fieldnames = ['acc@1', 'acc@2', 'acc@3', 'p@1', 'p@2', 'p@3', 'id', 'prediction']
         csv_file_path = os.path.join(args.result_path,
                                      f'PittAd_{args.description_type}_{args.VLM}_description_{args.LLM}.csv')

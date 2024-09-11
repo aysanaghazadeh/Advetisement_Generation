@@ -112,13 +112,13 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     negative_QAs = {}
     negative_QAs['reason'] = json.load(
-        open(os.path.join(args.data_path, 'reason_hard_QA_Combined_Action_Reason_train.json')))
+        open(os.path.join(args.data_path, 'trian/reason_hard_QA_Combined_Action_Reason_train.json')))
     negative_QAs['action']= json.load(
-        open(os.path.join(args.data_path, 'action_hard_QA_Combined_Action_Reason_train.json')))
+        open(os.path.join(args.data_path, 'train/action_hard_QA_Combined_Action_Reason_train.json')))
     negative_QAs['adjective'] = json.load(
-        open(os.path.join(args.data_path, 'adjective_hard_QA_Combined_Action_Reason_train.json')))
+        open(os.path.join(args.data_path, 'train/adjective_hard_QA_Combined_Action_Reason_train.json')))
     negative_QAs['semantic'] = json.load(
-        open(os.path.join(args.data_path, 'semantic_hard_QA_Combined_Action_Reason_train.json')))
+        open(os.path.join(args.data_path, 'train/semantic_hard_QA_Combined_Action_Reason_train.json')))
 
     for image_url in image_urls:
         if image_url in negative_QAs['reason']:
@@ -146,7 +146,7 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
 
 def get_train_LLAMA3_CPO_Dataloader(args):
     image_urls = list(json.load(open(os.path.join(args.data_path,
-                                                  'reason_hard_QA_Combined_Action_Reason_train.json'))).keys())
+                                                  'train/reason_hard_QA_Combined_Action_Reason_train.json'))).keys())
     dataset = get_LLAMA3_CPO_training_data(args, image_urls)
     return dataset
 

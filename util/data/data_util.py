@@ -112,7 +112,7 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     negative_QAs = {}
     negative_QAs['reason'] = json.load(
-        open(os.path.join(args.data_path, 'trian/reason_hard_QA_Combined_Action_Reason_train.json')))
+        open(os.path.join(args.data_path, 'train/reason_hard_QA_Combined_Action_Reason_train.json')))
     negative_QAs['action']= json.load(
         open(os.path.join(args.data_path, 'train/action_hard_QA_Combined_Action_Reason_train.json')))
     negative_QAs['adjective'] = json.load(

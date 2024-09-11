@@ -39,7 +39,7 @@ def get_model():
 
 
 def get_training_args(args):
-    training_args = TrainingArguments(
+    training_args = CPOConfig(
         output_dir=args.model_path+'/my_LLAMA3_CPO',
         remove_unused_columns=False,
         per_device_train_batch_size=args.batch_size,

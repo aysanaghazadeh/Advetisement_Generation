@@ -108,7 +108,7 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
         return row
 
     descriptions = pd.read_csv(args.description_file)
-    dataset = {'prompt': [], 'accpeted': [], 'rejected': []}
+    dataset = {'prompt': [], 'accepted': [], 'rejected': []}
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
     negative_QAs = {}
     negative_QAs['reason'] = json.load(
@@ -145,7 +145,8 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
 
 
 def get_train_LLAMA3_CPO_Dataloader(args):
-    image_urls = get_train_data(args)
+    image_urls = list(json.load(open(os.path.join(args.data_path,
+                                                  'reason_hard_QA_Combined_Action_Reason_train.json'))).keys())
     dataset = get_LLAMA3_CPO_training_data(args, image_urls)
     return dataset
 

@@ -128,8 +128,8 @@ def get_LLAMA3_CPO_training_data(args, image_urls):
                                          Description: {description}"""
             for AR in QA[0]:
                 for negative_type in negative_QAs:
-                    for negative_option in negative_QAs[negative_type][1]:
-                        if (negative_option in negative_QAs[negative_type][0]) or (negative_option in dataset['rejected']):
+                    for negative_option in negative_QAs[negative_type][image_url][1]:
+                        if (negative_option in negative_QAs[negative_type][image_url][0]) or (negative_option in dataset['rejected']):
                             continue
                         dataset['prompt'].append(prompt)
                         dataset['accepted'].append(AR)

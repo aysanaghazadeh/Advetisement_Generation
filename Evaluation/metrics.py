@@ -231,11 +231,11 @@ class Metrics:
         prompt = f"""What is the correct interpretation for the described image:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
-        tokenized_generated_image_message = self.llm.tokenizer(generated_image_message,
+        tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
                                                                return_tensors="pt").to(device=args.device)
         similarity_score = 0
         for action_reason in action_reasons:
-            tokenized_action_reason = self.llm.tokenizer(action_reason,
+            tokenized_action_reason = self.llm.model.tokenizer(action_reason,
                                                          return_tensors="pt").to(device=args.device)
             similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
 

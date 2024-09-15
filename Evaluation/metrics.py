@@ -234,7 +234,7 @@ class Metrics:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
         print(generated_image_message)
-        tokenized_generated_image_message = self.llm.tokenizer(generated_image_message,
+        tokenized_generated_image_message = self.tokenizer(generated_image_message,
                                                                return_tensors="pt").to(device=args.device)
         similarity_score = 0
         for action_reason in action_reasons:

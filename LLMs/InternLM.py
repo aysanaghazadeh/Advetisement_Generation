@@ -43,9 +43,3 @@ class InternLM(nn.Module):
             output = self.tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
             return output
 
-
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
-
-print(output)

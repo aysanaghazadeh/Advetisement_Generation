@@ -96,7 +96,7 @@ class Evaluation:
         for row in results:
             image_url = row[0]
             print(image_url)
-            action_reasons = action_reasons_all[image_url]
+            action_reasons = action_reasons_all[image_url][0]
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             print(description)
             persuasiveness_alignment_score = alignment_score.get_text_image_alignment_score(action_reasons,

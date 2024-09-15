@@ -83,7 +83,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_text_image_alignment(args):
-        alignment_score = Metrics(args)
+        alignment_score_model = Metrics(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                f'{args.VLM}_text_image_alignment.json')
         print(saving_path)
@@ -99,7 +99,7 @@ class Evaluation:
             action_reasons = action_reasons_all[image_url][0]
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             print(description)
-            generated_image_message, alignment_score = alignment_score.get_text_image_alignment_score(action_reasons,
+            generated_image_message, alignment_score = alignment_score_model.get_text_image_alignment_score(action_reasons,
                                                                             description,
                                                                             args)
             print(alignment_score)

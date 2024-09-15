@@ -76,14 +76,20 @@ def get_descriptions(args):
         images = [f'{i}.png' for i in range(500)]
     else:
         # images = get_train_data(args)['ID'].values
-        images = list(json.load(open(os.path.join(args.data_path, args.test_set_QA))).keys())
+        # images = list(json.load(open(os.path.join(args.data_path, args.test_set_QA))).keys())
+        images = pd.read_csv(args.result_path, args.test_set_QA).image_url.values
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
-    description_file = os.path.join(args.data_path, 'train',
+    # description_file = os.path.join(args.data_path, 'train',
+    #                                 f'{args.description_type}'
+    #                                 f'_{args.VLM}'
+    #                                 f'_{args.VLM_prompt.replace(".jinja", "")}'
+    #                                 f'_description_{args.task}.csv')
+    description_file = os.path.join(args.result_path,
                                     f'{args.description_type}'
                                     f'_{args.VLM}'
-                                    f'_{args.VLM_prompt.replace(".jinja", "")}'
-                                    f'_description_{args.task}.csv')
+                                    f'_{args.test_set_QA.replace(".csv", "")}'
+                                    f'_description.csv')
     if os.path.exists(description_file):
         print(description_file)
         return pd.read_csv(description_file)

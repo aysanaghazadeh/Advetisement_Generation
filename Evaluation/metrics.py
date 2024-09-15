@@ -236,7 +236,7 @@ class Metrics:
         generated_image_message = self.llm(prompt)
         print(generated_image_message)
         tokenized_generated_image_message = self.tokenizer(generated_image_message,
-                                                           rpadding=True,  # Pad sequences
+                                                           padding=True,  # Pad sequences
                                                            truncation=True,  # Truncate sequences longer than the max length
                                                            max_length=25,  # You can define a maximum length
                                                            return_tensors="pt").to(device=args.device)

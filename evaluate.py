@@ -99,6 +99,7 @@ class Evaluation:
             print(image_url)
             action_reasons = action_reasons_all[image_url]
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
+            print(description)
             persuasiveness_alignment_score = alignment_score.get_text_image_alignment_score(action_reasons,
                                                                                             description,
                                                                                             args)

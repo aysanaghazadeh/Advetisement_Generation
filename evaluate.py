@@ -92,7 +92,6 @@ class Evaluation:
         action_reasons_all = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         descriptions = pd.read_csv(args.description_file)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
-        print(results)
         persuasiveness_alignment_scores = {}
         for row in results:
             image_url = row[0]

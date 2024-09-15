@@ -45,6 +45,7 @@ class Metrics:
             self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
             self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                                            token='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')
+            self.tokenizer.pad_token = self.tokenizer.eos_token
             self.tokenizer.padding_side = 'right'
         if args.evaluation_type == 'image_text_ranking':
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",

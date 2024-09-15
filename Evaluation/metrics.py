@@ -236,6 +236,7 @@ class Metrics:
         print(generated_image_message)
         tokenized_generated_image_message = self.tokenizer(generated_image_message,
                                                            return_tensors="pt").to(device=args.device)
+        print(tokenized_generated_image_message)
         similarity_score = 0
         for action_reason in action_reasons:
             tokenized_action_reason = self.tokenizer(action_reason,

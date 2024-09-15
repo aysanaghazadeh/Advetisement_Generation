@@ -247,7 +247,7 @@ class Metrics:
         for action_reason in action_reasons:
             tokenized_action_reason = self.tokenizer(action_reason,
                                                      padding=True,  # Pad sequences
-                                                     truncation=True,  # Truncate sequences longer than the max length
+                                                     # truncation=True,  # Truncate sequences longer than the max length
                                                      max_length=25,  # You can define a maximum length
                                                      return_tensors="pt").to(device=args.device)
             tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)

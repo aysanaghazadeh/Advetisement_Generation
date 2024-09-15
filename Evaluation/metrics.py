@@ -1,7 +1,7 @@
 import json
 from jinja2 import Environment, FileSystemLoader
 from transformers import CLIPProcessor, CLIPModel
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
 from PIL import Image
 import torch
 from torch import nn
@@ -43,10 +43,13 @@ class Metrics:
         if args.evaluation_type == 'text_image_alignment':
             self.llm = LLM(args)
             self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
-                                                           token='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')
-            self.tokenizer.pad_token = self.tokenizer.eos_token
-            self.tokenizer.padding_side = 'right'
+            # self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+            #                                                token='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')
+            # self.tokenizer.pad_token = self.tokenizer.eos_token
+            # self.tokenizer.padding_side = 'right'
+            # Load model from HuggingFace Hub
+            self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+            self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
         if args.evaluation_type == 'image_text_ranking':
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                            token='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',
@@ -232,27 +235,47 @@ class Metrics:
         return text_text_similarity / len(action_reasons)
 
     def get_text_image_alignment_score(self, action_reasons, description, args):
+        def mean_pooling(model_output, attention_mask):
+            token_embeddings = model_output[0]  # First element of model_output contains all token embeddings
+            input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+            return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1),
+                                                                                      min=1e-9)
+
         prompt = f"""What is the correct interpretation for the described image:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
-        tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
-                                                           padding=True,
-                                                           max_length=25,
-                                                           return_tensors="pt").to(device=args.device)
-        output_generated_image = self.llm.model.model(**tokenized_generated_image_message)
-        embeddings1 = output_generated_image.hidden_states[-1]
-        tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
+        # tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
+        #                                                    padding=True,
+        #                                                    max_length=25,
+        #                                                    return_tensors="pt").to(device=args.device)
+        # tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
+        encoded_input = self.tokenizer([generated_image_message], padding=True, truncation=True, return_tensors='pt')
+        with torch.no_grad():
+            model_output = self.model(**encoded_input)
+        generated_image_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
+
+        # Normalize embeddings
+        generated_image_embeddings = nn.functional.normalize(generated_image_embeddings, p=2, dim=1)
+
         similarity_score = 0
         for action_reason in action_reasons:
-            tokenized_action_reason = self.llm.model.tokenizer(action_reason,
-                                                     padding=True,
-                                                     max_length=25,
-                                                     return_tensors="pt").to(device=args.device)
-            output_action_reason = self.llm.model.model(**tokenized_action_reason)
-            embeddings2 = output_action_reason.hidden_states[-1]
-            tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
+            # tokenized_action_reason = self.llm.model.tokenizer(action_reason,
+            #                                          padding=True,
+            #                                          max_length=25,
+            #                                          return_tensors="pt").to(device=args.device)
+            # output_action_reason = self.llm.model.model(**tokenized_action_reason)
+            # embeddings2 = output_action_reason.hidden_states[-1]
+            # tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
             # similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
-            similarity_score += self.cos(embeddings1, embeddings2)
+            encoded_input = self.tokenizer([action_reason], padding=True, truncation=True,
+                                           return_tensors='pt')
+            with torch.no_grad():
+                model_output = self.model(**encoded_input)
+            action_reason_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
+
+            # Normalize embeddings
+            action_reason_embeddings = nn.functional.normalize(action_reason_embeddings, p=2, dim=1)
+            similarity_score += self.cos(action_reason_embeddings, generated_image_embeddings)
             print(similarity_score)
 
         return generated_image_message, (similarity_score.item / len(action_reasons))

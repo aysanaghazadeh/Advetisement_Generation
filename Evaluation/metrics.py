@@ -240,7 +240,7 @@ class Metrics:
                                                            max_length=25,
                                                            return_tensors="pt").to(device=args.device)
         output_generated_image = self.llm.model.model(**tokenized_generated_image_message)
-        embeddings1 = output_generated_image.last_hidden_state.mean(dim=1)
+        embeddings1 = output_generated_image.hidden_states[-1]
         tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
         similarity_score = 0
         for action_reason in action_reasons:
@@ -249,7 +249,7 @@ class Metrics:
                                                      max_length=25,
                                                      return_tensors="pt").to(device=args.device)
             output_action_reason = self.llm.model.model(**tokenized_action_reason)
-            embeddings2 = output_action_reason.last_hidden_state.mean(dim=1)
+            embeddings2 = output_action_reason.hidden_states[-1]
             tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
             # similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
             similarity_score += self.cos(embeddings1, embeddings2)

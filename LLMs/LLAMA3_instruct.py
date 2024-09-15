@@ -50,16 +50,27 @@ class LLAMA3Instruct(nn.Module):
                 {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},
             ]
-            # inputs = self.tokenizer(prompt, return_tensors="pt").to(device=self.args.device)
-            inputs = self.tokenizer.apply_chat_template(messages, tokenize=True)#.to(device=self.args.device)
-            # inputs = self.tokenizer(inputs, return_tensors="pt").to(device='cuda:1')
-            generated_ids = self.model.generate(**inputs, max_new_tokens=20)
-            output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
-            output = output.replace('</s>', '')
-            output = output.replace("['", '')
-            output = output.replace("']", '')
-            output = output.replace('["', '')
-            output = output.replace('"]', '')
-            output = output
+            input_ids = self.tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                return_tensors="pt"
+            ).to(self.model.device)
+
+            terminators = [
+                self.tokenizer.eos_token_id,
+                self.tokenizer.convert_tokens_to_ids("<|eot_id|>")
+            ]
+
+            outputs = self.model.generate(
+                input_ids,
+                max_new_tokens=256,
+                eos_token_id=terminators,
+                do_sample=True,
+                temperature=0.6,
+                top_p=0.9,
+            )
+            response = outputs[0][input_ids.shape[-1]:]
+            output = self.tokenizer.decode(response, skip_special_tokens=True)
+            print(output)
             return output
         # return self.model(**inputs)

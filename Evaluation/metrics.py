@@ -236,13 +236,13 @@ class Metrics:
         print(generated_image_message)
         tokenized_generated_image_message = self.tokenizer(generated_image_message,
                                                            return_tensors="pt").to(device=args.device)
-        tokenized_generated_image_message = tokenized_generated_image_message['input_ids']
+        tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
         print(tokenized_generated_image_message)
         similarity_score = 0
         for action_reason in action_reasons:
             tokenized_action_reason = self.tokenizer(action_reason,
                                                      return_tensors="pt").to(device=args.device)
-            tokenized_action_reason = tokenized_action_reason['input_ids']
+            tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
             similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
 
         return generated_image_message, (similarity_score / len(action_reasons))

@@ -235,7 +235,6 @@ class Metrics:
         prompt = f"""What is the correct interpretation for the described image:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
-        print(generated_image_message)
         tokenized_generated_image_message = self.tokenizer(generated_image_message,
                                                            padding='max_length',  # Pad sequences
                                                            # truncation=True,  # Truncate sequences longer than the max length
@@ -243,7 +242,6 @@ class Metrics:
                                                            max_length=25,  # You can define a maximum length
                                                            return_tensors="pt").to(device=args.device)
         tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
-        print(tokenized_generated_image_message)
         similarity_score = 0
         for action_reason in action_reasons:
             tokenized_action_reason = self.tokenizer(action_reason,

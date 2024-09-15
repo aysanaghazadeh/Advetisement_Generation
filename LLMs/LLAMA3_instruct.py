@@ -71,6 +71,5 @@ class LLAMA3Instruct(nn.Module):
             )
             response = outputs[0][input_ids.shape[-1]:]
             output = self.tokenizer.decode(response, skip_special_tokens=True)
-            print(output)
             return output
         # return self.model(**inputs)

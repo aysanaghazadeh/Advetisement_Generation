@@ -102,6 +102,8 @@ class Evaluation:
             generated_image_message, alignment_score = alignment_score.get_text_image_alignment_score(action_reasons,
                                                                             description,
                                                                             args)
+            print(alignment_score)
+            print(generated_image_message)
             print(f'text image alignment score of the image {image_url} is {alignment_score} out of 10')
             print('*' * 80)
             alignment_scores[image_url] = [generated_image_message, alignment_score]

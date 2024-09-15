@@ -278,7 +278,7 @@ class Metrics:
             similarity_score += self.cos(action_reason_embeddings, generated_image_embeddings)
             print(similarity_score)
 
-        return generated_image_message, (similarity_score.item / len(action_reasons))
+        return generated_image_message, (similarity_score.item() / len(action_reasons))
 
     @staticmethod
     def get_image_description_prompt():

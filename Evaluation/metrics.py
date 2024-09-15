@@ -244,6 +244,7 @@ class Metrics:
         prompt = f"""What is the correct interpretation for the described image:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
+        print(generated_image_message)
         # tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
         #                                                    padding=True,
         #                                                    max_length=25,
@@ -259,6 +260,7 @@ class Metrics:
 
         similarity_score = 0
         for action_reason in action_reasons:
+            print(action_reason)
             # tokenized_action_reason = self.llm.model.tokenizer(action_reason,
             #                                          padding=True,
             #                                          max_length=25,

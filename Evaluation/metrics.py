@@ -235,22 +235,24 @@ class Metrics:
         prompt = f"""What is the correct interpretation for the described image:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
-        tokenized_generated_image_message = self.tokenizer(generated_image_message,
-                                                           padding='max_length',  # Pad sequences
-                                                           # truncation=True,  # Truncate sequences longer than the max length
-                                                           # pad_to_max_length=True,
-                                                           max_length=25,  # You can define a maximum length
+        tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
+                                                           padding=True,
+                                                           max_length=25,
                                                            return_tensors="pt").to(device=args.device)
+        output_generated_image = self.llm.model.model(**tokenized_generated_image_message)
+        embeddings1 = output_generated_image.last_hidden_state.mean(dim=1)
         tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
         similarity_score = 0
         for action_reason in action_reasons:
-            tokenized_action_reason = self.tokenizer(action_reason,
-                                                     padding='max_length',  # Pad sequences
-                                                     # truncation=True,  # Truncate sequences longer than the max length
-                                                     max_length=25,  # You can define a maximum length
+            tokenized_action_reason = self.llm.model.tokenizer(action_reason,
+                                                     padding=True,
+                                                     max_length=25,
                                                      return_tensors="pt").to(device=args.device)
+            output_action_reason = self.llm.model.model(**tokenized_action_reason)
+            embeddings2 = output_action_reason.last_hidden_state.mean(dim=1)
             tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
-            similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
+            # similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
+            similarity_score += self.cos(embeddings1, embeddings2)
             print(similarity_score)
 
         return generated_image_message, (similarity_score.item / len(action_reasons))

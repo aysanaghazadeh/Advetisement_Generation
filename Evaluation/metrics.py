@@ -251,6 +251,7 @@ class Metrics:
                                                      return_tensors="pt").to(device=args.device)
             tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
             similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
+            print(similarity_score)
 
         return generated_image_message, (similarity_score.item / len(action_reasons))
 

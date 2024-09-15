@@ -46,7 +46,8 @@ class LLAMA3Instruct(nn.Module):
             output = output[0]["generated_text"][-1]['content'].split(':')[-1]
             return output
         else:
-            inputs = self.tokenizer(prompt, return_tensors="pt").to(device=self.args.device)
+            # inputs = self.tokenizer(prompt, return_tensors="pt").to(device=self.args.device)
+            inputs = self.tokenizer.apply_chat_template(prompt, tokenize=True).to(device=self.args.device)
             # inputs = self.tokenizer(inputs, return_tensors="pt").to(device='cuda:1')
             generated_ids = self.model.generate(**inputs, max_new_tokens=20)
             output = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()

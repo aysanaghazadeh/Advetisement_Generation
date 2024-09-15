@@ -238,7 +238,8 @@ class Metrics:
         print(generated_image_message)
         tokenized_generated_image_message = self.tokenizer(generated_image_message,
                                                            padding=True,  # Pad sequences
-                                                           truncation=True,  # Truncate sequences longer than the max length
+                                                           # truncation=True,  # Truncate sequences longer than the max length
+                                                           pad_to_max_length=True,
                                                            max_length=25,  # You can define a maximum length
                                                            return_tensors="pt").to(device=args.device)
         tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)

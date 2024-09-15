@@ -77,7 +77,7 @@ def get_descriptions(args):
     else:
         # images = get_train_data(args)['ID'].values
         # images = list(json.load(open(os.path.join(args.data_path, args.test_set_QA))).keys())
-        images = pd.read_csv(args.result_path, args.test_set_QA).image_url.values
+        images = pd.read_csv(os.path.join(args.result_path, args.test_set_QA)).image_url.values
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     # description_file = os.path.join(args.data_path, 'train',

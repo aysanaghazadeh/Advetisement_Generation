@@ -242,7 +242,7 @@ class Metrics:
                                                      return_tensors="pt").to(device=args.device)
             similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
 
-        return similarity_score / len(action_reasons)
+        return generated_image_message, (similarity_score / len(action_reasons))
 
     @staticmethod
     def get_image_description_prompt():

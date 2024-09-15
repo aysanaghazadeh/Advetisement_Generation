@@ -92,23 +92,23 @@ class Evaluation:
         action_reasons_all = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         descriptions = pd.read_csv(args.description_file)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
-        persuasiveness_alignment_scores = {}
+        alignment_scores = {}
         for row in results:
             image_url = row[0]
             print(image_url)
             action_reasons = action_reasons_all[image_url][0]
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             print(description)
-            persuasiveness_alignment_score = alignment_score.get_text_image_alignment_score(action_reasons,
-                                                                                            description,
-                                                                                            args)
-            print(f'persuasiveness score of the image {image_url} is {persuasiveness_alignment_score} out of 10')
+            generated_image_message, alignment_score = alignment_score.get_text_image_alignment_score(action_reasons,
+                                                                            description,
+                                                                            args)
+            print(f'text image alignment score of the image {image_url} is {alignment_score} out of 10')
             print('*' * 80)
-            persuasiveness_alignment_scores[image_url] = persuasiveness_alignment_score
+            alignment_scores[image_url] = [generated_image_message, alignment_score]
 
             # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
             with open(saving_path, "w") as outfile:
-                json.dump(persuasiveness_alignment_scores, outfile)
+                json.dump(alignment_scores, outfile)
 
     @staticmethod
     def evaluate_multi_question(args):

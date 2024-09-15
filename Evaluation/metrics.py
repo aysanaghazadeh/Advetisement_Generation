@@ -252,7 +252,7 @@ class Metrics:
             tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
             similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
 
-        return generated_image_message, (similarity_score / len(action_reasons))
+        return generated_image_message, (similarity_score.item / len(action_reasons))
 
     @staticmethod
     def get_image_description_prompt():

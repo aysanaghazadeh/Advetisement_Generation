@@ -43,6 +43,8 @@ class Metrics:
         if args.evaluation_type == 'text_image_alignment':
             self.llm = LLM(args)
             self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+            self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
+                                                           token='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')
         if args.evaluation_type == 'image_text_ranking':
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                            token='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',
@@ -232,12 +234,12 @@ class Metrics:
                                          Description: {description}"""
         generated_image_message = self.llm(prompt)
         print(generated_image_message)
-        tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
+        tokenized_generated_image_message = self.llm.tokenizer(generated_image_message,
                                                                return_tensors="pt").to(device=args.device)
         similarity_score = 0
         for action_reason in action_reasons:
-            tokenized_action_reason = self.llm.model.tokenizer(action_reason,
-                                                         return_tensors="pt").to(device=args.device)
+            tokenized_action_reason = self.tokenizer(action_reason,
+                                                     return_tensors="pt").to(device=args.device)
             similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
 
         return similarity_score / len(action_reasons)

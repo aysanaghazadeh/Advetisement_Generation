@@ -24,7 +24,7 @@ class LLAMA3Instruct(nn.Module):
                 self.tokenizer.padding_side = "right"
                 self.model = PeftModel.from_pretrained(self.model,
                                                        os.path.join(args.model_path,
-                                                                    'my_LLAMA3_instruct_InternVL_model/checkpoint-2000/'))
+                                                                    'my_LLAMA3_CPO/checkpoint-5000/'))
             else:
                 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 

@@ -4,6 +4,7 @@ from transformers import CLIPProcessor, CLIPModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from PIL import Image
 import torch
+from torch import nn
 from torchvision.transforms import functional as TF
 from pytorch_fid.fid_score import calculate_fid_given_paths
 import os
@@ -17,6 +18,7 @@ import itertools
 from LLMs.LLM import LLM
 
 api_key = "sk-proj-zfkbSHxUNuF7Ev8TEWWRT3BlbkFJieFKktR5T8tIUVNAJRBz"
+
 
 # Function to convert an image file to a tensor
 def image_to_tensor(image_path):
@@ -38,6 +40,9 @@ class Metrics:
             self.pipe = pipeline("image-to-text",
                                  model='llava-hf/llava-1.5-13b-hf',
                                  model_kwargs={"quantization_config": quantization_config})
+        if args.evaluation_type == 'text_image_alignment':
+            self.llm = LLM(args)
+            self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
         if args.evaluation_type == 'image_text_ranking':
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                            token='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',
@@ -181,7 +186,8 @@ class Metrics:
         creativity = text_score / (avg_image_score + 0.1)
         return creativity
 
-    def get_persuasiveness_creativity_score(self, text_alignment_score, generated_image_path, product_image_paths, args):
+    def get_persuasiveness_creativity_score(self, text_alignment_score, generated_image_path, product_image_paths,
+                                            args):
         image_scores = []
         for product_image in product_image_paths[:1]:
             image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))
@@ -220,6 +226,20 @@ class Metrics:
             AR_features = self.clip_model.get_text_features(**inputs_AR)
             text_text_similarity += torch.nn.functional.cosine_similarity(AR_features, message_features).item()
         return text_text_similarity / len(action_reasons)
+
+    def get_text_image_alignment_score(self, action_reasons, description, args):
+        prompt = f"""What is the correct interpretation for the described image:
+                                         Description: {description}"""
+        generated_image_message = self.llm(prompt)
+        tokenized_generated_image_message = self.llm.tokenizer(generated_image_message,
+                                                               return_tensors="pt").to(device=args.device)
+        similarity_score = 0
+        for action_reason in action_reasons:
+            tokenized_action_reason = self.llm.tokenizer(action_reason,
+                                                         return_tensors="pt").to(device=args.device)
+            similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
+
+        return similarity_score / len(action_reasons)
 
     @staticmethod
     def get_image_description_prompt():
@@ -408,7 +428,6 @@ class PersuasivenessMetric:
                 ASSISTANT:
                 """
 
-
             output = self.pipe(image, prompt=reason_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
             output = output[0]['generated_text']
@@ -445,7 +464,7 @@ class PersuasivenessMetric:
         # if type(generated_image) != str:
         #     image = generated_image
         # else:
-        image = Image.open(generated_image)#.convert("RGB")
+        image = Image.open(generated_image)  # .convert("RGB")
         # print(generated_image.split('/'))
         # image_url = '/'.join(generated_image.split('/')[-2:])
         # action_reasons = self.QA[image_url][0]
@@ -618,7 +637,7 @@ class PersuasivenessMetric:
             # 'audiences': audiences,
             # 'memorability_score': memorability_score/statements_count,
             # 'benefit_score': benefit_score/statements_count,
-            'appealing_score': appealing_score/statements_count,
+            'appealing_score': appealing_score / statements_count,
             'appealing_type': appealing_type,
             # 'maslow_pyramid_needs': maslow_pyramid_needs
         }
@@ -652,7 +671,7 @@ class PersuasivenessMetric:
         # if type(generated_image) != str:
         #     image = generated_image
         # else:
-        image = Image.open(generated_image)#.convert("RGB")
+        image = Image.open(generated_image)  # .convert("RGB")
         print(generated_image.split('/'))
         image_url = '/'.join(generated_image.split('/')[-2:])
         action_reasons = self.QA[image_url][0]
@@ -845,19 +864,17 @@ class PersuasivenessMetric:
             if main_need.lower() == output.lower():
                 maslow_pyramid_needs += 1
         outputs = {
-            'has_story': has_story/statements_count,
-            'is_unusual': is_unusual/statements_count,
-            'properties_score': properties_score/statements_count,
-            'audience_score': audience_score/statements_count,
-            'memorability_score': memorability_score/statements_count,
-            'benefit_score': benefit_score/statements_count,
-            'appealing_score': appealing_score/statements_count,
-            'appealing_type': appealing_type/statements_count,
-            'maslow_pyramid_needs': maslow_pyramid_needs/statements_count
+            'has_story': has_story / statements_count,
+            'is_unusual': is_unusual / statements_count,
+            'properties_score': properties_score / statements_count,
+            'audience_score': audience_score / statements_count,
+            'memorability_score': memorability_score / statements_count,
+            'benefit_score': benefit_score / statements_count,
+            'appealing_score': appealing_score / statements_count,
+            'appealing_type': appealing_type / statements_count,
+            'maslow_pyramid_needs': maslow_pyramid_needs / statements_count
         }
         return outputs
-
-
 
     def get_GPT4v_persuasiveness_alignment(self, generated_image, action_reasons=None):
         def extract_number(string_number):
@@ -973,7 +990,7 @@ class Whoops:
                              model_kwargs={"quantization_config": quantization_config},
                              trust_remote_code=True,
                              device_map='auto',
-                             token='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',)
+                             token='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', )
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     @staticmethod
@@ -1017,4 +1034,3 @@ class Whoops:
         answers = list(predictions)
         return answers
         return answers
-

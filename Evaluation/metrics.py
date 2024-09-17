@@ -240,9 +240,13 @@ class Metrics:
             input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
             return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1),
                                                                                       min=1e-9)
-
+        if args.fine_tuned:
+            format = ''
+        else:
+            format = 'Follow the format of: I should ${action} because ${reason}.'
         prompt = f"""What is the correct interpretation for the described image:
-                                         Description: {description}"""
+                     Description: {description}.
+                     {format}"""
         generated_image_message = self.llm(prompt)
         print(generated_image_message)
         # tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,

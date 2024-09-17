@@ -243,7 +243,7 @@ class Metrics:
         if args.fine_tuned:
             format = ''
         else:
-            format = 'Follow the format of: I should ${action} because ${reason}.'
+            format = 'Follow the format of: I should ${action} because ${reason}. ONLY RETURN A SINGLE SENTENCE IN THIS FORMAT'
         prompt = f"""What is the correct interpretation for the described image:
                      Description: {description}.
                      {format}"""

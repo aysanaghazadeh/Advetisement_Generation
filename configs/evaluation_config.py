@@ -70,6 +70,9 @@ def parse_args():
     parser.add_argument('--text_input_type',
                         type=str,
                         default='LLM')
+    parser.add_argument('--with_audience',
+                        type=bool,
+                        default=False)
     parser.add_argument('--with_sentiment',
                         type=bool,
                         default=False)

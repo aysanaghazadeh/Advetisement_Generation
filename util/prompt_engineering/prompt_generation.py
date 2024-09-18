@@ -179,7 +179,6 @@ class PromptGenerator:
         #         break
         LLM_input_prompt = self.get_LLM_input_prompt(args, action_reason, sentiment, topic, audience)
         description = self.LLM_model(LLM_input_prompt)
-        print(description)
         # description = f'{description}'
         if 'objects:' in description:
             objects = description.split('objects:')[1]
@@ -198,6 +197,8 @@ class PromptGenerator:
                 'sentiment': sentiment,
                 'topic': topic,
                 'audience': audience}
+
+        print('data:', data)
         env = Environment(loader=FileSystemLoader(args.prompt_path))
         template = env.get_template(args.T2I_prompt)
         output = template.render(**data)

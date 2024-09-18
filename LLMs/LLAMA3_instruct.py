@@ -38,12 +38,14 @@ class LLAMA3Instruct(nn.Module):
 
     def forward(self, prompt):
         if not self.args.fine_tuned:
+            print('llm prompt:', prompt)
             messages = [
                 {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},
             ]
             output = self.pipeline(messages, max_new_tokens=256)
             output = output[0]["generated_text"][-1]['content'].split(':')[-1]
+            print('llama3 output:', output)
             return output
         else:
             messages = [

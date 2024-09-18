@@ -86,9 +86,7 @@ def get_descriptions(args):
     #                                 f'_{args.VLM_prompt.replace(".jinja", "")}'
     #                                 f'_description_{args.task}.csv')
     description_file = os.path.join(args.result_path,
-                                    f'{args.description_type}'
-                                    f'_{args.VLM}'
-                                    f'_{args.test_set_QA.replace(".csv", "")}'
+                                    f'{args.description_type}_{args.VLM}_{args.test_set_QA.replace(".csv", "")}'
                                     f'_description.csv')
     if os.path.exists(description_file):
         print(description_file)

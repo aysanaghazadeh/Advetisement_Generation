@@ -86,7 +86,7 @@ class Evaluation:
         alignment_score_model = Metrics(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                f'{args.VLM}_text_image_alignment'
-                                                                               f'_isFineTuned{args.fine_tuned}_2000.json')
+                                                                               f'_isFineTuned{args.fine_tuned}_3000.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)

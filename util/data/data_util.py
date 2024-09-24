@@ -156,9 +156,9 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
     return dataset
 
 
-def get_train_LLAMA3_instruc_Dataloader(args):
+def get_train_LLAMA3_instruct_Dataloader(args):
     image_urls = get_train_data(args).values[:2300]
-    dataset = get_LLAMA3_training_data(args, image_urls)
+    dataset = get_LLAMA3_instruct_training_data(args, image_urls)
     return dataset
 
 

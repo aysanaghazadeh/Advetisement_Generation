@@ -1,5 +1,5 @@
 import os.path
-from util.data.data_util import get_train_LLAMA3_Dataloader
+from util.data.data_util import get_train_LLAMA3_instruct_Dataloader
 from configs.training_config import get_args
 from transformers import TrainingArguments, Trainer, DataCollatorForLanguageModeling
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     args = get_args()
     model, tokenizer = get_model()
     training_args = get_training_args(args)
-    train_dataset = get_train_LLAMA3_Dataloader(args)
+    train_dataset = get_train_LLAMA3_instruct_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
     train_dataset = tmp["train"]
     test_dataset = tmp["test"]

@@ -121,7 +121,8 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
                            truncation=True,
                            max_length=256,
                            padding="max_length", )
-        tokens["labels"] = tokens['input_ids'].copy()
+        data_point["labels"] = tokens['input_ids'].copy()
+        data_point['input_ids'] = tokens['input_ids'].copy()
         return data_point
 
     def format_dataset(data_point):

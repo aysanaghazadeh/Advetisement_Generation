@@ -103,8 +103,8 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
     def process(data_point):
         action_reason = '\n-'.join(data_point['QA'][0])
         format = """Follow the following format:
-                            Visual scene: {Description of the overall scene, list of objects and the relation between them}
-                            Texts in the image: {list of texts in the image}"""
+                    Visual scene: {Description of the overall scene, list of objects and the relation between them}
+                    Texts in the image: {list of texts in the image}"""
 
         prompt = f"""Describe an advertisement image that conveys the following messages in detail:
                             {action_reason}
@@ -128,7 +128,6 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
         prompt = f"""Describe an advertisement image that conveys the following messages in detail:
                     {action_reason}
 
-                    {format}
                     Description of the image: {data_point['description']}
                 """
         tokens = tokenizer(prompt,

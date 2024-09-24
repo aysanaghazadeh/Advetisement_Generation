@@ -120,21 +120,24 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
         tokens = tokenizer(data_point["prompt"],
                            truncation=True,
                            max_length=256,
-                           padding=True )
+                           padding=True)
         data_point["labels"] = tokens['input_ids'].copy()
         data_point['input_ids'] = tokens['input_ids'].copy()
         return data_point
 
     def format_dataset(data_point):
         action_reason = '\n-'.join(data_point['QA'][0])
-        format = """Follow the following format:
-                    Visual scene: {Description of the overall scene, list of objects and the relation between them}
-                    Texts in the image: {list of texts in the image}"""
+        # format = """Follow the following format:
+        #             Visual scene: {Description of the overall scene, list of objects and the relation between them}
+        #             Texts in the image: {list of texts in the image}"""
 
-        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+        prompt = f"""
+                    ### Instruction:
+                    Pretend you are an Advertisement Designer. Describe an advertisement image that conveys the following messages in detail:
                     {action_reason}
 
-                    Description of the image: {data_point['description']}
+                    ### Response:
+                    {data_point['description']}
                 """
         tokens = tokenizer(prompt,
                            truncation=True,
@@ -154,9 +157,9 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
         dataset['description'].append(description)
 
     dataset = Dataset.from_dict(dataset)
-    # dataset = dataset.map(format_dataset)
-    dataset = dataset.map(process)
-    # dataset = dataset.remove_columns(['QA', "description"])
+    dataset = dataset.map(format_dataset)
+    # dataset = dataset.map(process)
+    dataset = dataset.remove_columns(['QA', "description"])
     print(dataset)
     return dataset
 

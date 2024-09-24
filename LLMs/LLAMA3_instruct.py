@@ -22,9 +22,13 @@ class LLAMA3Instruct(nn.Module):
                                                           token='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')
                 self.tokenizer.pad_token = self.tokenizer.eos_token
                 self.tokenizer.padding_side = "right"
+                # self.model = PeftModel.from_pretrained(self.model,
+                #                                        os.path.join(args.model_path,
+                #                                                     'my_LLAMA3_CPO/checkpoint-3000/'))
                 self.model = PeftModel.from_pretrained(self.model,
                                                        os.path.join(args.model_path,
-                                                                    'my_LLAMA3_CPO/checkpoint-3000/'))
+                                                                    'my_LLAMA3_instruct_InternVL_model_2',
+                                                                    'checkpoint-1150'))
             else:
                 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 

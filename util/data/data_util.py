@@ -47,7 +47,7 @@ def get_train_Mistral7B_Dataloader(args):
 
 
 def get_LLAMA3_training_data(args, image_urls):
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-instruct",
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
                                               token='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',
                                               padding='right')
     tokenizer.pad_token = tokenizer.eos_token
@@ -89,6 +89,74 @@ def get_LLAMA3_training_data(args, image_urls):
 
 
 def get_train_LLAMA3_Dataloader(args):
+    image_urls = get_train_data(args).values[:2300]
+    dataset = get_LLAMA3_training_data(args, image_urls)
+    return dataset
+
+
+def get_LLAMA3_instruct_training_data(args, image_urls):
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-instruct",
+                                              token='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',
+                                              padding='right')
+    tokenizer.pad_token = tokenizer.eos_token
+
+    def process(data_point):
+        action_reason = '\n-'.join(data_point['QA'][0])
+        format = """Follow the following format:
+                            Visual scene: {Description of the overall scene, list of objects and the relation between them}
+                            Texts in the image: {list of texts in the image}"""
+
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                            {action_reason}
+
+                            {format}
+                            Description of the image:
+                        """
+        data_point['prompt'] = [{'content': prompt,
+                                 'role': 'user'},
+                                {'content':  data_point['description'],
+                                'role': 'assistant'}]
+        data_point["prompt"] = tokenizer.apply_chat_template(data_point["prompt"], tokenize=False)
+        return data_point
+
+    def format_dataset(data_point):
+        action_reason = '\n-'.join(data_point['QA'][0])
+        format = """Follow the following format:
+                    Visual scene: {Description of the overall scene, list of objects and the relation between them}
+                    Texts in the image: {list of texts in the image}"""
+
+        prompt = f"""Describe an advertisement image that conveys the following messages in detail:
+                    {action_reason}
+
+                    {format}
+                    Description of the image: {data_point['description']}
+                """
+        tokens = tokenizer(prompt,
+                           truncation=True,
+                           max_length=256,
+                           padding="max_length", )
+        tokens["labels"] = tokens['input_ids'].copy()
+        return tokens
+
+    descriptions = pd.read_csv(args.description_file)
+    QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
+    dataset = {'QA': [], 'description': []}
+    for image_url in image_urls:
+        image_url = image_url[0]
+        QA = QAs[image_url]
+        description = descriptions.loc[descriptions['ID'] == image_url]['description'].values
+        dataset['QA'].append(QA)
+        dataset['description'].append(description)
+
+    dataset = Dataset.from_dict(dataset)
+    # dataset = dataset.map(format_dataset)
+    dataset = dataset.map(process)
+    # dataset = dataset.remove_columns(['QA', "description"])
+    print(dataset)
+    return dataset
+
+
+def get_train_LLAMA3_instruc_Dataloader(args):
     image_urls = get_train_data(args).values[:2300]
     dataset = get_LLAMA3_training_data(args, image_urls)
     return dataset

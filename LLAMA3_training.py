@@ -8,6 +8,7 @@ from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_tr
 import random
 from transformers import TrainerCallback, TrainerControl
 from accelerate import Accelerator
+from trl import SFTTrainer, SFTConfig
 
 accelerator = Accelerator(cpu=False)
 
@@ -114,7 +115,7 @@ if __name__ == '__main__':
     train_dataset = tmp["train"]
     test_dataset = tmp["test"]
     data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
-    trainer = Trainer(
+    trainer = SFTTrainer(
         model=model,
         train_dataset=train_dataset,
         eval_dataset=test_dataset,

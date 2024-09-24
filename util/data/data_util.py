@@ -120,7 +120,7 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
         tokens = tokenizer(data_point["prompt"],
                            truncation=True,
                            max_length=256,
-                           padding="max_length", )
+                           padding=True )
         data_point["labels"] = tokens['input_ids'].copy()
         data_point['input_ids'] = tokens['input_ids'].copy()
         return data_point

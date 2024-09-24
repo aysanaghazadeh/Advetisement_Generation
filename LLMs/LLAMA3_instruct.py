@@ -28,7 +28,7 @@ class LLAMA3Instruct(nn.Module):
                 self.model = PeftModel.from_pretrained(self.model,
                                                        os.path.join(args.model_path,
                                                                     'my_LLAMA3_instruct_InternVL_model_2',
-                                                                    'checkpoint-1150'))
+                                                                    'checkpoint-700'))
             else:
                 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
@@ -52,25 +52,25 @@ class LLAMA3Instruct(nn.Module):
             print('llama3 output:', output)
             return output
         else:
-            messages = [
-                {"role": "system", "content": "Be a helpful assistant"},
-                {"role": "user", "content": prompt},
-            ]
-            input_ids = self.tokenizer.apply_chat_template(
-                messages,
-                add_generation_prompt=True,
-                return_tensors="pt"
-            ).to(self.model.device)
-
-            terminators = [
-                self.tokenizer.eos_token_id,
-                self.tokenizer.convert_tokens_to_ids("<|eot_id|>")
-            ]
-
+            # messages = [
+            #     {"role": "system", "content": "Be a helpful assistant"},
+            #     {"role": "user", "content": prompt},
+            # ]
+            # input_ids = self.tokenizer.apply_chat_template(
+            #     messages,
+            #     add_generation_prompt=True,
+            #     return_tensors="pt"
+            # ).to(self.model.device)
+            #
+            # terminators = [
+            #     self.tokenizer.eos_token_id,
+            #     self.tokenizer.convert_tokens_to_ids("<|eot_id|>")
+            # ]
+            input_ids = self.tokenizer(prompt, return_tensor=True)
             outputs = self.model.generate(
                 input_ids,
                 max_new_tokens=256,
-                eos_token_id=terminators,
+                # eos_token_id=terminators,
                 do_sample=True,
                 temperature=0.6,
                 top_p=0.9,

@@ -117,7 +117,7 @@ def get_LLAMA3_instruct_training_data(args, image_urls):
                                 {'content':  data_point['description'],
                                 'role': 'assistant'}]
         data_point["prompt"] = tokenizer.apply_chat_template(data_point["prompt"], tokenize=False)
-        tokens = tokenizer(prompt,
+        tokens = tokenizer(data_point["prompt"],
                            truncation=True,
                            max_length=256,
                            padding="max_length", )

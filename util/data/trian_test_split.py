@@ -46,7 +46,7 @@ def get_train_data(args):
 
 def get_test_data(args):
     topics_data_file = os.path.join(args.data_path, 'train/Topics_train.json')
-    test_file = os.path.join(args.data_path, 'train/test_image.csv')
+    test_file = os.path.join(args.data_path, 'train/test_set_image_PSA.csv')
     if os.path.exists(test_file):
         return pd.read_csv(test_file)
     topics_data = json.load(open(topics_data_file))

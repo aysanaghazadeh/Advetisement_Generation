@@ -98,6 +98,8 @@ class Evaluation:
             image_url = row[0]
             print(image_url)
             action_reasons = action_reasons_all[image_url][0]
+            if image_url not in descriptions.ID.values:
+                continue
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
             print(description)
             generated_image_message, alignment_score = alignment_score_model.get_text_image_alignment_score(action_reasons,

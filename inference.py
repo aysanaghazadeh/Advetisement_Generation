@@ -117,8 +117,8 @@ def generate_images(args):
         if filename not in test_set_image_url:
         # if filename not in test_set:
             continue
-        topics = test_set.loc[test_set['ID'] == filename]['topic'].values
-        # topics = []
+        # topics = test_set.loc[test_set['ID'] == filename]['topic'].values
+        topics = []
         action_reasons = content[0]
         # action_reasons = []
         # for AR in content[1]:

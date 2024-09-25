@@ -119,7 +119,7 @@ class InternVL(nn.Module):
         image = image.resize((448, 448))
         pixel_values = image_processor(images=image, return_tensors='pt').pixel_values.to(torch.bfloat16).cuda()
 
-        generation_config = dict(max_new_tokens=1024, do_sample=True)
+        generation_config = dict(max_new_tokens=200, do_sample=True)
         question = prompt
         response = self.model.chat(self.tokenizer, pixel_values, question, generation_config)
         print(f'User: {question}')

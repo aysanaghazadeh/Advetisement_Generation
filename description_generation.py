@@ -41,7 +41,7 @@ def get_single_description(args, image_url, pipe):
     env = Environment(loader=FileSystemLoader(args.prompt_path))
     template = env.get_template(args.VLM_prompt)
     prompt = template.render()
-    outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 250})
+    outputs = pipe(image, prompt=prompt, generate_kwargs={"max_new_tokens": 200})
     print(outputs)
     if args.VLM == 'InternVL' or args.VLM == 'LLAVA16':
         description = outputs

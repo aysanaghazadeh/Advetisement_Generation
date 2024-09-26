@@ -335,7 +335,7 @@ class Evaluation:
             else:
                 print(image_path)
                 os.makedirs(image_path, exist_ok=True)
-            for i in range(3):
+            for i in range(2):
                 image, prompt = self.image_generator(image_url)
                 image.save(os.path.join(image_path, str(i) + '.jpg'))
 

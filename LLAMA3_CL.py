@@ -40,7 +40,7 @@ def get_model():
 
 def get_training_args(args):
     training_args = CPOConfig(
-        output_dir=args.model_path+'/my_LLAMA3_CPO',
+        output_dir=args.model_path+'/my_LLAMA3_CPO_noAction',
         remove_unused_columns=False,
         per_device_train_batch_size=args.batch_size,
         gradient_checkpointing=True,
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     cpo_args = get_training_args(args)
     model, tokenizer = get_model()
     cpo_config = CPOConfig(beta=0.1,
-                           output_dir=args.model_path+'/my_LLAMA3_CPO',)
+                           output_dir=args.model_path+'/my_LLAMA3_CPO_noAction',)
     train_dataset = get_train_LLAMA3_CPO_Dataloader(args)
     tmp = train_dataset.train_test_split(test_size=0.1)
     train_dataset = tmp["train"]

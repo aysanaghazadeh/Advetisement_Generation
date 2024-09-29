@@ -88,7 +88,7 @@ def get_descriptions(args):
     description_file = os.path.join(args.result_path,
                                     f'{args.description_type}'
                                     f'_{args.VLM}'
-                                    # f'_{args.test_set_QA.replace(".csv", "")}'
+                                    f'_{args.test_set_QA.replace(".csv", "")}'
                                     f'_description.csv')
     if os.path.exists(description_file):
         print(description_file)

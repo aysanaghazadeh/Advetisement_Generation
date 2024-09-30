@@ -366,8 +366,9 @@ class Metrics:
         """
         output = self.pipe(image, prompt=prompt,
                            generate_kwargs={"max_new_tokens": 45})
-        # output = output[0]["generated_text"].split(':')[-1]
-        output = output.split(':')[-1]
+        print(output)
+        output = output[0]["generated_text"].split(':')[-1]
+        # output = output.split(':')[-1]
         print(output)
         numeric_value = extract_number(output)
         print(f'persuasiveness: {numeric_value}')

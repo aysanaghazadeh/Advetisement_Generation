@@ -31,7 +31,10 @@ class Metrics:
     def __init__(self, args):
         self.clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device=args.device)
         self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-        if args.evaluation_type == 'image_text_alignment' or args.evaluation_type == 'image_text_ranking':
+        alignment_scores = ['image_text_alignment',
+                            'image_text_ranking',
+                            'MLLM_alignment']
+        if args.evaluation_type in alignment_scores:
             quantization_config = BitsAndBytesConfig(
                 load_in_8bit=True,
                 bnb_8bit_compute_dtype=torch.float16,
@@ -40,6 +43,7 @@ class Metrics:
             self.pipe = pipeline("image-to-text",
                                  model='llava-hf/llava-1.5-13b-hf',
                                  model_kwargs={"quantization_config": quantization_config})
+            self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         if args.evaluation_type == 'text_image_alignment':
             self.llm = LLM(args)
             self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)

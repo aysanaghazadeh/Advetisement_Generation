@@ -292,7 +292,8 @@ class Evaluation:
         alignment_scores = {}
         for row in results:
             image_url = row[0]
-            generated_image_path = row[3]
+            # generated_image_path = row[3]
+            generated_image_path = os.path.join(args.result_path, args.test_set_images, image_url)
             alignment_score = Metric.get_MLLM_alignment_score(generated_image_path)
             print(
                 f'action reason aware alignment score of the image {image_url} is {alignment_score} out of 5')

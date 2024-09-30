@@ -334,6 +334,41 @@ class Metrics:
                 first_image += 1
         return first_image / len(action_reasons)
 
+    def get_MLLM_alignment_score(self, generated_image):
+        def extract_number(string_number):
+            match = re.search(r'-?\d+', string_number)
+            if match:
+                return int(match.group(0))
+            else:
+                return 0
+                raise ValueError("No numeric value found in the input string")
+
+        if type(generated_image) == str:
+            image = Image.open(generated_image).convert("RGB")
+            print(generated_image.split('/'))
+            image_url = '/'.join(generated_image.split('/')[-2:])
+            action_reason = 'in convincing the message of ' + self.QA[image_url][0][0]
+
+        else:
+            image = generated_image
+            action_reason = ''
+        prompt = f"""
+        <image>\n USER:
+        Assume you are a human evaluating the image. You are given a statement and you are asked to check if the given message is represented in the image or not.
+        You must return a score in range of 0 to 5. You must return 5 if the message is represtned in the image or 0 if the image is totally irrlevent.
+        Question: Based on the context evaluate the image for '{action_reason}' in range of (0, 5). 
+        Your output format is only Answer: score\n form, no other form. Empty is not allowed.
+        ASSISTANT:
+        """
+        output = self.pipe(image, prompt=prompt,
+                           generate_kwargs={"max_new_tokens": 45})
+        # output = output[0]["generated_text"].split(':')[-1]
+        output = output.split(':')[-1]
+        print(output)
+        numeric_value = extract_number(output)
+        print(f'persuasiveness: {numeric_value}')
+        return numeric_value
+
 
 class PersuasivenessMetric:
     def __init__(self, args):

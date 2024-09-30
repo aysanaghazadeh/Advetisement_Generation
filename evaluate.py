@@ -282,6 +282,26 @@ class Evaluation:
                 json.dump(persuasiveness_scores, outfile)
 
     @staticmethod
+    def evaluate_MLLM_alignment_score(args):
+        Metric = Metrics(args)
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               'MLLM_alignment_score.json')
+        print(saving_path)
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
+        alignment_scores = {}
+        for row in results:
+            image_url = row[0]
+            generated_image_path = row[3]
+            alignment_score = Metric.get_MLLM_alignment_score(generated_image_path)
+            print(
+                f'action reason aware alignment score of the image {image_url} is {alignment_score} out of 5')
+            print('*' * 80)
+            alignment_scores[image_url] = alignment_score
+
+            with open(saving_path, "w") as outfile:
+                json.dump(alignment_scores, outfile)
+
+    @staticmethod
     def evaluate_data_persuasiveness(args):
         persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, 'persuasiveness_2.json')

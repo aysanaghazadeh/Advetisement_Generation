@@ -177,7 +177,8 @@ class Evaluation:
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         for row in results:
             image_url = row[0]
-            generated_image_path = row[3]
+            # generated_image_path = row[3]
+            generated_image_path = os.path.join(args.result_path, args.test_set_images, image_url)
             if args.VLM == 'GPT4v':
                 QA_pairs = persuasiveness.get_GPT4v_persuasiveness_alignment(generated_image_path)
             else:

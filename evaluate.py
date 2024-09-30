@@ -282,7 +282,7 @@ class Evaluation:
                 json.dump(persuasiveness_scores, outfile)
 
     @staticmethod
-    def evaluate_MLLM_alignment_score(args):
+    def evaluate_MLLM_alignment(args):
         Metric = Metrics(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                'MLLM_alignment_score.json')

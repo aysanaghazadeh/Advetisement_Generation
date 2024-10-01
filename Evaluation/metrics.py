@@ -358,8 +358,11 @@ class Metrics:
             action_reason = ''
         prompt = f"""
         <image>\n USER:
-        Assume you are a human evaluating the image. You are given a statement and you are asked to check if the given message is represented in the image or not.
-        You must return a score in range of 0 to 5. You must return 5 if the message is represtned in the image or 0 if the image is totally irrlevent.
+        Context:Assume you are a human evaluating the image. You are given a statement and you are asked to check if the given message is represented in the image or not.
+        You must return a score in range of 0 to 5. You must return 5 if the message is represented in the image or 0 if the image is totally irrelevent.
+        For example if the action-reason is 'I should drink beer because it is as light as feather', and the image or text in the image is fully showing this message, then the score is 5. 
+        If the image or the text in the image is only showing I should drink beer or it is showing the beer is as light as feather, then the score is 3. 
+        If the image is totally irrelevant to beer or drinking or the lightness of the drink, then the score is 0.
         Question: Based on the context evaluate the image for '{action_reason}' in range of (0, 5). 
         Your output format is only Answer: score\n form, no other form. Empty is not allowed.
         ASSISTANT:

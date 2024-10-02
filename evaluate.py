@@ -285,8 +285,11 @@ class Evaluation:
     @staticmethod
     def evaluate_MLLM_alignment(args):
         Metric = Metrics(args)
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
-                                                                               'MLLM_alignment_score.json')
+        saving_path = os.path.join(args.result_path,
+                                   '_'.join([
+                                       args.VLM_prompt.replace('.jinja', ''),
+                                       args.test_set_images.split('/')[-1],
+                                       args.result_file.replace('.csv', 'MLLM_alignment_score.json')]))
         print(saving_path)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         alignment_scores = {}

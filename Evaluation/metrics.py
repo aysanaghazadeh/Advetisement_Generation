@@ -351,7 +351,7 @@ class Metrics:
             image = Image.open(generated_image).convert("RGB")
             print(generated_image.split('/'))
             image_url = '/'.join(generated_image.split('/')[-2:])
-            action_reason = 'in convincing the message of ' + self.QA[image_url][0][0]
+            action_reason = self.QA[image_url][0][0]
 
         else:
             image = generated_image

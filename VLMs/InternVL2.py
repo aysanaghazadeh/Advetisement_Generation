@@ -104,24 +104,24 @@ class InternVL(nn.Module):
         return pixel_values
 
     def forward(self, image, prompt, generate_kwargs):
-        # pixel_values = self.load_image(image, max_num=6).to(torch.bfloat16).cuda(self.args.device)
-        # generation_config = dict(
-        #     num_beams=1,
-        #     max_new_tokens=generate_kwargs['max_new_tokens'],
-        #     do_sample=False,
-        # )
-        # response = self.model.chat(self.tokenizer, pixel_values, prompt, generation_config)
-        # print(f'User: {prompt}')
-        # print(f'Assistant: {response}')
-        # print('*' * 10)
-        path = "OpenGVLab/InternVL-Chat-V1-1"
-        image_processor = CLIPImageProcessor.from_pretrained(path)
-        image = image.resize((448, 448))
-        pixel_values = image_processor(images=image, return_tensors='pt').pixel_values.to(torch.bfloat16).cuda()
-
-        generation_config = dict(max_new_tokens=200, do_sample=True)
-        question = prompt
-        response = self.model.chat(self.tokenizer, pixel_values, question, generation_config)
-        print(f'User: {question}')
+        pixel_values = self.load_image(image, max_num=6).to(torch.bfloat16).cuda(self.args.device)
+        generation_config = dict(
+            num_beams=1,
+            max_new_tokens=generate_kwargs['max_new_tokens'],
+            do_sample=False,
+        )
+        response = self.model.chat(self.tokenizer, pixel_values, prompt, generation_config)
+        print(f'User: {prompt}')
         print(f'Assistant: {response}')
-        return response
+        print('*' * 10)
+        # path = "OpenGVLab/InternVL-Chat-V1-1"
+        # image_processor = CLIPImageProcessor.from_pretrained(path)
+        # image = image.resize((448, 448))
+        # pixel_values = image_processor(images=image, return_tensors='pt').pixel_values.to(torch.bfloat16).cuda()
+        #
+        # generation_config = dict(max_new_tokens=200, do_sample=True)
+        # question = prompt
+        # response = self.model.chat(self.tokenizer, pixel_values, question, generation_config)
+        # print(f'User: {question}')
+        # print(f'Assistant: {response}')
+        # return response

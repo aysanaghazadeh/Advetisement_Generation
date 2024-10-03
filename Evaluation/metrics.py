@@ -325,7 +325,7 @@ class Metrics:
                 return 0
 
         def evaluate_story(generated_image, image_url):
-            action_reason = self.QA[image_url]
+            action_reason = self.QA[image_url][0][0]
             action = action_reason.lower().split('/')[0]
             image = Image.open(generated_image)
             data = {'action_reason': action_reason,
@@ -335,7 +335,56 @@ class Metrics:
             prompt = template.render(**data)
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output[0]["generated_text"]
+            output = output
+            has_story_score = 0
+            if 'yes' in output.lower():
+                has_story_score += 1
+                template = env.get_template('isRelatedAction.jinja')
+                prompt = template.render(**data)
+                output = self.pipe(image, prompt=prompt,
+                                   generate_kwargs={"max_new_tokens": 45})
+                output = output
+                if 'yes' in output.lower():
+                    has_story_score += 1
+                    template = env.get_template('isRelatedActionReason.jinja')
+                    prompt = template.render(**data)
+                    output = self.pipe(image, prompt=prompt,
+                                       generate_kwargs={"max_new_tokens": 45})
+                    output = output
+                    if 'yes' in output.lower():
+                        has_story_score += 1
+            has_story_score = has_story_score / 3
+            return has_story_score
+
+        def evaluate_unusualness(generated_image):
+            data = {}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('hasUnusualConnection.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            output = output
+            if 'yes' in output:
+                return 1
+            else:
+                return 0
+
+        def evaluate_audience(generated_image, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('getAudience.jinja')
+            prompt = template.render(**data)
+            audience = self.LLM(prompt)
+            template = env.get_template('isAudienceCorrect.jinja')
+            data = {'audience':audience}
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            return extract_number(output)
+
 
 
         image_url = '/'.join(generated_image.split('/')[-2:])

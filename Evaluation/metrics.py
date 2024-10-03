@@ -40,9 +40,14 @@ class Metrics:
                 bnb_8bit_compute_dtype=torch.float16,
                 torch_dtype="float16"
             )
-            self.pipe = pipeline("image-to-text",
-                                 model='llava-hf/llava-1.5-13b-hf',
-                                 model_kwargs={"quantization_config": quantization_config})
+            # self.pipe = pipeline("image-to-text",
+            #                      model='llava-hf/llava-1.5-13b-hf',
+            #                      model_kwargs={"quantization_config": quantization_config})
+            if args.VLM == 'LLAVA':
+                self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
+                                     model_kwargs={"quantization_config": quantization_config})
+            if args.VLM == 'InternVL':
+                self.pipe = InternVL(args)
             self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         if args.evaluation_type == 'text_image_alignment':
             self.llm = LLM(args)
@@ -521,6 +526,17 @@ class PersuasivenessMetric:
             print('reason:', output)
             reason_numeric_value += extract_number(output)
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)
+
+    def get_multi_question_persuasiveness(self, generated_image):
+        def extract_number(string_number):
+            match = re.search(r'-?\d+', string_number)
+            if match:
+                return int(match.group(0))
+            else:
+                print("No numeric value found in the input string")
+                return 0
+
+
 
     def get_multi_question_evaluation(self, generated_image):
         def parse_options(options):

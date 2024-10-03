@@ -114,6 +114,7 @@ class InternVL(nn.Module):
         print(f'User: {prompt}')
         print(f'Assistant: {response}')
         print('*' * 10)
+        return response
         # path = "OpenGVLab/InternVL-Chat-V1-1"
         # image_processor = CLIPImageProcessor.from_pretrained(path)
         # image = image.resize((448, 448))

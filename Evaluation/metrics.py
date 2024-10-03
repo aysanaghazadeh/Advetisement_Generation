@@ -259,6 +259,7 @@ class Metrics:
                      Description: {description}.
                      {format}"""
         generated_image_message = self.llm(prompt)
+        generated_image_message = generated_image_message.lower().split('because')[-1]
         print(generated_image_message)
         # tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
         #                                                    padding=True,
@@ -276,6 +277,7 @@ class Metrics:
         similarity_score = 0
         for action_reason in action_reasons:
             print(action_reason)
+            action_reason = action_reason.lower().split('because')[-1]
             # tokenized_action_reason = self.llm.model.tokenizer(action_reason,
             #                                          padding=True,
             #                                          max_length=25,

@@ -47,7 +47,7 @@ class Metrics:
             if args.VLM == 'LLAVA':
                 self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                                      model_kwargs={"quantization_config": quantization_config})
-            if args.VLM == 'InternVL':
+            elif args.VLM == 'InternVL':
                 self.pipe = InternVL(args)
             self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         if args.evaluation_type == 'text_image_alignment' or args.evaluation_type == 'multi_question_persuasiveness':
@@ -383,8 +383,24 @@ class Metrics:
             prompt = template.render(**data)
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            return extract_number(output)
+            if 'yes' in output.lower():
+                return 1
+            else:
+                return 0
 
+        def evaluate_appealing(generated_image, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('appealing_type.jinja')
+            prompt = template.render(**data)
+            audience = self.LLM(prompt)
+            template = env.get_template('isAudienceCorrect.jinja')
+            data = {'audience': audience}
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
 
 
         image_url = '/'.join(generated_image.split('/')[-2:])

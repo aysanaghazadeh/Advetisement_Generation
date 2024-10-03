@@ -33,7 +33,8 @@ class Metrics:
         self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         alignment_scores = ['image_text_alignment',
                             'image_text_ranking',
-                            'MLLM_alignment']
+                            'MLLM_alignment',
+                            'multi_question_persuasiveness']
         if args.evaluation_type in alignment_scores:
             quantization_config = BitsAndBytesConfig(
                 load_in_8bit=True,
@@ -49,16 +50,17 @@ class Metrics:
             if args.VLM == 'InternVL':
                 self.pipe = InternVL(args)
             self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
-        if args.evaluation_type == 'text_image_alignment':
+        if args.evaluation_type == 'text_image_alignment' or args.evaluation_type == 'multi_question_persuasiveness':
             self.llm = LLM(args)
-            self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+            if args.evaluation_type == 'text_image_alignment':
+                self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
             # self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
             #                                                token='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')
             # self.tokenizer.pad_token = self.tokenizer.eos_token
             # self.tokenizer.padding_side = 'right'
             # Load model from HuggingFace Hub
-            self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
-            self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+                self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+                self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
         if args.evaluation_type == 'image_text_ranking':
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                            token='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',
@@ -313,6 +315,32 @@ class Metrics:
             f'Assistant:')
         return prompt
 
+    def get_multi_question_persuasiveness(self, generated_image):
+        def extract_number(string_number):
+            match = re.search(r'-?\d+', string_number)
+            if match:
+                return int(match.group(0))
+            else:
+                print("No numeric value found in the input string")
+                return 0
+
+        def evaluate_story(generated_image, image_url):
+            action_reason = self.QA[image_url]
+            action = action_reason.lower().split('/')[0]
+            image = Image.open(generated_image)
+            data = {'action_reason': action_reason,
+                    'action': action}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('hasStory.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            output = output[0]["generated_text"]
+
+
+        image_url = '/'.join(generated_image.split('/')[-2:])
+
+
     def get_image_text_ranking(self, action_reasons, first_generated_image_path, second_generated_image_path, args):
         prompt = self.get_image_description_prompt()
         first_image = Image.open(first_generated_image_path)
@@ -373,8 +401,8 @@ class Metrics:
         output = self.pipe(image, prompt=prompt,
                            generate_kwargs={"max_new_tokens": 45})
         print(output)
-        output = output[0]["generated_text"].split(':')[-1]
-        # output = output.split(':')[-1]
+        # output = output[0]["generated_text"].split(':')[-1]
+        output = output.split(':')[-1]
         print(output)
         numeric_value = extract_number(output)
         print(f'persuasiveness: {numeric_value}')
@@ -526,16 +554,6 @@ class PersuasivenessMetric:
             print('reason:', output)
             reason_numeric_value += extract_number(output)
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)
-
-    def get_multi_question_persuasiveness(self, generated_image):
-        def extract_number(string_number):
-            match = re.search(r'-?\d+', string_number)
-            if match:
-                return int(match.group(0))
-            else:
-                print("No numeric value found in the input string")
-                return 0
-
 
 
     def get_multi_question_evaluation(self, generated_image):

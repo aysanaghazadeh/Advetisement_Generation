@@ -447,7 +447,7 @@ class Metrics:
             data = {'action_reason': action_reason}
             image = Image.open(generated_image)
             env = Environment(loader=FileSystemLoader(self.args.prompt_path))
-            template = env.get_template('appealing_type.jinja')
+            template = env.get_template('appeal_type.jinja')
             prompt = template.render(**data)
             appealing_type = self.llm(prompt)
             template = env.get_template('appealing_score.jinja')

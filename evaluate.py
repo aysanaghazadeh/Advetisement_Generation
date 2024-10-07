@@ -16,9 +16,9 @@ from io import BytesIO
 
 
 class Evaluation:
-    def __init__(self, metrics, args):
-        self.metrics = metrics
+    def __init__(self, args):
         if args.evaluation_type in ['creativity', 'persuasiveness_creativity'] and args.image_generation:
+            self.metrics = Metrics(args)
             self.image_generator = AdvertisementImageGeneration(args)
         if args.evaluation_type == 'action_reason_VLM':
             self.ar_VLM = ActionReasonVLM(args)
@@ -352,6 +352,7 @@ class Evaluation:
                     json.dump(persuasiveness_scores, outfile)
 
     def evaluate_sampled_results(self, args):
+        metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         FIDs = []
         CLIP_scores = []
@@ -362,7 +363,7 @@ class Evaluation:
             CLIP_score = row[5]
             action_reason = QA[image_url][0]
             original_image_url = os.path.join(args.data_path, args.test_set_images, image_url)
-            original_image_text_score = self.metrics.get_text_image_CLIP_score(original_image_url, action_reason, args)[
+            original_image_text_score = metrics.get_text_image_CLIP_score(original_image_url, action_reason, args)[
                 'text']
             if original_image_text_score > 0.23:
                 FIDs.append(FID)
@@ -806,6 +807,6 @@ class Evaluation:
 
 if __name__ == '__main__':
     args = get_args()
-    metrics = Metrics(args)
-    evaluation = Evaluation(metrics, args)
+    # metrics = Metrics(args)
+    evaluation = Evaluation(args)
     evaluation.evaluate(args)

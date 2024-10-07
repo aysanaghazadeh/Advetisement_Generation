@@ -339,6 +339,7 @@ class Metrics:
                                generate_kwargs={"max_new_tokens": 45})
             output = output
             has_story_score = 0
+            print(f'has story: {output}')
             if 'yes' in output.lower():
                 has_story_score += 1
                 template = env.get_template('isRelatedAction.jinja')
@@ -346,6 +347,7 @@ class Metrics:
                 output = self.pipe(image, prompt=prompt,
                                    generate_kwargs={"max_new_tokens": 45})
                 output = output
+                print(f'is related to action: {output}')
                 if 'yes' in output.lower():
                     has_story_score += 1
                     template = env.get_template('isRelatedActionReason.jinja')
@@ -353,9 +355,11 @@ class Metrics:
                     output = self.pipe(image, prompt=prompt,
                                        generate_kwargs={"max_new_tokens": 45})
                     output = output
+                    print(f'is related to statement: {output}')
                     if 'yes' in output.lower():
                         has_story_score += 1
             has_story_score = has_story_score / 3
+            print(f'has story: {has_story_score}')
             return has_story_score
 
         def evaluate_unusualness(generated_image):
@@ -367,6 +371,22 @@ class Metrics:
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
             output = output
+            print(f'unusualness:{output}')
+            if 'yes' in output:
+                return 1
+            else:
+                return 0
+
+        def evaluate_originality(generated_image):
+            data = {}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('originality.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            output = output
+            print(f'originalilty: {output}')
             if 'yes' in output:
                 return 1
             else:
@@ -385,12 +405,43 @@ class Metrics:
             prompt = template.render(**data)
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
+            print(f'audience: {output}')
             if 'yes' in output.lower():
                 return 1
             else:
                 return 0
 
-        def evaluate_appealing(generated_image, image_url):
+        def evaluate_artistic(generated_image, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('artistic.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            print(f'artistic: {output}')
+            if 'yes' in output.lower():
+                return 1
+            else:
+                return 0
+
+        def evaluate_imagination(generated_image, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('imagination.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            print(f'imagination: {output}')
+            if 'yes' in output.lower():
+                return 1
+            else:
+                return 0
+
+        def evaluate_appeal(generated_image, image_url):
             action_reason = self.QA[image_url][0][0]
             data = {'action_reason': action_reason}
             image = Image.open(generated_image)
@@ -403,6 +454,7 @@ class Metrics:
             prompt = template.render(**data)
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
+            print(f'appeal score: {output}')
             return extract_number(output)/5
 
         def evaluate_maslow_need(generated_image, image_url):
@@ -413,11 +465,56 @@ class Metrics:
             data = {'action_reason': action_reason}
             prompt = template.render(**data)
             output = self.LLM(prompt)
-            needs = output.split(',')
+            statement_needs = output.split(',')
+            template = env.get_template('maslow_needs_image.jinja')
+            data = {'action_reason': action_reason}
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generated_kwargs={"max_new_tokens": 45})
+            image_needs = output.split(',')
+            for i in range(len(image_needs)):
+                image_needs[i] = image_needs[i].lower()
+            count = 0
+            for need in statement_needs:
+                if need.lower() in image_needs:
+                    count += 1
+            print(f'image needs: {image_needs}')
+            print(f'statement needs: {statement_needs}')
+            return count/len(statement_needs)
 
-
+        def evaluate_benefit(generated_image, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            image = Image.open(generated_image)
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('hasBenefit.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(image, prompt=prompt,
+                               generate_kwargs={"max_new_tokens": 45})
+            print(f'benefit score: {output}')
+            if 'yes' in output.lower():
+                return 1
+            else:
+                return 0
 
         image_url = '/'.join(generated_image.split('/')[-2:])
+        scores = {
+            'has_story': evaluate_story(generated_image, image_url),
+            'unusualness': evaluate_unusualness(generated_image),
+            'originality': evaluate_originality(generated_image),
+            'artistic': evaluate_artistic(generated_image, image_url),
+            'imagination': evaluate_imagination(generated_image, image_url),
+            'audience': evaluate_audience(generated_image, image_url),
+            'maslow_need': evaluate_maslow_need(generated_image, image_url),
+            'benefit': evaluate_benefit(generated_image, image_url),
+            'appeal': evaluate_appeal(generated_image, image_url),
+        }
+        scores['persuasiveness'] = sum(list(scores.values()))/len(scores)
+        persasiveness = scores['persuasiveness']
+        print(f'persuasiveness score: {persasiveness}')
+
+        return scores
+
 
 
     def get_image_text_ranking(self, action_reasons, first_generated_image_path, second_generated_image_path, args):

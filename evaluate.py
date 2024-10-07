@@ -56,6 +56,30 @@ class Evaluation:
             print('*' * 80)
 
     @staticmethod
+    def evaluate_multi_question_persuasiveness(args):
+        score_metricts = Metrics(args)
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               f'_{args.VLM}_multi_question_persuasiveness.json')
+        print(saving_path)
+        print(args.result_path)
+        print(args.result_file)
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
+        print(results)
+        persuasiveness_scores = {}
+        for row in results:
+            image_url = row[0]
+            print(image_url)
+            generated_image_path = row[3]
+            persuasiveness_score = score_metricts.get_multi_question_persuasiveness(generated_image_path)
+            print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
+            print('*' * 80)
+            persuasiveness_scores[image_url] = persuasiveness_score.values()
+
+            # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
+            with open(saving_path, "w") as outfile:
+                json.dump(persuasiveness_scores, outfile)
+
+    @staticmethod
     def evaluate_persuasiveness_alignment(args):
         persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_persuasiveness_alignment_10.json')

@@ -400,7 +400,7 @@ class Metrics:
             env = Environment(loader=FileSystemLoader(self.args.prompt_path))
             template = env.get_template('getAudience.jinja')
             prompt = template.render(**data)
-            audience = self.LLM(prompt)
+            audience = self.llm(prompt)
             template = env.get_template('isAudienceCorrect.jinja')
             data = {'audience':audience}
             prompt = template.render(**data)
@@ -449,7 +449,7 @@ class Metrics:
             env = Environment(loader=FileSystemLoader(self.args.prompt_path))
             template = env.get_template('appealing_type.jinja')
             prompt = template.render(**data)
-            appealing_type = self.LLM(prompt)
+            appealing_type = self.llm(prompt)
             template = env.get_template('appealing_score.jinja')
             data = {'appealing_type': appealing_type}
             prompt = template.render(**data)
@@ -465,7 +465,7 @@ class Metrics:
             template = env.get_template('maslow_needs_statement.jinja')
             data = {'action_reason': action_reason}
             prompt = template.render(**data)
-            output = self.LLM(prompt)
+            output = self.llm(prompt)
             statement_needs = output.split(',')
             template = env.get_template('maslow_needs_image.jinja')
             data = {'action_reason': action_reason}

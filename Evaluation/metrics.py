@@ -475,9 +475,10 @@ class Metrics:
             image_needs = output.split(',')
             for i in range(len(image_needs)):
                 image_needs[i] = image_needs[i].lower()
+                image_needs[i] = image_needs[i].strip()
             count = 0
             for need in statement_needs:
-                if need.lower() in image_needs:
+                if need.lower().strip() in image_needs:
                     count += 1
             print(f'image needs: {image_needs}')
             print(f'statement needs: {statement_needs}')

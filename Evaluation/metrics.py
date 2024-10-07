@@ -471,7 +471,7 @@ class Metrics:
             data = {'action_reason': action_reason}
             prompt = template.render(**data)
             output = self.pipe(image, prompt=prompt,
-                               generated_kwargs={"max_new_tokens": 45})
+                               generate_kwargs={"max_new_tokens": 45})
             image_needs = output.split(',')
             for i in range(len(image_needs)):
                 image_needs[i] = image_needs[i].lower()

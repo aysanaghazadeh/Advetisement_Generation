@@ -73,7 +73,7 @@ class Evaluation:
             persuasiveness_score = score_metricts.get_multi_question_persuasiveness(generated_image_path)
             print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
             print('*' * 80)
-            persuasiveness_scores[image_url] = persuasiveness_score.values()
+            persuasiveness_scores[image_url] = list(persuasiveness_score.values())
 
             # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
             with open(saving_path, "w") as outfile:
@@ -476,6 +476,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_image_text_alignment(args):
+        metrics = Metrics(args)
         QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_image_text_alignment.json')
@@ -701,6 +702,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_image_text_ranking(args):
+        metrics = Metrics(args)
         QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         results_baseline = pd.read_csv(os.path.join(args.result_path, 'AR_PixArt_20240505_231631.csv'))

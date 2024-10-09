@@ -1,0 +1,1 @@
+python evaluate.py --config_type=DEFAULT --evaluation_type=multi_question_persuasiveness --result_file=AR_AuraFlow_20240924_210335.csv  --VLM=InternVL --LLM=LLAMA3_instruct

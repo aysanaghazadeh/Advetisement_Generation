@@ -59,7 +59,7 @@ class Evaluation:
     def evaluate_multi_question_persuasiveness(args):
         score_metricts = Metrics(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
-                                                                               f'_{args.VLM}_multi_question_persuasiveness.json')
+                                                                               f'_{args.VLM}_multi_question_persuasiveness_new_prompts.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)

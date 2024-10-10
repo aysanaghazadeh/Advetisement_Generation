@@ -82,8 +82,7 @@ class Evaluation:
     @staticmethod
     def evaluate_multi_question_persuasiveness_ranking(args):
         score_metricts = Metrics(args)
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
-                                                                               f'_{args.VLM}_multi_question_persuasiveness_ranking.json')
+        saving_path = os.path.join(args.result_path, f'{args.VLM}_multi_question_persuasiveness_ranking.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)

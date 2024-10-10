@@ -80,6 +80,36 @@ class Evaluation:
                 json.dump(persuasiveness_scores, outfile)
 
     @staticmethod
+    def evaluate_multi_question_persuasiveness_ranking(args):
+        score_metricts = Metrics(args)
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               f'_{args.VLM}_multi_question_persuasiveness_ranking.json')
+        print(saving_path)
+        print(args.result_path)
+        print(args.result_file)
+        results1 = pd.read_csv(os.path.join(args.result_path,
+                                            'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'))
+        results2 = pd.read_csv(os.path.join(args.result_path,
+                                            'AR_AuraFlow_20240924_210335.csv'))
+        persuasiveness_scores = {}
+        for row in results1.values:
+            image_url = row[0]
+            if image_url not in results2.image_url.values:
+                continue
+            print(image_url)
+            generated_image_path1 = row[3]
+            generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]
+            persuasiveness_score = score_metricts.get_multi_question_persuasiveness_ranking(generated_image_path1,
+                                                                                            generated_image_path2)
+            print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
+            print('*' * 80)
+            persuasiveness_scores[image_url] = list(persuasiveness_score.values())
+
+            # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
+            with open(saving_path, "w") as outfile:
+                json.dump(persuasiveness_scores, outfile)
+
+    @staticmethod
     def evaluate_persuasiveness_alignment(args):
         persuasiveness = PersuasivenessMetric(args)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_persuasiveness_alignment_10.json')

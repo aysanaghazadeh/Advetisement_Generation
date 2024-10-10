@@ -81,7 +81,7 @@ class Evaluation:
 
     @staticmethod
     def evaluate_multi_question_persuasiveness_ranking(args):
-        score_metricts = Metrics(args)
+        score_metrics = Metrics(args)
         saving_path = os.path.join(args.result_path, f'{args.VLM}_multi_question_persuasiveness_ranking.json')
         print(saving_path)
         print(args.result_path)
@@ -98,7 +98,7 @@ class Evaluation:
             print(image_url)
             generated_image_path1 = row[3]
             generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]
-            persuasiveness_score = score_metricts.get_multi_question_persuasiveness_ranking(generated_image_path1,
+            persuasiveness_score = score_metrics.get_multi_question_persuasiveness_ranking(generated_image_path1,
                                                                                             generated_image_path2)
             print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
             print('*' * 80)

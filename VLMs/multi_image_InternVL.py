@@ -100,17 +100,18 @@ class MultiInternVL(nn.Module):
         pixel_values1 = self.load_image(image1, max_num=12).to(torch.bfloat16).cuda()
         pixel_values2 = self.load_image(image2, max_num=12).to(torch.bfloat16).cuda()
         pixel_values = torch.cat((pixel_values1, pixel_values2), dim=0)
+        num_patches_list = [pixel_values1.size(0), pixel_values2.size(0)]
         generation_config = dict(
             num_beams=1,
             max_new_tokens=generate_kwargs['max_new_tokens'],
             do_sample=False,
         )
         response, history = self.model.chat(self.tokenizer,
-                                            pixel_values,
-                                            prompt,
-                                            generation_config,
-                                            history=None,
-                                            return_history=True)
+                                       pixel_values,
+                                       prompt,
+                                       generation_config,
+                                       num_patches_list=num_patches_list,
+                                       history=None, return_history=True)
         print(f'User: {prompt}\nAssistant: {response}')
         print('*' * 10)
         return response

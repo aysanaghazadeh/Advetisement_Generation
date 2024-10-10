@@ -18,7 +18,9 @@ class MultiInternVL(nn.Module):
         self.model = AutoModel.from_pretrained(
             path,
             torch_dtype=torch.bfloat16,
+            load_in_8bit=True,
             low_cpu_mem_usage=True,
+            device_map='auto',
             use_flash_attn=True,
             trust_remote_code=True).eval().cuda()
         self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)

@@ -46,9 +46,6 @@ class Metrics:
                 bnb_8bit_compute_dtype=torch.float16,
                 torch_dtype="float16"
             )
-            # self.pipe = pipeline("image-to-text",
-            #                      model='llava-hf/llava-1.5-13b-hf',
-            #                      model_kwargs={"quantization_config": quantization_config})
             if args.VLM == 'LLAVA':
                 self.pipe = pipeline("image-to-text", model='llava-hf/llava-1.5-13b-hf',
                                      model_kwargs={"quantization_config": quantization_config})
@@ -66,11 +63,7 @@ class Metrics:
             self.llm = LLM(args)
             if args.evaluation_type == 'text_image_alignment':
                 self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-            # self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B",
-            #                                                token='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')
-            # self.tokenizer.pad_token = self.tokenizer.eos_token
-            # self.tokenizer.padding_side = 'right'
-            # Load model from HuggingFace Hub
+
                 self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
                 self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
         if args.evaluation_type == 'image_text_ranking':
@@ -84,11 +77,8 @@ class Metrics:
 
     @staticmethod
     def get_FID(generated_image_path, real_image_path, args):
-        # Convert images to tensors
         image_tensor_1 = image_to_tensor(generated_image_path)
         image_tensor_2 = image_to_tensor(real_image_path)
-
-        # You need to save these tensors as images in a directory as `pytorch_fid` works with image paths
 
         with tempfile.TemporaryDirectory() as tempdir:
             dataset_path_1 = os.path.join(tempdir, 'set1')
@@ -290,14 +280,6 @@ class Metrics:
         for action_reason in action_reasons:
             print(action_reason)
             action_reason = action_reason.lower().split('because')[0]
-            # tokenized_action_reason = self.llm.model.tokenizer(action_reason,
-            #                                          padding=True,
-            #                                          max_length=25,
-            #                                          return_tensors="pt").to(device=args.device)
-            # output_action_reason = self.llm.model.model(**tokenized_action_reason)
-            # embeddings2 = output_action_reason.hidden_states[-1]
-            # tokenized_action_reason = tokenized_action_reason['input_ids'].to(torch.float16)
-            # similarity_score += self.cos(tokenized_action_reason, tokenized_generated_image_message)
             encoded_input = self.tokenizer([action_reason], padding=True, truncation=True,
                                            return_tensors='pt')
             with torch.no_grad():

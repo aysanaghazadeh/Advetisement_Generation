@@ -22,7 +22,7 @@ class MultiInternVL(nn.Module):
             low_cpu_mem_usage=True,
             device_map='auto',
             use_flash_attn=True,
-            trust_remote_code=True).eval().cuda()
+            trust_remote_code=True).eval()
         self.tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
 
     def build_transform(self, input_size):

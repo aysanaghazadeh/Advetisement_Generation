@@ -261,7 +261,7 @@ class Metrics:
                      Description: {description}.
                      {format}"""
         generated_image_message = self.llm(prompt)
-        generated_image_message = generated_image_message.lower().split('because')[0]
+        generated_image_message = generated_image_message.lower()
         print(generated_image_message)
         # tokenized_generated_image_message = self.llm.model.tokenizer(generated_image_message,
         #                                                    padding=True,
@@ -279,7 +279,7 @@ class Metrics:
         similarity_score = 0
         for action_reason in action_reasons:
             print(action_reason)
-            action_reason = action_reason.lower().split('because')[0]
+            action_reason = action_reason.lower()
             encoded_input = self.tokenizer([action_reason], padding=True, truncation=True,
                                            return_tensors='pt')
             with torch.no_grad():

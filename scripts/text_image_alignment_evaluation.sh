@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=text_image_alignment --description_file=../experiments/results/PSA_original_images_description.csv --LLM=LLAMA3_instruct --fine_tuned=True --result_file=PSA_original_images_description.csv
+python evaluate.py --config_type=DEFAULT --evaluation_type=text_image_alignment --description_file=../experiments/results/IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_description.csv --LLM=LLAMA3_instruct --fine_tuned=True --result_file=IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_description.csv

@@ -1,1 +1,1 @@
-python description_generation.py --config_type=DEFAULT --VLM=InternVL --description_type=IN --test_set_QA=results/AR_AuraFlow_20240924_210335.csv --test_set_images=train_images_all --VLM_prompt=IN_description_single_paragraph.jinja
+python description_generation.py --config_type=DEFAULT --VLM=InternVL --description_type=IN --test_set_images=../../experiments/generated_images/20241012_005132/AR_SDXL --test_set_QA=AR_SDXL_20241012_005132.csv --result_path=../experiments/results

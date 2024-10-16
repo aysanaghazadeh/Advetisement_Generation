@@ -616,7 +616,7 @@ class Metrics:
                     'description1': description1,
                     'description2': description2}
             prompt = template.render(**data)
-            output = self.pipe(prompt)
+            output = self.llm(prompt)
             print(f'statement needs: {statement_needs}')
             print(f'maslow\'s need: {output}')
             return extract_number(output)
@@ -629,7 +629,7 @@ class Metrics:
             env = Environment(loader=FileSystemLoader(self.args.prompt_path))
             template = env.get_template('hasBenefit_relative_llm.jinja')
             prompt = template.render(**data)
-            output = self.pipe(prompt)
+            output = self.llm(prompt)
             print(f'benefit score: {output}')
             return extract_number(output)
 

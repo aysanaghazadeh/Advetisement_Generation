@@ -134,7 +134,8 @@ class Evaluation:
             generated_image1 = descriptions1.loc[descriptions1['ID'] == image_url, 'description'].values[0]
             generated_image2 = descriptions2.loc[descriptions2['ID'] == image_url, 'description'].values[0]
             persuasiveness_score = score_metrics.get_llm_multi_question_persuasiveness_ranking(generated_image1,
-                                                                                               generated_image2)
+                                                                                               generated_image2,
+                                                                                               image_url)
             print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
             print('*' * 80)
             persuasiveness_scores[image_url] = list(persuasiveness_score.values())

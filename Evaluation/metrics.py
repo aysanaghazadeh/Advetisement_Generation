@@ -497,7 +497,7 @@ class Metrics:
 
         return scores
 
-    def get_llm_multi_question_persuasiveness_ranking(self, generated_image1, generated_image2):
+    def get_llm_multi_question_persuasiveness_ranking(self, generated_image1, generated_image2, image_url):
         def extract_number(string_number):
             match = re.search(r'-?\d+', string_number)
             if match:
@@ -633,7 +633,7 @@ class Metrics:
             print(f'benefit score: {output}')
             return extract_number(output)
 
-        image_url = '/'.join(generated_image1.split('/')[-2:])
+        # image_url = '/'.join(generated_image1.split('/')[-2:])
         scores = {
             'has_story': evaluate_story(generated_image1, generated_image2, image_url),
             'unusualness': evaluate_unusualness(generated_image1, generated_image2,),

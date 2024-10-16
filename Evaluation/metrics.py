@@ -57,7 +57,8 @@ class Metrics:
         llm_needed_evaluation = [
             'text_image_alignment',
             'multi_question_persuasiveness',
-            'multi_question_persuasiveness_ranking'
+            'multi_question_persuasiveness_ranking',
+            'llm_multi_question_persuasiveness_ranking'
         ]
         if args.evaluation_type in llm_needed_evaluation:
             self.llm = LLM(args)
@@ -474,6 +475,160 @@ class Metrics:
                                image2,
                                prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
+            print(f'benefit score: {output}')
+            return extract_number(output)
+
+        image_url = '/'.join(generated_image1.split('/')[-2:])
+        scores = {
+            'has_story': evaluate_story(generated_image1, generated_image2, image_url),
+            'unusualness': evaluate_unusualness(generated_image1, generated_image2,),
+            'originality': evaluate_originality(generated_image1, generated_image2,),
+            'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
+            'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
+            'audience': evaluate_audience(generated_image1, generated_image2, image_url),
+            'maslow_need': evaluate_maslow_need(generated_image1, generated_image2, image_url),
+            'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
+            'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
+        }
+        scores['persuasiveness'] = sum(list(scores.values()))/len(scores)
+        persasiveness = scores['persuasiveness']
+        print(f'persuasiveness score: {persasiveness}')
+
+        return scores
+
+    def get_llm_multi_question_persuasiveness_ranking(self, generated_image1, generated_image2):
+        def extract_number(string_number):
+            match = re.search(r'-?\d+', string_number)
+            if match:
+                return int(match.group(0))
+            else:
+                print("No numeric value found in the input string")
+                return 0
+
+        def evaluate_story(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            action = action_reason.lower().split('/')[0]
+            data = {'action_reason': action_reason,
+                    'description1': description1,
+                    'description2': description2,
+                    'action': action}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('hasStory_relative_llm.jinja')
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            output = output
+            print(f'has story: {output}')
+            has_story = extract_number(output)
+            return has_story
+
+        def evaluate_unusualness(description1, description2):
+            data = {'description1': description1,
+                    'description2': description2}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('hasUnusual_relative_llm.jinja')
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            output = output
+            print(f'unusualness:{output}')
+            return extract_number(output)
+
+        def evaluate_originality(description1, description2):
+            data = {'description1': description1,
+                    'description2': description2}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('originality_relative_llm.jinja')
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            output = output
+            print(f'originalilty: {output}')
+            return extract_number(output)
+
+        def evaluate_audience(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('getAudience.jinja')
+            prompt = template.render(**data)
+            audience = self.llm(prompt)
+            template = env.get_template('isAudienceCorrect_relative_llm.jinja')
+            data = {'audience': audience,
+                    'description1': description1,
+                    'description2': description2}
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            print(f'audience: {output}')
+            return extract_number(output)
+
+        def evaluate_artistic(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason,
+                    'description1': description1,
+                    'description2': description2}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('artistic_relative_llm.jinja')
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            print(f'artistic: {output}')
+            if 'yes' in output.lower():
+                return 1
+            else:
+                return 0
+
+        def evaluate_imagination(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason,
+                    'description1': description1,
+                    'description2': description2}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('imagination_relative_llm.jinja')
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            print(f'imagination: {output}')
+            return extract_number(output)
+
+        def evaluate_appeal(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('appeal_type.jinja')
+            prompt = template.render(**data)
+            appealing_type = self.llm(prompt)
+            template = env.get_template('appealing_score_relative_llm.jinja')
+            data = {'appealing_type': appealing_type,
+                    'description1': description1,
+                    'description2': description2}
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            print(f'appeal score: {output}')
+            return extract_number(output)/5
+
+        def evaluate_maslow_need(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('maslow_needs_statement.jinja')
+            data = {'action_reason': action_reason}
+            prompt = template.render(**data)
+            output = self.llm(prompt)
+            statement_needs = output.split(',')
+            template = env.get_template('maslow_needs_relative_llm.jinja')
+            data = {'need': statement_needs,
+                    'description1': description1,
+                    'description2': description2}
+            prompt = template.render(**data)
+            output = self.pipe(prompt)
+            print(f'statement needs: {statement_needs}')
+            print(f'maslow\'s need: {output}')
+            return extract_number(output)
+
+        def evaluate_benefit(description1, description2, image_url):
+            action_reason = self.QA[image_url][0][0]
+            data = {'action_reason': action_reason,
+                    'description1': description1,
+                    'description2': description2}
+            env = Environment(loader=FileSystemLoader(self.args.prompt_path))
+            template = env.get_template('hasBenefit_relative_llm.jinja')
+            prompt = template.render(**data)
+            output = self.pipe(prompt)
             print(f'benefit score: {output}')
             return extract_number(output)
 

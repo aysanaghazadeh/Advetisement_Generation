@@ -62,6 +62,7 @@ class Metrics:
         ]
         if args.evaluation_type in llm_needed_evaluation:
             self.llm = LLM(args)
+            self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
             if args.evaluation_type == 'text_image_alignment':
                 self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
 

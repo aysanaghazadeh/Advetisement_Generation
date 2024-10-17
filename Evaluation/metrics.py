@@ -295,10 +295,15 @@ class Metrics:
             # action_reason_embeddings = nn.functional.normalize(action_reason_embeddings, p=2, dim=1)
             # similarity_score += self.cos(action_reason_embeddings, generated_image_embeddings)
             print(similarity_score)
-            similarity_score += self.model.compute_score([action_reason, generated_image_message],
-                                                         max_passage_length=128,
-                                                         weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
-
+            similarity_score_action = self.model.compute_score([action_reason.split('because')[0],
+                                                                generated_image_message.split('because')[0]],
+                                                                max_passage_length=128,
+                                                                weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
+            similarity_score_reason = self.model.compute_score([action_reason.split('because')[-1],
+                                                                generated_image_message.split('because')[-1]],
+                                                               max_passage_length=128,
+                                                               weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
+            similarity_score += (similarity_score_action + similarity_score_reason * 3) / 4
         # return generated_image_message, (similarity_score.item() / len(action_reasons))
         return generated_image_message, (similarity_score / len(action_reasons))
 

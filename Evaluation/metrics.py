@@ -297,7 +297,7 @@ class Metrics:
             # print(similarity_score)
             similarity_score += self.model.compute_score([action_reason, generated_image_message],
                                                          max_passage_length=128,
-                                                         weights_for_different_modes=[0.4, 0.2, 0.4])
+                                                         weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense'][0]
 
         return generated_image_message, (similarity_score.item() / len(action_reasons))
 

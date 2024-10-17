@@ -17,6 +17,7 @@ from VLMs.InternVL2 import InternVL
 from VLMs.multi_image_InternVL import MultiInternVL
 import itertools
 from LLMs.LLM import LLM
+from FlagEmbedding import BGEM3FlagModel
 
 api_key = "sk-proj-zfkbSHxUNuF7Ev8TEWWRT3BlbkFJieFKktR5T8tIUVNAJRBz"
 
@@ -64,10 +65,11 @@ class Metrics:
             self.llm = LLM(args)
             self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
             if args.evaluation_type == 'text_image_alignment':
-                self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-
-                self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
-                self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+                # self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+                #
+                # self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+                # self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+                self.model = BGEM3FlagModel('BAAI/bge-m3', use_fp16=True)
         if args.evaluation_type == 'image_text_ranking':
             self.tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct",
                                                            token='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',
@@ -255,6 +257,7 @@ class Metrics:
             input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
             return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1),
                                                                                       min=1e-9)
+
         if args.fine_tuned:
             format = ''
         else:
@@ -270,28 +273,31 @@ class Metrics:
         #                                                    max_length=25,
         #                                                    return_tensors="pt").to(device=args.device)
         # tokenized_generated_image_message = tokenized_generated_image_message['input_ids'].to(torch.float16)
-        encoded_input = self.tokenizer([generated_image_message], padding=True, truncation=True, return_tensors='pt')
-        with torch.no_grad():
-            model_output = self.model(**encoded_input)
-        generated_image_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
-
-        # Normalize embeddings
-        generated_image_embeddings = nn.functional.normalize(generated_image_embeddings, p=2, dim=1)
-
+        # encoded_input = self.tokenizer([generated_image_message], padding=True, truncation=True, return_tensors='pt')
+        # with torch.no_grad():
+        #     model_output = self.model(**encoded_input)
+        # generated_image_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
+        #
+        # # Normalize embeddings
+        # generated_image_embeddings = nn.functional.normalize(generated_image_embeddings, p=2, dim=1)
+        #
         similarity_score = 0
         for action_reason in action_reasons:
             print(action_reason)
             action_reason = action_reason.lower()
-            encoded_input = self.tokenizer([action_reason], padding=True, truncation=True,
-                                           return_tensors='pt')
-            with torch.no_grad():
-                model_output = self.model(**encoded_input)
-            action_reason_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
-
-            # Normalize embeddings
-            action_reason_embeddings = nn.functional.normalize(action_reason_embeddings, p=2, dim=1)
-            similarity_score += self.cos(action_reason_embeddings, generated_image_embeddings)
-            print(similarity_score)
+            # encoded_input = self.tokenizer([action_reason], padding=True, truncation=True,
+            #                                return_tensors='pt')
+            # with torch.no_grad():
+            #     model_output = self.model(**encoded_input)
+            # action_reason_embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
+            #
+            # # Normalize embeddings
+            # action_reason_embeddings = nn.functional.normalize(action_reason_embeddings, p=2, dim=1)
+            # similarity_score += self.cos(action_reason_embeddings, generated_image_embeddings)
+            # print(similarity_score)
+            similarity_score += self.model.compute_score([action_reason, generated_image_message],
+                                                         max_passage_length=128,
+                                                         weights_for_different_modes=[0.4, 0.2, 0.4])
 
         return generated_image_message, (similarity_score.item() / len(action_reasons))
 
@@ -381,7 +387,7 @@ class Metrics:
             prompt = template.render(**data)
             audience = self.llm(prompt)
             template = env.get_template('isAudienceCorrect_relative.jinja')
-            data = {'audience':audience}
+            data = {'audience': audience}
             prompt = template.render(**data)
             output = self.pipe(image1,
                                image2,
@@ -440,7 +446,7 @@ class Metrics:
                                prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
             print(f'appeal score: {output}')
-            return extract_number(output)/5
+            return extract_number(output) / 5
 
         def evaluate_maslow_need(generated_image1, generated_image2, image_url):
             action_reason = self.QA[image_url][0][0]
@@ -482,8 +488,8 @@ class Metrics:
         image_url = '/'.join(generated_image1.split('/')[-2:])
         scores = {
             'has_story': evaluate_story(generated_image1, generated_image2, image_url),
-            'unusualness': evaluate_unusualness(generated_image1, generated_image2,),
-            'originality': evaluate_originality(generated_image1, generated_image2,),
+            'unusualness': evaluate_unusualness(generated_image1, generated_image2, ),
+            'originality': evaluate_originality(generated_image1, generated_image2, ),
             'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
             'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
             'audience': evaluate_audience(generated_image1, generated_image2, image_url),
@@ -491,7 +497,7 @@ class Metrics:
             'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
             'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
         }
-        scores['persuasiveness'] = sum(list(scores.values()))/len(scores)
+        scores['persuasiveness'] = sum(list(scores.values())) / len(scores)
         persasiveness = scores['persuasiveness']
         print(f'persuasiveness score: {persasiveness}')
 
@@ -601,7 +607,7 @@ class Metrics:
             prompt = template.render(**data)
             output = self.llm(prompt)
             print(f'appeal score: {output}')
-            return extract_number(output)/5
+            return extract_number(output) / 5
 
         def evaluate_maslow_need(description1, description2, image_url):
             action_reason = self.QA[image_url][0][0]
@@ -636,8 +642,8 @@ class Metrics:
         # image_url = '/'.join(generated_image1.split('/')[-2:])
         scores = {
             'has_story': evaluate_story(generated_image1, generated_image2, image_url),
-            'unusualness': evaluate_unusualness(generated_image1, generated_image2,),
-            'originality': evaluate_originality(generated_image1, generated_image2,),
+            'unusualness': evaluate_unusualness(generated_image1, generated_image2, ),
+            'originality': evaluate_originality(generated_image1, generated_image2, ),
             'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
             'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
             'audience': evaluate_audience(generated_image1, generated_image2, image_url),
@@ -645,7 +651,7 @@ class Metrics:
             'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
             'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
         }
-        scores['persuasiveness'] = sum(list(scores.values()))/len(scores)
+        scores['persuasiveness'] = sum(list(scores.values())) / len(scores)
         persasiveness = scores['persuasiveness']
         print(f'persuasiveness score: {persasiveness}')
 
@@ -735,7 +741,7 @@ class Metrics:
             prompt = template.render(**data)
             audience = self.llm(prompt)
             template = env.get_template('isAudienceCorrect.jinja')
-            data = {'audience':audience}
+            data = {'audience': audience}
             prompt = template.render(**data)
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
@@ -789,7 +795,7 @@ class Metrics:
             output = self.pipe(image, prompt=prompt,
                                generate_kwargs={"max_new_tokens": 45})
             print(f'appeal score: {output}')
-            return extract_number(output)/5
+            return extract_number(output) / 5
 
         def evaluate_maslow_need(generated_image, image_url):
             action_reason = self.QA[image_url][0][0]
@@ -815,7 +821,7 @@ class Metrics:
                     count += 1
             print(f'image needs: {image_needs}')
             print(f'statement needs: {statement_needs}')
-            return count/len(statement_needs)
+            return count / len(statement_needs)
 
         def evaluate_benefit(generated_image, image_url):
             action_reason = self.QA[image_url][0][0]
@@ -844,13 +850,11 @@ class Metrics:
             'benefit': evaluate_benefit(generated_image, image_url),
             'appeal': evaluate_appeal(generated_image, image_url),
         }
-        scores['persuasiveness'] = sum(list(scores.values()))/len(scores)
+        scores['persuasiveness'] = sum(list(scores.values())) / len(scores)
         persasiveness = scores['persuasiveness']
         print(f'persuasiveness score: {persasiveness}')
 
         return scores
-
-
 
     def get_image_text_ranking(self, action_reasons, first_generated_image_path, second_generated_image_path, args):
         prompt = self.get_image_description_prompt()
@@ -1047,7 +1051,7 @@ class PersuasivenessMetric:
                     ASSISTANT:
                     """
             output = self.pipe(image, prompt=action_score_prompt,
-                               generate_kwargs={"max_new_tokens": 45})#[0]['generated_text']
+                               generate_kwargs={"max_new_tokens": 45})  # [0]['generated_text']
             output = output.split(':')[-1]
             print('action:', output)
             action_numeric_value += extract_number(output)
@@ -1062,12 +1066,11 @@ class PersuasivenessMetric:
 
             output = self.pipe(image, prompt=reason_score_prompt,
                                generate_kwargs={"max_new_tokens": 45})
-            output = output#[0]['generated_text']
+            output = output  # [0]['generated_text']
             output = output.split(':')[-1]
             print('reason:', output)
             reason_numeric_value += extract_number(output)
         return (reason_numeric_value + action_numeric_value) / (2 * statements_count)
-
 
     def get_multi_question_evaluation(self, generated_image):
         def parse_options(options):

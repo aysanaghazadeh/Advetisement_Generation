@@ -615,7 +615,7 @@ class Metrics:
             prompt = template.render(**data)
             output = self.llm(prompt)
             print(f'appeal score: {output}')
-            return extract_number(output) / 5
+            return extract_number(output)
 
         def evaluate_maslow_need(description1, description2, image_url):
             action_reason = self.QA[image_url][0][0]

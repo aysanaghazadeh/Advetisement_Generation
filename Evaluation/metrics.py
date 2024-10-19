@@ -513,7 +513,7 @@ class Metrics:
         def extract_number(string_number):
             print(string_number)
             string_number = string_number.split('ASSISTANT:')[-1]
-            match = re.search(r'-?\d+', string_number)
+            match = re.search(r'\d+', string_number)
             if match:
                 return int(match.group(0))
             else:

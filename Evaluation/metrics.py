@@ -512,6 +512,7 @@ class Metrics:
     def get_llm_multi_question_persuasiveness_ranking(self, generated_image1, generated_image2, image_url):
         def extract_number(string_number):
             print(string_number)
+            string_number = string_number.split('ASSISTANT:')[-1]
             match = re.search(r'-?\d+', string_number)
             if match:
                 return int(match.group(0))

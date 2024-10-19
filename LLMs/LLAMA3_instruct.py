@@ -47,7 +47,7 @@ class LLAMA3Instruct(nn.Module):
                 {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},
             ]
-            output = self.pipeline(messages, max_new_tokens=256)
+            output = self.pipeline(messages, max_new_tokens=20)
             output = output[0]["generated_text"][-1]['content'].split(':')[-1]
             print('llama3 output:', output)
             return output
@@ -69,7 +69,7 @@ class LLAMA3Instruct(nn.Module):
             # input_ids = self.tokenizer(prompt, return_tensor=True)
             outputs = self.model.generate(
                 input_ids,
-                max_new_tokens=10,
+                max_new_tokens=20,
                 eos_token_id=terminators,
                 do_sample=True,
                 temperature=0.6,

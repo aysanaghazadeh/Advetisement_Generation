@@ -42,7 +42,7 @@ class LLAMA3Instruct(nn.Module):
 
     def forward(self, prompt):
         if not self.args.fine_tuned:
-            print('llm prompt:', prompt)
+            # print('llm prompt:', prompt)
             messages = [
                 {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},

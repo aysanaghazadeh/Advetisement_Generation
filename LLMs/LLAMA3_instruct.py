@@ -69,7 +69,7 @@ class LLAMA3Instruct(nn.Module):
             # input_ids = self.tokenizer(prompt, return_tensor=True)
             outputs = self.model.generate(
                 input_ids,
-                max_new_tokens=256,
+                max_new_tokens=10,
                 eos_token_id=terminators,
                 do_sample=True,
                 temperature=0.6,

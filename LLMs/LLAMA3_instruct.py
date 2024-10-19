@@ -47,7 +47,7 @@ class LLAMA3Instruct(nn.Module):
                 {"role": "system", "content": "Be a helpful assistant"},
                 {"role": "user", "content": prompt},
             ]
-            output = self.pipeline(messages, max_new_tokens=20)
+            output = self.pipeline(messages, max_new_tokens=250)
             output = output[0]["generated_text"][-1]['content'].split(':')[-1]
             print('llama3 output:', output)
             return output

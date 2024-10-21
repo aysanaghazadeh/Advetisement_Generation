@@ -482,9 +482,9 @@ class Evaluation:
 
     def evaluate_persuasiveness_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        # baseline_result_file = 'LLAMA3_generated_prompt_PixArt_20240508_084149.csv'
-        # baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
-        self.generate_product_images(args, results)
+        baseline_result_file = 'LLAMA3Instruct_descriptions_AuraFlow_20240817_185858.csv'
+        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
+        # self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                args.text_alignment_file.split('_')[-1].split('.')[0] +
                                                                                '_creativity.json')
@@ -494,8 +494,8 @@ class Evaluation:
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             print(f'image url: {image_url}')
-            # if image_url not in baseline_results:
-            #     continue
+            if image_url not in baseline_results:
+                continue
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]

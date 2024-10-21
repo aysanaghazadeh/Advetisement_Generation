@@ -483,7 +483,7 @@ class Evaluation:
     def evaluate_persuasiveness_creativity(self, args):
         metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        baseline_result_file = 'LLAMA3Instruct_descriptions_AuraFlow_20240817_185858.csv'
+        baseline_result_file = 'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
         # self.generate_product_images(args, results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',

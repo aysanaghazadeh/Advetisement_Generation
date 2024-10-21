@@ -111,7 +111,7 @@ class Evaluation:
     @staticmethod
     def evaluate_llm_multi_question_persuasiveness_ranking(args):
         score_metrics = Metrics(args)
-        saving_path = os.path.join(args.result_path, f'{args.VLM}_llm_multi_question_persuasiveness_ranking.json')
+        saving_path = os.path.join(args.result_path, f'{args.VLM}_llm_multi_question_persuasiveness_ranking_new.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)
@@ -119,9 +119,9 @@ class Evaluation:
                                             'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'))
         results1 = pd.read_csv(os.path.join(args.result_path,
                                             'AR_AuraFlow_20240924_210335.csv'))
-        descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_old.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
+                                                'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_old.csv'))
+        descriptions2 = pd.read_csv(os.path.join(args.result_path,
                                                 'IN_InternVL_AR_AuraFlow_20240924_210335_description.csv'))
         persuasiveness_scores = {}
         for row in results1.values:

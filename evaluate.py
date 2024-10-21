@@ -481,6 +481,7 @@ class Evaluation:
                 json.dump(creativity_scores, outfile)
 
     def evaluate_persuasiveness_creativity(self, args):
+        metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         baseline_result_file = 'LLAMA3Instruct_descriptions_AuraFlow_20240817_185858.csv'
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
@@ -506,7 +507,7 @@ class Evaluation:
                 continue
             product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
                                    for file in product_image_files]
-            creativity_scores[image_url] = self.metrics.get_persuasiveness_creativity_score(text_alignment_score=image_text_alignment_score,
+            creativity_scores[image_url] = metrics.get_persuasiveness_creativity_score(text_alignment_score=image_text_alignment_score,
                                                                                             generated_image_path=generated_image_path,
                                                                                             product_image_paths=product_image_paths,
                                                                                             args=args)

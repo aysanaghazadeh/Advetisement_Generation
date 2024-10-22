@@ -303,7 +303,7 @@ class Metrics:
                                                                 generated_image_message.split('because')[-1]],
                                                                max_passage_length=128,
                                                                weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
-            similarity_score += (similarity_score_action + similarity_score_reason * 3) / 4
+            similarity_score += (similarity_score_action + similarity_score_reason * 4) / 5
         # return generated_image_message, (similarity_score.item() / len(action_reasons))
         return generated_image_message, (similarity_score / len(action_reasons))
 

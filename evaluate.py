@@ -455,7 +455,7 @@ class Evaluation:
                     image_path = os.path.join(args.data_path,
                                               args.product_images,
                                               topic_id,
-                                              f'{topic_name.replace(" ", "_")}.jpg')
+                                              f'{topic_name.replace(" ", "_")}_{args.T2I_model}.jpg')
                     if os.path.exists(image_path):
                         continue
                     else:

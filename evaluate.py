@@ -517,17 +517,17 @@ class Evaluation:
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]
-            # directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
-            # product_image_files = os.listdir(directory)
-            # product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
-            #                        for file in product_image_files]
-            product_image_paths = []
-            for topic_id in image_topics:
-                directory = os.path.join(args.data_path,
-                                         args.product_images,
-                                         topic_id)
-                product_image_paths += [os.path.join(directory,
-                                                     file) for file in os.listdir(directory)]
+            directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
+            product_image_files = os.listdir(directory)
+            product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
+                                   for file in product_image_files]
+            # product_image_paths = []
+            # for topic_id in image_topics:
+            #     directory = os.path.join(args.data_path,
+            #                              args.product_images,
+            #                              topic_id)
+            #     product_image_paths += [os.path.join(directory,
+            #                                          file) for file in os.listdir(directory)]
             if len(product_image_paths) == 0:
                 no_product_image_count += 1
                 continue

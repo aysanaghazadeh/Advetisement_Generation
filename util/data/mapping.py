@@ -69,7 +69,7 @@ TOPIC_MAP = {
     '31': ["Animal rights", "animal abuse"],
     '32': ["Human rights"],
     '33': ["Safety", "safe driving", "fire safety"],
-    '34': ["Smoking", "alcohol abuse"],
+    '34': ["Smoking", "alcohol abuse", ],
     '35': ["Domestic violence"],
     '36': ["Self esteem", "bullying", "cyber bullying"],
     '37': ["Political candidates", "support or opposition"],

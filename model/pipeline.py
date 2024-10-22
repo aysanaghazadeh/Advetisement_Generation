@@ -12,7 +12,8 @@ class AdvertisementImageGeneration(nn.Module):
         if args.text_input_type == 'LLM':
             self.prompt_generator.set_LLM(args)
 
-    def forward(self, image_filename):
-        prompt = self.prompt_generator.generate_prompt(self.args, image_filename)
+    def forward(self, image_filename, prompt=None):
+        if prompt is None:
+            prompt = self.prompt_generator.generate_prompt(self.args, image_filename)
         image = self.T2I_model(prompt)
         return image, prompt

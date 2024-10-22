@@ -442,17 +442,30 @@ class Evaluation:
         print('*' * 80)
 
     def generate_product_images(self, args, results):
+        topics = json.load(open(os.path.join(args.data_path, 'trian/Topics_train.json')))
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
-            image_path = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
-            if os.path.exists(image_path):
-                continue
-            else:
-                print(image_path)
-                os.makedirs(image_path, exist_ok=True)
-            for i in range(2):
-                image, prompt = self.image_generator(image_url)
-                image.save(os.path.join(image_path, str(i) + '.jpg'))
+            image_topics = topics[image_url]
+            for topic_id in image_topics:
+                if topic_id in topic_map:
+                    topic_names = topic_map[topic_id]
+                else:
+                    topic_names = [topic_id]
+                for topic_name in topic_names:
+                    image_path = os.path.join(args.data_path,
+                                              args.product_images,
+                                              topic_id,
+                                              f'{topic_name.replace(" ", "_")}.jpg')
+                    if os.path.exists(image_path):
+                        continue
+                    else:
+                        print(image_path)
+                        os.makedirs(image_path, exist_ok=True)
+                    # for i in range(2):
+                    prompt = f'image of {topic_name}'
+                    image, prompt = self.image_generator(image_url, prompt)
+                    # image.save(os.path.join(image_path, str(i) + '.jpg'))
+                    image.save(image_path)
 
     def evaluate_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
@@ -485,32 +498,42 @@ class Evaluation:
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         baseline_result_file = 'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
-        # self.generate_product_images(args, results)
+        self.generate_product_images(args, baseline_results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                args.text_alignment_file.split('_')[-1].split('.')[0] +
                                                                                '_creativity.json')
         creativity_scores = {}
         image_text_alignment_scores = json.load(open(os.path.join(args.result_path,
                                                                   args.text_alignment_file)))
+        topics = json.load(open(os.path.join(args.data_path, 'trian/Topics_train.json')))
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
+            image_topics = topics[image_url]
             print(f'image url: {image_url}')
             if image_url not in baseline_results:
                 continue
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]
-            directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
-            product_image_files = os.listdir(directory)
-            if len(product_image_files) == 0:
+            # directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
+            # product_image_files = os.listdir(directory)
+            # product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
+            #                        for file in product_image_files]
+            product_image_paths = []
+            for topic_id in topics[image_url]:
+                directory = os.path.join(args.data_path,
+                                         args.product_images,
+                                         topic_id)
+                product_image_paths += [os.path.join(directory,
+                                                     file) for file in os.listdir(directory)]
+            if len(product_image_paths) == 0:
                 no_product_image_count += 1
                 continue
-            product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
-                                   for file in product_image_files]
+
             creativity_scores[image_url] = metrics.get_persuasiveness_creativity_score(text_alignment_score=image_text_alignment_score,
-                                                                                            generated_image_path=generated_image_path,
-                                                                                            product_image_paths=product_image_paths,
-                                                                                            args=args)
+                                                                                       generated_image_path=generated_image_path,
+                                                                                       product_image_paths=product_image_paths,
+                                                                                       args=args)
             print(
                 f'creativity score for image {image_url} is {creativity_scores[image_url]}')
             with open(saving_path, "w") as outfile:

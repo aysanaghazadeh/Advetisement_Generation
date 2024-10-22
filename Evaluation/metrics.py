@@ -216,6 +216,7 @@ class Metrics:
         for product_image in product_image_paths[:1]:
             image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))
         avg_image_score = sum(image_scores) / len(image_scores)
+        text_alignment_score[1] = 1
         creativity = text_alignment_score[1] / (avg_image_score + 0.01)
         return creativity
 

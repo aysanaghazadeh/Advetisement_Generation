@@ -442,7 +442,7 @@ class Evaluation:
         print('*' * 80)
 
     def generate_product_images(self, args, results):
-        topics = json.load(open(os.path.join(args.data_path, 'trian/Topics_train.json')))
+        topics = json.load(open(os.path.join(args.data_path, 'train/Topics_train.json')))
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             image_topics = topics[image_url]

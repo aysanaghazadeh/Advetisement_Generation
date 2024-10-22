@@ -446,28 +446,37 @@ class Evaluation:
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             image_topics = topics[image_url]
-            for topic_id in image_topics:
-                if topic_id in topic_map:
-                    topic_names = topic_map[topic_id]
-                else:
-                    topic_names = [topic_id]
-                for topic_name in topic_names:
-                    directory = (os.path.join(args.data_path,
-                                              args.product_images,
-                                              topic_id))
-                    image_path = os.path.join(directory,
-                                              f'{topic_name.replace(" ", "_")}_{args.T2I_model}.jpg')
-                    if os.path.exists(image_path):
-                        continue
-                    else:
-                        print(image_path)
-                        os.makedirs(directory, exist_ok=True)
-                    # for i in range(2):
-                    prompt = f'image of {topic_name}'
-                    image, prompt = self.image_generator(image_url, prompt)
-                    # image.save(os.path.join(image_path, str(i) + '.jpg'))
-                    image.save(image_path)
-                    print(prompt)
+            # for topic_id in image_topics:
+            #     if topic_id in topic_map:
+            #         topic_names = topic_map[topic_id]
+            #     else:
+            #         topic_names = [topic_id]
+                # for topic_name in topic_names:
+                #     directory = (os.path.join(args.data_path,
+                #                               args.product_images,
+                #                               topic_id))
+                #     image_path = os.path.join(directory,
+                #                               f'{topic_name.replace(" ", "_")}_{args.T2I_model}.jpg')
+                #     if os.path.exists(image_path):
+                #         continue
+                #     else:
+                #         print(image_path)
+                #         os.makedirs(directory, exist_ok=True)
+            directory = os.path.join(args.data_path,
+                                     args.product_images,
+                                     image_url.split('.')[0])
+            if os.path.exists(directory):
+                continue
+            else:
+                print(directory)
+                os.makedirs(directory, exist_ok=True)
+            for i in range(2):
+                # prompt = f'image of {topic_name}'
+                prompt = None
+                image, prompt = self.image_generator(image_url, prompt)
+            image.save(os.path.join(directory, str(i) + '.jpg'))
+            # image.save(image_path)
+            print(prompt)
 
     def evaluate_creativity(self, args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))

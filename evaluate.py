@@ -497,7 +497,7 @@ class Evaluation:
         metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
         baseline_result_file = 'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'
-        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file)).image_url.values
+        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file))
         self.generate_product_images(args, baseline_results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                args.text_alignment_file.split('_')[-1].split('.')[0] +
@@ -510,7 +510,7 @@ class Evaluation:
             image_url = results.image_url.values[row]
             image_topics = topics[image_url]
             print(f'image url: {image_url}')
-            if image_url not in baseline_results:
+            if image_url not in baseline_results.image_url.values:
                 continue
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]

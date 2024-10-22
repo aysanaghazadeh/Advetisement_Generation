@@ -520,7 +520,7 @@ class Evaluation:
             # product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
             #                        for file in product_image_files]
             product_image_paths = []
-            for topic_id in topics[image_url]:
+            for topic_id in image_topics:
                 directory = os.path.join(args.data_path,
                                          args.product_images,
                                          topic_id)

@@ -464,6 +464,7 @@ class Evaluation:
                 #         os.makedirs(directory, exist_ok=True)
             directory = os.path.join(args.data_path,
                                      args.product_images,
+                                     args.T2I_model,
                                      image_url.split('.')[0])
             if os.path.exists(directory):
                 continue
@@ -526,9 +527,9 @@ class Evaluation:
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]
-            directory = os.path.join(args.data_path, args.product_images, image_url.split('.')[0])
+            directory = os.path.join(args.data_path, args.product_images, args.T2I_model, image_url.split('.')[0])
             product_image_files = os.listdir(directory)
-            product_image_paths = [os.path.join(args.data_path, args.product_images, image_url.split('.')[0], file)
+            product_image_paths = [os.path.join(args.data_path, args.product_images, args.T2I_model, image_url.split('.')[0], file)
                                    for file in product_image_files]
             # product_image_paths = []
             # for topic_id in image_topics:

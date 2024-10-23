@@ -283,6 +283,8 @@ class Metrics:
         # generated_image_embeddings = nn.functional.normalize(generated_image_embeddings, p=2, dim=1)
         #
         similarity_score = 0
+        similarity_scores_action = []
+        similarity_scores_reason = []
         for action_reason in action_reasons:
             print(action_reason)
             action_reason = action_reason.lower()
@@ -305,8 +307,11 @@ class Metrics:
                                                                max_passage_length=128,
                                                                weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
             similarity_score += (similarity_score_action + similarity_score_reason * 4) / 5
+            similarity_scores_action.append(similarity_score_action)
+            similarity_scores_reason.append(similarity_score_reason)
+
         # return generated_image_message, (similarity_score.item() / len(action_reasons))
-        return generated_image_message, (similarity_score / len(action_reasons))
+        return generated_image_message, (similarity_score / len(action_reasons)), similarity_scores_action, similarity_scores_reason
 
     @staticmethod
     def get_image_description_prompt():

@@ -99,7 +99,7 @@ class Evaluation:
             generated_image_path1 = row[3]
             generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]
             persuasiveness_score = score_metrics.get_multi_question_persuasiveness_ranking(generated_image_path1,
-                                                                                            generated_image_path2)
+                                                                                           generated_image_path2)
             print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
             print('*' * 80)
             persuasiveness_scores[image_url] = list(persuasiveness_score.values())
@@ -120,9 +120,9 @@ class Evaluation:
         results1 = pd.read_csv(os.path.join(args.result_path,
                                             'AR_AuraFlow_20240924_210335.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_old.csv'))
+                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_old.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                'IN_InternVL_AR_AuraFlow_20240924_210335_description.csv'))
+                                                 'IN_InternVL_AR_AuraFlow_20240924_210335_description.csv'))
         persuasiveness_scores = {}
         for row in results1.values:
             image_url = row[0]
@@ -147,7 +147,8 @@ class Evaluation:
     @staticmethod
     def evaluate_persuasiveness_alignment(args):
         persuasiveness = PersuasivenessMetric(args)
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_persuasiveness_alignment_10.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               f'{args.VLM}_persuasiveness_alignment_10.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)
@@ -190,15 +191,16 @@ class Evaluation:
             if image_url not in descriptions.ID.values:
                 continue
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
-            print(description)
-            generated_image_message, alignment_score = alignment_score_model.get_text_image_alignment_score(action_reasons,
-                                                                            description,
-                                                                            args)
-            print(alignment_score)
-            # print(generated_image_message)
-            print(f'text image alignment score of the image {image_url} is {alignment_score} out of 10')
+            generated_image_message, \
+            alignment_score, action_scores, \
+            reason_scores = alignment_score_model.get_text_image_alignment_score(action_reasons,
+                                                                                 description,
+                                                                                 args)
+            print(f'action scores are: {action_scores}')
+            print(f'reason scores are: {reason_scores}')
+            print(f'text image alignment score of the image {image_url} is {alignment_score} out of 1')
             print('*' * 80)
-            alignment_scores[image_url] = [generated_image_message, alignment_score]
+            alignment_scores[image_url] = [generated_image_message, alignment_score, action_scores, reason_scores]
 
             # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
             with open(saving_path, "w") as outfile:
@@ -328,9 +330,8 @@ class Evaluation:
                     writer = csv.writer(csvfile)
                     writer.writerow(answers)
             except:
-            # print
+                # print
                 continue
-
 
     @staticmethod
     def evaluate_persuasiveness(args):
@@ -451,17 +452,17 @@ class Evaluation:
             #         topic_names = topic_map[topic_id]
             #     else:
             #         topic_names = [topic_id]
-                # for topic_name in topic_names:
-                #     directory = (os.path.join(args.data_path,
-                #                               args.product_images,
-                #                               topic_id))
-                #     image_path = os.path.join(directory,
-                #                               f'{topic_name.replace(" ", "_")}_{args.T2I_model}.jpg')
-                #     if os.path.exists(image_path):
-                #         continue
-                #     else:
-                #         print(image_path)
-                #         os.makedirs(directory, exist_ok=True)
+            # for topic_name in topic_names:
+            #     directory = (os.path.join(args.data_path,
+            #                               args.product_images,
+            #                               topic_id))
+            #     image_path = os.path.join(directory,
+            #                               f'{topic_name.replace(" ", "_")}_{args.T2I_model}.jpg')
+            #     if os.path.exists(image_path):
+            #         continue
+            #     else:
+            #         print(image_path)
+            #         os.makedirs(directory, exist_ok=True)
             directory = os.path.join(args.data_path,
                                      args.product_images,
                                      args.T2I_model,
@@ -512,7 +513,8 @@ class Evaluation:
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file))
         # self.generate_product_images(args, baseline_results)
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
-                                                                               args.text_alignment_file.split('_')[-1].split('.')[0] +
+                                                                               args.text_alignment_file.split('_')[
+                                                                                   -1].split('.')[0] +
                                                                                '_creativity.json')
         creativity_scores = {}
         image_text_alignment_scores = json.load(open(os.path.join(args.result_path,
@@ -550,10 +552,11 @@ class Evaluation:
                 no_product_image_count += 1
                 continue
 
-            creativity_scores[image_url] = metrics.get_persuasiveness_creativity_score(text_alignment_score=image_text_alignment_score,
-                                                                                       generated_image_path=generated_image_path,
-                                                                                       product_image_paths=product_image_paths,
-                                                                                       args=args)
+            creativity_scores[image_url] = metrics.get_persuasiveness_creativity_score(
+                text_alignment_score=image_text_alignment_score,
+                generated_image_path=generated_image_path,
+                product_image_paths=product_image_paths,
+                args=args)
             print(
                 f'creativity score for image {image_url} is {creativity_scores[image_url]}')
             with open(saving_path, "w") as outfile:
@@ -588,7 +591,8 @@ class Evaluation:
         metrics = Metrics(args)
         QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', f'{args.VLM}_image_text_alignment.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               f'{args.VLM}_image_text_alignment.json')
         if os.path.exists(saving_path):
             image_text_alignment_scores = json.load(open(saving_path))
         else:
@@ -680,12 +684,13 @@ class Evaluation:
                     predictions.add(options[ind])
             answers = list(predictions)
             return answers
+
         results = {}
         for i in range(0, args.top_k):
-            results[f'acc@{i+1}'] = 0
+            results[f'acc@{i + 1}'] = 0
         fieldnames = ['id']
         for i in range(0, args.top_k):
-            fieldnames.append(f'acc@{i+1}')
+            fieldnames.append(f'acc@{i + 1}')
         csv_file_path = os.path.join(args.result_path, f'{args.test_set_QA.split("/")[-1].replace(".json", "")}'
                                                        f'_{args.description_type}'
                                                        f'_{args.VLM}_description_{args.LLM}_'
@@ -696,7 +701,8 @@ class Evaluation:
         QA_file = os.path.join(args.data_path, args.test_set_QA)
         QAs = json.load(open(QA_file))
         pipe = LLM(args)
-        descriptions = pd.read_csv(os.path.join(args.data_path, 'train', f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))
+        descriptions = pd.read_csv(
+            os.path.join(args.data_path, 'train', f'{args.description_type}_{args.VLM}_description_{args.task}.csv'))
         for image in QAs:
             image_url = f'{image}.png'
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
@@ -719,7 +725,7 @@ class Evaluation:
                 for i, answer in enumerate(answers[0: args.top_k]):
                     if answer in correct_options:
                         for j in range(i, args.top_k):
-                            result[f'acc@{j+1}'] = 1
+                            result[f'acc@{j + 1}'] = 1
             print(result)
             row = {}
             with open(csv_file_path, 'a', newline='') as csvfile:
@@ -788,10 +794,10 @@ class Evaluation:
                     if answer in correct_options:
                         correct_count += 1
                         for j in range(i, 3):
-                            result[f'acc@{j+1}'] = 1
+                            result[f'acc@{j + 1}'] = 1
                 result['p@1'] = min(correct_count, 1)
-                result['p@2'] = min(correct_count/2, 1)
-                result['p@3'] = min(correct_count/3, 1)
+                result['p@2'] = min(correct_count / 2, 1)
+                result['p@3'] = min(correct_count / 3, 1)
 
             # for key in result:
             #     results[key] += result[key]
@@ -807,7 +813,6 @@ class Evaluation:
                 results[metric] += result[metric]
         for metric in results:
             print(f'average {metric} is: {results[metric] / len(list(QAs.keys()))}')
-
 
     @staticmethod
     def evaluate_image_text_ranking(args):
@@ -882,8 +887,10 @@ class Evaluation:
             image_action_score = clip_image_text['action']
             image_reason_score = clip_image_text['reason']
             print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 5')
-            print(f'persuasiveness alignment score of the image {image_url} is {persuasiveness_alignment_score} out of 5')
-            print(f'action-reason aware persuasiveness score of the image {image_url} is {ar_aware_persuasiveness_score} out of 5')
+            print(
+                f'persuasiveness alignment score of the image {image_url} is {persuasiveness_alignment_score} out of 5')
+            print(
+                f'action-reason aware persuasiveness score of the image {image_url} is {ar_aware_persuasiveness_score} out of 5')
             print(f'image-text score of the image {image_url} is {image_text_score}')
             print(f'image-action score of the image {image_url} is {image_action_score}')
             print(f'image-reason score of the image {image_url} is {image_reason_score}')

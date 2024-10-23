@@ -538,7 +538,7 @@ class Evaluation:
                                                  args.product_images,
                                                  'AuraFlow_old',
                                                  image_url.split('.')[0],
-                                                 file) for file in product_image_files]
+                                                 file) for file in product_image_files[:2]]
             # product_image_paths = []
             # for topic_id in image_topics:
             #     directory = os.path.join(args.data_path,

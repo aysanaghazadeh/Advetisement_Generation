@@ -529,8 +529,16 @@ class Evaluation:
             generated_image_path = results.generated_image_url.values[row]
             directory = os.path.join(args.data_path, args.product_images, args.T2I_model, image_url.split('.')[0])
             product_image_files = os.listdir(directory)
-            product_image_paths = [os.path.join(args.data_path, args.product_images, args.T2I_model, image_url.split('.')[0], file)
-                                   for file in product_image_files]
+            product_image_paths = [os.path.join(args.data_path,
+                                                args.product_images,
+                                                'SDXL_old',
+                                                image_url.split('.')[0],
+                                                file) for file in product_image_files]
+            product_image_paths += [os.path.join(args.data_path,
+                                                 args.product_images,
+                                                 'AuraFlow_old',
+                                                 image_url.split('.')[0],
+                                                 file) for file in product_image_files]
             # product_image_paths = []
             # for topic_id in image_topics:
             #     directory = os.path.join(args.data_path,

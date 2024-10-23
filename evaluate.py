@@ -475,7 +475,7 @@ class Evaluation:
                 # prompt = f'image of {topic_name}'
                 prompt = None
                 image, prompt = self.image_generator(image_url, prompt)
-            image.save(os.path.join(directory, str(i) + '.jpg'))
+                image.save(os.path.join(directory, str(i) + '.jpg'))
             # image.save(image_path)
             print(prompt)
 

@@ -89,7 +89,7 @@ def get_descriptions(args):
                                     f'{args.description_type}'
                                     f'_{args.VLM}'
                                     f'_{args.test_set_QA.replace(".csv", "")}'
-                                    f'_description_single_paragraph.csv')
+                                    f'_description_single_paragraph_no_text.csv')
     # description_file = os.path.join(args.result_path,
     #                                 'original_images_description.csv')
     if os.path.exists(description_file):

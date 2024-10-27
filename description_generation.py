@@ -101,7 +101,7 @@ def get_descriptions(args):
         writer.writerow(['ID', 'description'])
     pipe = get_model(args)
     processed_images = set()
-    for image_url in images[-1:]:
+    for image_url in images:
         if image_url in processed_images:
             continue
         processed_images.add(image_url)

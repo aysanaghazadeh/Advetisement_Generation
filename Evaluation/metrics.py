@@ -258,7 +258,7 @@ class Metrics:
             return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1),
                                                                                       min=1e-9)
 
-        print(f'description: {description.split("Q2:")[0].lower()}')
+        print(f'description: {description.split("Q2:")[-1].lower()}')
         if 'yes' not in description.split('Q2:')[0].lower():
             return 0, 0, 0, 0
         description = description.split('Q2:')[-1]
@@ -300,7 +300,7 @@ class Metrics:
             # # Normalize embeddings
             # action_reason_embeddings = nn.functional.normalize(action_reason_embeddings, p=2, dim=1)
             # similarity_score += self.cos(action_reason_embeddings, generated_image_embeddings)
-            print(similarity_score)
+
             similarity_score_action = self.model.compute_score([action_reason.split('because')[0],
                                                                 generated_image_message.split('because')[0]],
                                                                 max_passage_length=128,
@@ -310,6 +310,7 @@ class Metrics:
                                                                max_passage_length=128,
                                                                weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
             similarity_score += (similarity_score_action + similarity_score_reason * 4) / 5
+            print(similarity_score)
             similarity_scores_action.append(similarity_score_action)
             similarity_scores_reason.append(similarity_score_reason)
 

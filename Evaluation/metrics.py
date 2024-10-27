@@ -258,8 +258,8 @@ class Metrics:
             return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1),
                                                                                       min=1e-9)
 
-        if 'no' in description.split('Q2:')[0]:
-            return 0
+        if 'yes' not in description.split('Q2:')[0].lower():
+            return 0, 0, 0, 0
         description = description.split('Q2:')[-1]
         if args.fine_tuned:
             format = ''

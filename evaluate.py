@@ -191,11 +191,9 @@ class Evaluation:
             if image_url not in descriptions.ID.values:
                 continue
             description = descriptions.loc[descriptions['ID'] == image_url]['description'].values[0]
-            generated_image_message, \
-            alignment_score, action_scores, \
-            reason_scores = alignment_score_model.get_text_image_alignment_score(action_reasons,
-                                                                                 description,
-                                                                                 args)
+            generated_image_message, alignment_score, action_scores, reason_scores = alignment_score_model.get_text_image_alignment_score(action_reasons,
+                                                                                     description,
+                                                                                     args)
             print(f'action scores are: {action_scores}')
             print(f'reason scores are: {reason_scores}')
             print(f'text image alignment score of the image {image_url} is {alignment_score} out of 1')

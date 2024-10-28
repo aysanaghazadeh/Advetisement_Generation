@@ -596,7 +596,7 @@ class Evaluation:
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             generated_image_path = results.generated_image_url.values[row]
-            creativity_scores[image_url] = metrics.get_text_based_persuasiveness_creativity(
+            creativity_scores[image_url] = metrics.get_text_based_persuasiveness_creativity_score(
                 text_alignment_score=image_text_alignment_score,
                 generated_image_path=generated_image_path,
                 objects=get_objects(action_reasons),

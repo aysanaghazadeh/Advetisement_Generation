@@ -167,6 +167,29 @@ class Metrics:
         cosine_similarity['action'] = cosine_similarity['action'] / len(action_reason)
         return cosine_similarity
 
+    def get_object_image_CLIP_score(self, generated_image_path, objects, args):
+        image = Image.open(generated_image_path).convert("RGB")
+        cosine_similarity = 0
+        for object in objects:
+            inputs_image = self.clip_processor(images=image,
+                                               return_tensors="pt",
+                                               padding=True).to(device=args.device)
+            inputs_text = self.clip_processor(text=object,
+                                              return_tensors="pt",
+                                              padding=True).to(device=args.device)
+
+            with torch.no_grad():
+                image_features = self.clip_model.get_image_features(**inputs_image)
+                text_features = self.clip_model.get_text_features(**inputs_text)
+            # Normalize the feature vectors
+            image_features = torch.nn.functional.normalize(image_features, p=2, dim=1)
+            text_features = torch.nn.functional.normalize(text_features, p=2, dim=1)
+
+            # Calculate cosine similarity between the two images
+            cosine_similarity += torch.nn.functional.cosine_similarity(image_features, text_features).item()
+        cosine_similarity = cosine_similarity / len(objects)
+        return cosine_similarity
+
     def get_action_reason_image_CLIP_score(self, generated_image_path, action_reason, args):
         image = Image.open(generated_image_path).convert("RGB")
         cosine_similarity = 0
@@ -217,6 +240,15 @@ class Metrics:
             image_scores.append(self.get_image_image_CLIP_score(generated_image_path, product_image, args))
         avg_image_score = sum(image_scores) / len(image_scores)
         creativity = text_alignment_score[1] / (avg_image_score + 0.01)
+        return creativity
+
+    def get_text_based_persuasiveness_creativity_score(self, text_alignment_score,
+                                                       generated_image_path,
+                                                       objects,
+                                                       args):
+
+        image_scores = (self.get_object_image_CLIP_score(generated_image_path, objects, args))
+        creativity = text_alignment_score[1] / (image_scores + 0.01)
         return creativity
 
     @staticmethod
@@ -303,19 +335,22 @@ class Metrics:
 
             similarity_score_action = self.model.compute_score([action_reason.split('because')[0],
                                                                 generated_image_message.split('because')[0]],
-                                                                max_passage_length=128,
-                                                                weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
+                                                               max_passage_length=128,
+                                                               weights_for_different_modes=[0.4, 0.2, 0.4])[
+                'colbert+sparse+dense']
             similarity_score_reason = self.model.compute_score([action_reason.split('because')[-1],
                                                                 generated_image_message.split('because')[-1]],
                                                                max_passage_length=128,
-                                                               weights_for_different_modes=[0.4, 0.2, 0.4])['colbert+sparse+dense']
+                                                               weights_for_different_modes=[0.4, 0.2, 0.4])[
+                'colbert+sparse+dense']
             similarity_score += (similarity_score_action + similarity_score_reason * 4) / 5
             print(similarity_score)
             similarity_scores_action.append(similarity_score_action)
             similarity_scores_reason.append(similarity_score_reason)
 
         # return generated_image_message, (similarity_score.item() / len(action_reasons))
-        return generated_image_message, (similarity_score / len(action_reasons)), similarity_scores_action, similarity_scores_reason
+        return generated_image_message, (
+                    similarity_score / len(action_reasons)), similarity_scores_action, similarity_scores_reason
 
     @staticmethod
     def get_image_description_prompt():

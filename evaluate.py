@@ -17,9 +17,11 @@ from io import BytesIO
 
 class Evaluation:
     def __init__(self, args):
-        if args.evaluation_type in ['creativity', 'persuasiveness_creativity'] and args.image_generation:
-            self.metrics = Metrics(args)
+        if args.evaluation_type in ['creativity',
+                                    'persuasiveness_creativity'] and args.image_generation:
             self.image_generator = AdvertisementImageGeneration(args)
+        if args.evaluation_type == 'text_based_persuasiveness_creativity':
+            self.LLM = LLM(args)
         if args.evaluation_type == 'action_reason_VLM':
             self.ar_VLM = ActionReasonVLM(args)
         if args.evaluation_type == 'whoops_llava':
@@ -554,6 +556,50 @@ class Evaluation:
                 text_alignment_score=image_text_alignment_score,
                 generated_image_path=generated_image_path,
                 product_image_paths=product_image_paths,
+                args=args)
+            print(
+                f'creativity score for image {image_url} is {creativity_scores[image_url]}')
+            with open(saving_path, "w") as outfile:
+                json.dump(creativity_scores, outfile)
+        print(f'number of images with no product image is: {no_product_image_count}')
+
+
+    def evaluate_text_based_persuasiveness_creativity(self, args):
+        def get_objects(action_reason):
+            action_reason = '\n-'.join(action_reason)
+            prompt = f"""Name the main object in the following messages seperated by comma. Name both the object itself and the brand. An example for object is steak, fur, lotion, car, etc.:
+                        {action_reason}
+                        objects:
+                    """
+            output = self.LLM(prompt)
+            output = output.split(':')[-1]
+            objects = output.split(',')
+            return objects
+
+        metrics = Metrics(args)
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        baseline_result_file = 'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'
+        baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file))
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
+                                                                               args.text_alignment_file.split('_')[-1].split('.')[0] +
+                                                                               '_creativity.json')
+        creativity_scores = {}
+        image_text_alignment_scores = json.load(open(os.path.join(args.result_path,
+                                                                  args.text_alignment_file)))
+        action_reason_file = json.load(open(os.path.join(args.data_path, f'train/{args.test_set_QA}')))
+        for row in range(len(results.values)):
+            image_url = results.image_url.values[row]
+            action_reasons = action_reason_file[image_url]
+            print(f'image url: {image_url}')
+            if image_url not in baseline_results.image_url.values:
+                continue
+            no_product_image_count = 0
+            image_text_alignment_score = image_text_alignment_scores[image_url]
+            generated_image_path = results.generated_image_url.values[row]
+            creativity_scores[image_url] = metrics.get_text_based_persuasiveness_creativity(
+                text_alignment_score=image_text_alignment_score,
+                generated_image_path=generated_image_path,
+                objects=get_objects(action_reasons),
                 args=args)
             print(
                 f'creativity score for image {image_url} is {creativity_scores[image_url]}')

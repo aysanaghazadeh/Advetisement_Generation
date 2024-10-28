@@ -248,7 +248,8 @@ class Metrics:
                                                        args):
 
         image_scores = (self.get_object_image_CLIP_score(generated_image_path, objects, args))
-        creativity = text_alignment_score[1] / (image_scores + 0.01)
+        # creativity = text_alignment_score[1] / (image_scores + 0.01)
+        creativity = 1 / (image_scores + 0.01)
         return creativity
 
     @staticmethod

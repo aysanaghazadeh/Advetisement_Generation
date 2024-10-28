@@ -568,7 +568,8 @@ class Evaluation:
         def get_objects(action_reason):
             action_reason = '\n-'.join(action_reason)
             prompt = f"""Name the main object in the following messages seperated by comma. Name both the object itself and the brand. An example for object is steak, fur, lotion, car, etc.:
-                        {action_reason}
+                        {action_reason}.
+                        Only return the objects seperated by comma. Do not include any further explanation.
                         objects:
                     """
             output = self.LLM(prompt)

@@ -113,17 +113,17 @@ class Evaluation:
     @staticmethod
     def evaluate_llm_multi_question_persuasiveness_ranking(args):
         score_metrics = Metrics(args)
-        saving_path = os.path.join(args.result_path, f'{args.VLM}_llm_multi_question_persuasiveness_ranking_new.json')
+        saving_path = os.path.join(args.result_path, f'{args.VLM}_llm_multi_question_persuasiveness_ranking.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)
-        results1 = pd.read_csv(os.path.join(args.result_path,
-                                            'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'))
         results2 = pd.read_csv(os.path.join(args.result_path,
+                                            'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'))
+        results1 = pd.read_csv(os.path.join(args.result_path,
                                             'AR_AuraFlow_20240924_210335.csv'))
-        descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
+                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
+        descriptions1 = pd.read_csv(os.path.join(args.result_path,
                                                  'IN_InternVL_AR_SDXL_20241012_005132_description_single_paragraph_no_text.csv'))
         persuasiveness_scores = {}
         for row in results1.values:

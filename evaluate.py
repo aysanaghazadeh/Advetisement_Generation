@@ -122,9 +122,9 @@ class Evaluation:
         results1 = pd.read_csv(os.path.join(args.result_path,
                                             'AR_AuraFlow_20240924_210335.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_old.csv'))
+                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_AR_AuraFlow_20240924_210335_description.csv'))
+                                                 'IN_InternVL_AR_SDXL_20241012_005132_description_single_paragraph_no_text.csv'))
         persuasiveness_scores = {}
         for row in results1.values:
             image_url = row[0]
@@ -135,8 +135,8 @@ class Evaluation:
             # generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]
             generated_image1 = descriptions1.loc[descriptions1['ID'] == image_url, 'description'].values[0]
             generated_image2 = descriptions2.loc[descriptions2['ID'] == image_url, 'description'].values[0]
-            persuasiveness_score = score_metrics.get_llm_multi_question_persuasiveness_ranking(generated_image1,
-                                                                                               generated_image2,
+            persuasiveness_score = score_metrics.get_llm_multi_question_persuasiveness_ranking(generated_image1.split('Q2:')[-1],
+                                                                                               generated_image2.split('Q2:')[-1],
                                                                                                image_url)
             print(f'persuasiveness scores of the image {image_url} is: \n {persuasiveness_score}')
             print('*' * 80)

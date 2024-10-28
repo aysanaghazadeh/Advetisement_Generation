@@ -1,8 +1,7 @@
-Context: You are supposed to compare two images based on their descriptions.
-You are given two different descriptions for two images and you are ask to compare them based on the following question.
+Context: You are supposed to score the image based on the descriptions.
+You are given the description of an image and you are ask to score the image based on the following question.
 Description for Image-1: {{description1}}
-Description for Image-2: {{description2}}
-Which image is more visually distinctive and better makes ideas come to life graphically? Do not consider the text in the image.
+How visually distinctive the image is and how well it makes ideas come to life graphically? Do not consider the text in the image. Return a score in range (0,5).
 Please follow the format of:
     Explanation: ${explanation}
     Answer: ${answer}

@@ -1,17 +1,8 @@
-Context: You are supposed to compare two images based on their descriptions.
-You are given two different descriptions for two images and you are ask to compare them based on the following question.
-    Example of the task:
-            Description of Example Image-1: The image depicts a bottle of Apple-Beer hanging from an apple tree branch. The bottle has a brown color and a label that prominently displays an illustration of an apple and the text "Apple-Beer." The label also includes additional text that reads "All Natural," "No Preservatives," "Made with Pure Cane Sugar," and "The Soft Drink with a Bite." The background is filled with lush green leaves and a blurred green lawn, creating a natural and refreshing atmosphere. The setting suggests a tranquil outdoor environment, possibly in an apple orchard. There is another similar bottle visible in the background, but it is out of focus. The overall image conveys a sense of freshness and natural ingredients.
-            Description of Example Image-2: The image shows a bottle of Corona Extra beer. The bottle is transparent and filled with golden-colored beer. Condensation droplets are visible on the exterior, suggesting the beer is cold. A slice of lime is placed on top of the bottle's neck, which is a common way to serve Corona beer. The label on the bottle is predominantly white with a blue border at the bottom. The brand name "Corona Extra" is prominently displayed in black, stylized font at the top of the label. Below the brand name, there is a golden emblem featuring a crown and two palm leaves. The label also includes the phrase "CERVEZA MÁS FINA" (which translates to "Finest Beer") and "CERVECERÍA MODELO MÉXICO" (which indicates the brewery and country of origin). The volume of the bottle is specified as 12 fluid ounces. The overall design of the label and the inclusion of the lime slice are characteristic of the Corona brand.
-            Example Answer:
-                Explanation: Example Image-1 is showing a beer bottle hanging from a tree within a well depicted scene. On the other hand, Example Image-2 is only showing a single beer bottle, with an explict textual label which is a typical image. So, Example Image-1 is more unique and better breaks away from habit-bound.
-                Answer: Example Image-1
-
-Question:
-    Description for Image-1: {{description1}}
-    Description for Image-2: {{description2}}
-    Which image is more out of the ordinary, unique, and better breaks away from habit-bound and stereotypical thinking? Do not consider the text in the image.
-    Please follow the format of:
-        Explanation: ${explanation}
-        Answer: ${answer}
-    ASSISTANT:
+Context: You are supposed to score the image based on the descriptions.
+You are given the description of an image and you are ask to score the image based on the following question.
+Description for Image-1: {{description1}}
+How out of the ordinary, and unique the image is, and how well it breaks away from habit-bound and stereotypical thinking? Do not consider the text in the image. Return a score in range (0, 5).
+Please follow the format of:
+    Explanation: ${explanation}
+    Answer: ${answer}
+ASSISTANT:

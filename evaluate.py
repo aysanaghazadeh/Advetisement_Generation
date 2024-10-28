@@ -586,7 +586,7 @@ class Evaluation:
         creativity_scores = {}
         image_text_alignment_scores = json.load(open(os.path.join(args.result_path,
                                                                   args.text_alignment_file)))
-        action_reason_file = json.load(open(os.path.join(args.data_path, f'train/{args.test_set_QA}')))
+        action_reason_file = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         for row in range(len(results.values)):
             image_url = results.image_url.values[row]
             action_reasons = action_reason_file[image_url]

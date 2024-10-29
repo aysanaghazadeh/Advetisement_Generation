@@ -977,7 +977,7 @@ class Evaluation:
             #     score += clip_flant5_score(images=[image], texts=[text])
             # VQA_scores[image_url] = score.item() / len(action_reasons)
             text = '\n-'.join(action_reasons)
-            score = clip_flant5_score(image=[image], texts=[text])
+            score = clip_flant5_score(images=[image], texts=[text])
             VQA_scores[image_url] = score.item()
             print(f'VQA score for image {image_url} is {VQA_scores[image_url]}')
             with open(saving_path, "w") as outfile:

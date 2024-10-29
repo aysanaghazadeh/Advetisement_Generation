@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=VQA_score --result_file=LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv
+python evaluate.py --config_type=DEFAULT --evaluation_type=VQA_score --result_file=AR_SDXL_20241012_005132.csv

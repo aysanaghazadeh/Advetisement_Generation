@@ -1,7 +1,7 @@
 import os.path
 import pandas as pd
 from collections import Counter
-
+import t2v_metrics
 import requests
 
 from Evaluation.metrics import *
@@ -960,6 +960,26 @@ class Evaluation:
                 json.dump(image_action_scores, outfile)
             with open(saving_path_image_reason, "w") as outfile:
                 json.dump(image_reason_scores, outfile)
+
+    @staticmethod
+    def get_VQA_score(args):
+        results = pd.read_csv(os.path.join(args.results_path, args.result_file)).values
+        QA = json.load(open(args.data_path, 'QA_Combined_Action_Reason_train.json'))
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_VQA_scores.json')
+        VQA_scores = {}
+        clip_flant5_score = t2v_metrics.VQAScore(model='clip-flant5-xxl')
+        for row in results:
+            image_url = row[0]
+            action_reasons = QA[image_url][0]
+            image = row[3]
+            score = 0
+            for text in action_reasons:
+                score += clip_flant5_score(images=[image], texts=[text])
+            VQA_scores[image_url] = score / len(action_reasons)
+            with open(saving_path, "w") as outfile:
+                json.dump(VQA_scores, outfile)
+
+
 
     def evaluate(self, args):
         evaluation_name = 'evaluate_' + args.evaluation_type

@@ -975,7 +975,7 @@ class Evaluation:
             score = 0
             for text in action_reasons:
                 score += clip_flant5_score(images=[image], texts=[text])
-            VQA_scores[image_url] = score / len(action_reasons)
+            VQA_scores[image_url] = score.item() / len(action_reasons)
             with open(saving_path, "w") as outfile:
                 json.dump(VQA_scores, outfile)
 

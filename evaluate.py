@@ -962,7 +962,7 @@ class Evaluation:
                 json.dump(image_reason_scores, outfile)
 
     @staticmethod
-    def get_VQA_score(args):
+    def evaluate_VQA_score(args):
         results = pd.read_csv(os.path.join(args.results_path, args.result_file)).values
         QA = json.load(open(args.data_path, 'QA_Combined_Action_Reason_train.json'))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_VQA_scores.json')

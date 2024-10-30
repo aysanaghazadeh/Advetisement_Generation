@@ -2,6 +2,7 @@ import os.path
 import pandas as pd
 from collections import Counter
 import t2v_metrics
+import ImageReward as RM
 import requests
 
 from Evaluation.metrics import *
@@ -980,6 +981,30 @@ class Evaluation:
             # VQA_scores[image_url] = score.item() / len(action_reasons)
             text = '\n-'.join(action_reasons)
             score = clip_flant5_score(images=[image], texts=[text])
+            VQA_scores[image_url] = score.item()
+            print(f'VQA score for image {image_url} is {VQA_scores[image_url]}')
+            with open(saving_path, "w") as outfile:
+                json.dump(VQA_scores, outfile)
+
+    @staticmethod
+    def evaluate_ImageReward(args):
+        results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
+        QA = json.load(open(os.path.join(args.data_path, 'train/QA_Combined_Action_Reason_train.json')))
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_VQA_scores.json')
+        # saving_path = os.path.join(args.result_path, 'PSA_original_VQA_score.json')
+        VQA_scores = {}
+        model = RM.load("ImageReward-v1.0")
+        for row in results:
+            image_url = row[0]
+            action_reasons = QA[image_url][0]
+            image = row[3]
+            # image = os.path.join(args.data_path, 'train_images_all', image_url)
+            score = 0
+            # for text in action_reasons:
+            #     score += clip_flant5_score(images=[image], texts=[text])
+            # VQA_scores[image_url] = score.item() / len(action_reasons)
+            text = '\n-'.join(action_reasons)
+            score = model.score(text, [image])
             VQA_scores[image_url] = score.item()
             print(f'VQA score for image {image_url} is {VQA_scores[image_url]}')
             with open(saving_path, "w") as outfile:

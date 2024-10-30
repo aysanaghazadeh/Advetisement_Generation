@@ -972,8 +972,8 @@ class Evaluation:
         for row in results:
             image_url = row[0]
             action_reasons = QA[image_url][0]
-            # image = row[3]
-            image = os.path.join(args.data_path, 'train_images_all', image_url)
+            image = row[3]
+            # image = os.path.join(args.data_path, 'train_images_all', image_url)
             score = 0
             # for text in action_reasons:
             #     score += clip_flant5_score(images=[image], texts=[text])

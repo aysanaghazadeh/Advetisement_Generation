@@ -990,7 +990,7 @@ class Evaluation:
     def evaluate_ImageReward(args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         QA = json.load(open(os.path.join(args.data_path, 'train/QA_Combined_Action_Reason_train.json')))
-        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_VQA_scores.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_ImageReward.json')
         # saving_path = os.path.join(args.result_path, 'PSA_original_VQA_score.json')
         VQA_scores = {}
         model = RM.load("ImageReward-v1.0")

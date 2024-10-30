@@ -994,7 +994,7 @@ class Evaluation:
         saving_path = os.path.join(args.result_path, 'original_ImageReward.json')
         VQA_scores = {}
         model = RM.load("ImageReward-v1.0")
-        for row in results:
+        for row in results[:290]:
             image_url = row[0]
             action_reasons = QA[image_url][0]
             # image = row[3]

@@ -965,8 +965,8 @@ class Evaluation:
     def evaluate_VQA_score(args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         QA = json.load(open(os.path.join(args.data_path, 'train/QA_Combined_Action_Reason_train.json')))
-        # saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_VQA_scores.json')
-        saving_path = os.path.join(args.result_path, 'PSA_original_VQA_score.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_VQA_scores.json')
+        # saving_path = os.path.join(args.result_path, 'PSA_original_VQA_score.json')
         VQA_scores = {}
         clip_flant5_score = t2v_metrics.VQAScore(model='clip-flant5-xxl')
         for row in results:

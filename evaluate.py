@@ -1005,7 +1005,7 @@ class Evaluation:
             # VQA_scores[image_url] = score.item() / len(action_reasons)
             text = '\n-'.join(action_reasons)
             score = model.score(text, [image])
-            VQA_scores[image_url] = score.item()
+            VQA_scores[image_url] = score
             print(f'VQA score for image {image_url} is {VQA_scores[image_url]}')
             with open(saving_path, "w") as outfile:
                 json.dump(VQA_scores, outfile)

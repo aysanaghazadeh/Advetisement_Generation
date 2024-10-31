@@ -300,6 +300,7 @@ class Metrics:
         else:
             format = 'The interpretation format is: I should ${action} because ${reason}. ONLY RETURN A SINGLE SENTENCE IN THIS FORMAT'
         prompt = f"""What is the correct interpretation for the described image:
+        
                      Description: {description}.
                      {format}"""
         generated_image_message = self.llm(prompt)

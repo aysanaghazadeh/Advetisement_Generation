@@ -131,6 +131,8 @@ class Evaluation:
             image_url = row[0]
             if image_url not in results2.image_url.values:
                 continue
+            if image_url not in descriptions1.ID.values:
+                continue
             print(image_url)
             # generated_image_path1 = row[3]
             # generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]

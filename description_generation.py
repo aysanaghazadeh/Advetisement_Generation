@@ -104,8 +104,6 @@ def get_descriptions(args):
     for image_url in images[:290]:
         if image_url in processed_images:
             continue
-        if image_url.split('/')[-1] not in ['124116.jpg', '158126.jpg', '134044.jpg', '586.jpg', '58026.jpg', '15626.jpg', '50176.jpg']:
-            continue
         processed_images.add(image_url)
         if args.description_type == 'combine':
             description = get_combine_description(args, image_url, pipe)

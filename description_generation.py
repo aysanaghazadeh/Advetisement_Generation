@@ -85,13 +85,13 @@ def get_descriptions(args):
     #                                 f'_{args.VLM}'
     #                                 f'_{args.VLM_prompt.replace(".jinja", "")}'
     #                                 f'_description_{args.task}.csv')
-    description_file = os.path.join(args.result_path,
-                                    f'{args.description_type}'
-                                    f'_{args.VLM}'
-                                    f'_{args.test_set_QA.replace(".csv", "")}'
-                                    f'_description_single_paragraph_no_text.csv')
     # description_file = os.path.join(args.result_path,
-    #                                 'original_images_description.csv')
+    #                                 f'{args.description_type}'
+    #                                 f'_{args.VLM}'
+    #                                 f'_{args.test_set_QA.replace(".csv", "")}'
+    #                                 f'_description_single_paragraph_no_text.csv')
+    description_file = os.path.join(args.result_path,
+                                    'real_ads_psa_description.csv')
     if os.path.exists(description_file):
         print(description_file)
         return pd.read_csv(description_file)

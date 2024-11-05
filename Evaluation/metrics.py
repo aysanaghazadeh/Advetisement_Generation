@@ -345,7 +345,7 @@ class Metrics:
                                                                max_passage_length=128,
                                                                weights_for_different_modes=[0.4, 0.2, 0.4])[
                 'colbert+sparse+dense']
-            similarity_score += (similarity_score_action + similarity_score_reason * 4) / 5
+            similarity_score += (similarity_score_action + similarity_score_reason * 3) / 4
             print(similarity_score)
             similarity_scores_action.append(similarity_score_action)
             similarity_scores_reason.append(similarity_score_reason)

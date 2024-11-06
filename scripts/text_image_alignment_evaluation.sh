@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=text_image_alignment --description_file=../experiments/results/IN_InternVL_LLAMA3Instruct_descriptions_AuraFlow_20240817_185858_description_single_paragraph_no_text.csv --LLM=LLAMA3_instruct --fine_tuned=True --result_file=LLAMA3Instruct_descriptions_AuraFlow_20240817_185858.csv
+python evaluate.py --config_type=DEFAULT --evaluation_type=text_image_alignment --description_file=../experiments/results/real_ads_com_description.csv --LLM=LLAMA3_instruct --fine_tuned=True --result_file=real_ads_com_description.csv

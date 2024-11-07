@@ -90,8 +90,8 @@ def get_descriptions(args):
                                     f'_{args.VLM}'
                                     f'_{args.test_set_QA.replace(".csv", "")}'
                                     f'_description_single_paragraph_full_description.csv')
-    # description_file = os.path.join(args.result_path,
-    #                                 'real_ads_psa_description.csv')
+    description_file = os.path.join(args.result_path,
+                                    'real_ads_psa_description_not_text.csv')
     if os.path.exists(description_file):
         print(description_file)
         return pd.read_csv(description_file)

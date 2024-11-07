@@ -123,7 +123,7 @@ class Evaluation:
         results1 = pd.read_csv(os.path.join(args.result_path,
                                             'AR_SDXL_20240613_204248.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_LLAMA3Instruct_descriptions_AuraFlow_20240817_185858_description_single_paragraph_no_text.csv'))
+                                                 'IN_InternVL_AR_AuraFlow_20240924_210335_description_single_paragraph_full_description.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
                                                  'IN_InternVL_AR_AuraFlow_20240924_210335_description_single_paragraph_full_description.csv'))
         persuasiveness_scores = {}
@@ -131,7 +131,7 @@ class Evaluation:
             image_url = row[0]
             # if image_url not in results2.image_url.values:
             #     continue
-            if image_url not in descriptions1.ID.values:
+            if image_url not in descriptions2.ID.values:
                 continue
             print(image_url)
             # generated_image_path1 = row[3]

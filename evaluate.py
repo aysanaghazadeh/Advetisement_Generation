@@ -582,7 +582,7 @@ class Evaluation:
 
         metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        baseline_result_file = 'LLM_input_LLAMA3_instruct_FTFalse_PSA.csv_AuraFlow_20240925_112154.csv'
+        baseline_result_file = 'AR_SDXL_20240613_204248.csv'
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
                                                                                args.text_alignment_file.split('_')[-1].split('.')[0] +

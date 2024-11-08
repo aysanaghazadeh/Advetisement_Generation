@@ -114,18 +114,18 @@ class Evaluation:
     @staticmethod
     def evaluate_llm_multi_question_persuasiveness_ranking(args):
         score_metrics = Metrics(args)
-        saving_path = os.path.join(args.result_path, f'real_{args.VLM}_llm_multi_question_persuasiveness_com.json')
+        saving_path = os.path.join(args.result_path, f'real_{args.VLM}_llm_multi_question_persuasiveness_psa.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)
         results2 = pd.read_csv(os.path.join(args.result_path,
-                                            'real_ads_com_description.csv'))
+                                            'real_ads_psa_description_not_text.csv'))
         results1 = pd.read_csv(os.path.join(args.result_path,
-                                            'real_ads_com_description.csv'))
+                                            'real_ads_psa_description_not_text.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                 'real_ads_com_description.csv'))
+                                                 'real_ads_psa_description_not_text.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                 'real_ads_com_description.csv'))
+                                                 'real_ads_psa_description_not_text.csv'))
         persuasiveness_scores = {}
         for row in descriptions1.values:
             image_url = row[0]

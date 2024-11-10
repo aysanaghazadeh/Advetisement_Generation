@@ -992,15 +992,15 @@ class Evaluation:
     def evaluate_ImageReward(args):
         results = pd.read_csv(os.path.join(args.result_path, args.result_file)).values
         QA = json.load(open(os.path.join(args.data_path, 'train/QA_Combined_Action_Reason_train.json')))
-        # saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_ImageReward.json')
-        saving_path = os.path.join(args.result_path, 'original_ImageReward.json')
+        saving_path = os.path.join(args.result_path, args.result_file).replace('.csv', '_ImageReward.json')
+        # saving_path = os.path.join(args.result_path, 'original_ImageReward.json')
         VQA_scores = {}
         model = RM.load("ImageReward-v1.0")
         for row in results[:290]:
             image_url = row[0]
             action_reasons = QA[image_url][0]
-            # image = row[3]
-            image = os.path.join(args.data_path, 'train_images_all', image_url)
+            image = row[3]
+            # image = os.path.join(args.data_path, 'train_images_all', image_url)
             score = 0
             # for text in action_reasons:
             #     score += clip_flant5_score(images=[image], texts=[text])

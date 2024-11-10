@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=VQA_score --result_file=LLAMA3Instruct_descriptions_AuraFlow_20240817_185858.csv
+python evaluate.py --config_type=DEFAULT --evaluation_type=VQA_score --result_file=AR_SDXL_20240613_204248.csv

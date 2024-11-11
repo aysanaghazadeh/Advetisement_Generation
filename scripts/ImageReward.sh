@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=ImageReward --result_file=AR_SDXL_20240613_204248.csv
+python evaluate.py --config_type=DEFAULT --evaluation_type=ImageReward --result_file=AR_AuraFlow_20240924_210335.csv

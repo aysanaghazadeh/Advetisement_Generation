@@ -19,21 +19,20 @@ print(accelerator)
 class RewardModel:
     def __init__(self, args):
         # args.T2I_model = 'DMD'
-        # self.T2I_model = T2IModel(args)
-        # self.reward_function = PersuasivenessMetric(args)
+        self.T2I_model = T2IModel(args)
+        self.reward_function = PersuasivenessMetric(args)
         pass
 
     def get_reward(self, prompt, action_reason):
-        # action_reason = [ar for ar in action_reason.split('\n')]
-        # print('action-reason:', action_reason)
-        # print('prompt:', prompt.split(':')[-1])
-        # prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
-        # image = self.T2I_model(prompt)
-        #
-        # persuasiveness = (self.reward_function.get_persuasiveness_alignment(image, action_reason) * 3 + \
-        #                   self.reward_function.get_persuasiveness_score(image)) / 4
-        # return persuasiveness - 3
-        return 4
+        action_reason = [ar for ar in action_reason.split('\n')]
+        print('action-reason:', action_reason)
+        print('prompt:', prompt.split(':')[-1])
+        prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
+        image = self.T2I_model(prompt)
+
+        persuasiveness = self.reward_function.get_persuasiveness_alignment(image, action_reason)
+        return persuasiveness
+        # return 4
 
 def get_model():
     lora_config = LoraConfig(
@@ -44,7 +43,8 @@ def get_model():
         task_type="CAUSAL_LM",
     )
     current_device = Accelerator().local_process_index
-    model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
+    # model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
+    model_id = 'meta-llama/Meta-Llama-3-8B-instruct'
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -57,8 +57,9 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True,
     ).to(device='cuda:1')
-    tokenizer = AutoTokenizer.from_pretrained(os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
-                                                                            '-4350/'),
+    tokenizer = AutoTokenizer.from_pretrained('meta-llama/Meta-Llama-3-8B-instruct',
+                                              # os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
+                                              #                               '-4350/'),
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
@@ -121,7 +122,7 @@ def train(args):
             print('reward:', rewards)
             stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
             ppo_trainer.log_stats(stats, batch, rewards)
-            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_DMD_batch_size_2"))
+            ppo_trainer.save_pretrained(os.path.join(args.model_path, "my_ppo_model_llama_instruct"))
 
 
 if __name__ == '__main__':

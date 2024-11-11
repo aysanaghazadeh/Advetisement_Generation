@@ -294,7 +294,7 @@ def get_RLHF_train_LLAMA3_Dataloader(args):
 
 def get_LLAMA3_RLAIF_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained(
-        os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/'),
+        os.path.join(args.model_path, 'meta-llama/Meta-Llama-3-8B-instruct'),
         token='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',
         padding='max_length',
         max_length=512)
@@ -305,9 +305,13 @@ def get_LLAMA3_RLAIF_training_data(args, image_urls):
                     {data_point['action_reason']}
                     Description of the image:
                 """
+        messages = [
+            {"role": "system", "content": "Be a helpful assistant"},
+            {"role": "user", "content": prompt},
+        ]
         data_point['query'] = {'query': prompt, 'action_reason': '\n'.join(data_point['action_reason'])}
         tokens = tokenizer.encode(prompt, padding='max_length', max_length=512)
-        # data_point["input_ids"] = tokens
+        data_point["input_ids"] = tokens
         return data_point
 
     QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))

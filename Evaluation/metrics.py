@@ -1020,8 +1020,10 @@ class PersuasivenessMetric:
             else:
                 print('InternVL')
                 if args.evaluation_type != 'image_reward' and args.evaluation_type != 'persuasiveness':
+                    print('llm not skipped')
                     self.LLM_model = LLM(args)
                 self.pipe = InternVL(args)
+                print(self.pipe)
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 
     def get_persuasiveness_score(self, generated_image):

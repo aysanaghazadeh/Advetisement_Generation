@@ -56,7 +56,7 @@ def get_model():
         token='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',
         peft_config=lora_config,
         load_in_4bit=True,
-    ).to(device='cuda:1')
+    ).to(device='cuda')
     tokenizer = AutoTokenizer.from_pretrained('meta-llama/Meta-Llama-3-8B-instruct',
                                               # os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                               #                               '-4350/'),

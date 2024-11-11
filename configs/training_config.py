@@ -130,6 +130,8 @@ def parse_args():
     parser.add_argument('--weight_decay',
                         type=int,
                         default=0.01)
+    parser.add_argument('--VLM',
+                        type=str)
     return parser.parse_args()
 
 

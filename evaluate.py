@@ -114,7 +114,7 @@ class Evaluation:
     @staticmethod
     def evaluate_llm_multi_question_persuasiveness_ranking(args):
         score_metrics = Metrics(args)
-        saving_path = os.path.join(args.result_path, f'real_{args.VLM}_llm_multi_question_persuasiveness_psa.json')
+        saving_path = os.path.join(args.result_path, f'{args.result_file.replace(".csv", "")}_persuasion_creativity.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)
@@ -138,6 +138,8 @@ class Evaluation:
             # generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]
             generated_image1 = descriptions1.loc[descriptions1['ID'] == image_url, 'description'].values[0]
             generated_image2 = descriptions2.loc[descriptions2['ID'] == image_url, 'description'].values[0]
+            if 'yes' not in generated_image1.split('Q2:')[0].lower():
+                persuasiveness_scores[image_url] = [0] * 12
             persuasiveness_score = score_metrics.get_llm_multi_question_persuasiveness_ranking(generated_image1.split('Q2:')[-1],
                                                                                                generated_image2.split('Q2:')[-1],
                                                                                                image_url)

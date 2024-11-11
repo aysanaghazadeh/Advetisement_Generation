@@ -694,29 +694,76 @@ class Metrics:
             print(f'benefit score: {output}')
             return extract_number(output)
 
+        def evaluate_persuasion(description1, description2, image_url):
+            prompt = f"""
+                    <image>\n USER:
+                    Context: If the image convinces the audience to take an action it is considered persuasive.
+                    Description: {description1}
+                    Question: Based on the context score the persuasiveness of the described image in range of (0, 5).
+                    Your output format is only Answer: score\n form, no other form. Empty is not allowed.
+                    ASSISTANT:
+                    """
+            output = self.llm(prompt)
+            print(f'persuasion score: {output}')
+            return extract_number(output)
+
+        def evaluate_creativity(description1, description2, image_url):
+            prompt = f"""
+                    <image>\n USER:
+                    Description: {description1}
+                    Question: Score the creativity of the described image in range of (0, 5).
+                    Your output format is only Answer: score\n form, no other form. Empty is not allowed.
+                    ASSISTANT:
+                    """
+            output = self.llm(prompt)
+            print(f'creativity score: {output}')
+            return extract_number(output)
+
+        def evaluate_action_persuasion(description1, description2, image_url):
+            score = 0
+            action_reasons = self.QA[image_url][0]
+            for action_reason in action_reasons:
+                action = action_reason.lower().split('because')[0]
+                prompt = f"""
+                        <image>\n USER:
+                        Context: Assume you are a human evaluating how well the image convinces the audience to take the give action.
+                        Description: {description1}
+                        Question: Score how well the described image convinces the audience to take the action in the {action} in range of (0, 5).
+                        Your output format is only Answer: score\n form, no other form. Empty is not allowed.
+                        ASSISTANT:
+                        """
+                output = self.llm(prompt)
+                score += extract_number(output)
+                print(f'action persuasion score: {output}')
+            return score/len(action_reasons)
+
         # image_url = '/'.join(generated_image1.split('/')[-2:])
-        scores = {
-            'has_story': evaluate_story(generated_image1, generated_image2, image_url),
-            'unusualness': evaluate_unusualness(generated_image1, generated_image2, ),
-            'originality': evaluate_originality(generated_image1, generated_image2, ),
-            'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
-            'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
-            'audience': evaluate_audience(generated_image1, generated_image2, image_url),
-            'maslow_need': evaluate_maslow_need(generated_image1, generated_image2, image_url),
-            'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
-            'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
-        }
         # scores = {
-        #     'has_story': 0,
-        #     'unusualness': 0,
+        #     'has_story': evaluate_story(generated_image1, generated_image2, image_url),
+        #     'unusualness': evaluate_unusualness(generated_image1, generated_image2, ),
         #     'originality': evaluate_originality(generated_image1, generated_image2, ),
-        #     'artistic': 0,
+        #     'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
         #     'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
-        #     'audience': 0,
-        #     'maslow_need': 0,
-        #     'benefit': 0,
-        #     'appeal': 0,
+        #     'audience': evaluate_audience(generated_image1, generated_image2, image_url),
+        #     'maslow_need': evaluate_maslow_need(generated_image1, generated_image2, image_url),
+        #     'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
+        #     'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
         # }
+
+        scores = {
+            'has_story': 0,
+            'unusualness': 0,
+            'originality': 0,
+            'artistic': 0,
+            'imagination': 0,
+            'audience': 0,
+            'maslow_need': 0,
+            'benefit': 0,
+            'appeal': 0,
+            'persuasion': evaluate_persuasion(generated_image1, generated_image2, image_url),
+            'creativity': evaluate_creativity(generated_image1, generated_image2, image_url),
+            'action_persuasion': evaluate_action_persuasion(generated_image1, generated_image2, image_url)
+        }
         scores['persuasiveness'] = sum(list(scores.values())) / len(scores)
         persasiveness = scores['persuasiveness']
         print(f'persuasiveness score: {persasiveness}')

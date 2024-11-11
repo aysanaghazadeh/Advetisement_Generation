@@ -596,8 +596,8 @@ class Evaluation:
             image_url = results.image_url.values[row]
             action_reasons = action_reason_file[image_url][0]
             print(f'image url: {image_url}')
-            if image_url not in baseline_results.image_url.values:
-                continue
+            # if image_url not in baseline_results.image_url.values:
+            #     continue
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
             # generated_image_path = results.generated_image_url.values[row]

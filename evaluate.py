@@ -582,7 +582,6 @@ class Evaluation:
 
         metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
-        print(resutls)
         baseline_result_file = 'AR_SDXL_20240613_204248.csv'
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',
@@ -600,7 +599,10 @@ class Evaluation:
                 continue
             no_product_image_count = 0
             image_text_alignment_score = image_text_alignment_scores[image_url]
-            generated_image_path = results.generated_image_url.values[row]
+            # generated_image_path = results.generated_image_url.values[row]
+            generated_image_path = os.path.join(args.data_path,
+                                                'train_images_all',
+                                                image_url)
             creativity_scores[image_url] = metrics.get_text_based_persuasiveness_creativity_score(
                 text_alignment_score=image_text_alignment_score,
                 generated_image_path=generated_image_path,

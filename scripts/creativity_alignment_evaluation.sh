@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=text_based_persuasiveness_creativity --text_alignment_file=real_ads_com_descriptionVILA_text_image_alignment_isFineTunedTrue_3000_weighted.json --result_file=AR_AuraFlow_20240816_214421.csv --LLM=LLAMA3_instruct
+python evaluate.py --config_type=DEFAULT --evaluation_type=text_based_persuasiveness_creativity --text_alignment_file=real_ads_psa_descriptionVILA_text_image_alignment_isFineTunedTrue_3000_weighted.json --result_file=	AR_AuraFlow_20240924_210335.csv --LLM=LLAMA3_instruct

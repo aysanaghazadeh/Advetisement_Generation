@@ -582,6 +582,7 @@ class Evaluation:
 
         metrics = Metrics(args)
         results = pd.read_csv(os.path.join(args.result_path, args.result_file))
+        print(resutls)
         baseline_result_file = 'AR_SDXL_20240613_204248.csv'
         baseline_results = pd.read_csv(os.path.join(args.result_path, baseline_result_file))
         saving_path = os.path.join(args.result_path, args.result_file).replace('.csv',

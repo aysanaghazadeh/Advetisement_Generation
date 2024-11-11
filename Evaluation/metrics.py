@@ -1015,10 +1015,12 @@ class PersuasivenessMetric:
                                      model_kwargs={"quantization_config": quantization_config},
                                      trust_remote_code=True,
                                      device_map='auto')
-                self.LLM_model = LLM(args)
+                if args.evaluation_type != 'image_reward':
+                    self.LLM_model = LLM(args)
             else:
                 print('InternVL')
-                self.LLM_model = LLM(args)
+                if args.evaluation_type != 'image_reward':
+                    self.LLM_model = LLM(args)
                 self.pipe = InternVL(args)
         self.QA = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
 

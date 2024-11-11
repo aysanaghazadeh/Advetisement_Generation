@@ -119,13 +119,13 @@ class Evaluation:
         print(args.result_path)
         print(args.result_file)
         results2 = pd.read_csv(os.path.join(args.result_path,
-                                            'real_ads_psa_description_not_text.csv'))
+                                            'AR_SDXL_20240613_204248.csv'))
         results1 = pd.read_csv(os.path.join(args.result_path,
-                                            'real_ads_psa_description_not_text.csv'))
+                                            'AR_SDXL_20240613_204248.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                 'real_ads_psa_description_not_text.csv'))
+                                                 'IN_InternVL_AR_SDXL_20240613_204248_description_single_paragraph_no_text.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                 'real_ads_psa_description_not_text.csv'))
+                                                 'IN_InternVL_AR_SDXL_20240613_204248_description_single_paragraph_no_text.csv'))
         persuasiveness_scores = {}
         for row in descriptions1.values:
             image_url = row[0]
@@ -138,8 +138,8 @@ class Evaluation:
             # generated_image_path2 = results2.loc[results2['image_url'] == image_url]['generated_image_url'].values[0]
             generated_image1 = descriptions1.loc[descriptions1['ID'] == image_url, 'description'].values[0]
             generated_image2 = descriptions2.loc[descriptions2['ID'] == image_url, 'description'].values[0]
-            if 'yes' not in generated_image1.split('Q2:')[0].lower():
-                persuasiveness_scores[image_url] = [0] * 12
+            # if 'yes' not in generated_image1.split('Q2:')[0].lower():
+            #     persuasiveness_scores[image_url] = [0] * 12
             persuasiveness_score = score_metrics.get_llm_multi_question_persuasiveness_ranking(generated_image1.split('Q2:')[-1],
                                                                                                generated_image2.split('Q2:')[-1],
                                                                                                image_url)

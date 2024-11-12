@@ -120,13 +120,13 @@ class Evaluation:
         print(args.result_path)
         print(args.result_file)
         results2 = pd.read_csv(os.path.join(args.result_path,
-                                            'IN_InternVL_AR_AuraFlow_20240924_210335_description_single_paragraph_full_description.csv'))
+                                            'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
         results1 = pd.read_csv(os.path.join(args.result_path,
-                                            'IN_InternVL_AR_AuraFlow_20240924_210335_description_single_paragraph_full_description.csv'))
+                                            'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_AR_AuraFlow_20240924_210335_description_single_paragraph_full_description.csv'))
+                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_AR_AuraFlow_20240924_210335_description_single_paragraph_full_description.csv'))
+                                                 'IN_InternVL_LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154_description_single_paragraph_no_text.csv'))
         persuasiveness_scores = {}
         for row in descriptions1.values:
             image_url = row[0]

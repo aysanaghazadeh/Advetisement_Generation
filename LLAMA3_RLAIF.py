@@ -51,19 +51,19 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True,
     ).to(device=args.device)
-    ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
-        model_id,
-        token='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',
-        peft_config=lora_config,
-        load_in_4bit=True,
-    ).to(device='cuda')
+    # ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
+    #     model_id,
+    #     token='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',
+    #     peft_config=lora_config,
+    #     load_in_4bit=True,
+    # ).to(device='cuda')
     tokenizer = AutoTokenizer.from_pretrained('meta-llama/Meta-Llama-3-8B-Instruct',
                                               # os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                               #                               '-4350/'),
                                               token='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')
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
-    return model, tokenizer, ref_model
+    return model, tokenizer#, ref_model
 
 
 def train(args):
@@ -74,7 +74,7 @@ def train(args):
         mini_batch_size=2,
         log_with='wandb',
     )
-    model, tokenizer, ref_model = get_model()
+    model, tokenizer = get_model()
     optimizer = Adafactor(
         filter(lambda p: p.requires_grad, model.parameters()),
         scale_parameter=False,
@@ -86,7 +86,7 @@ def train(args):
     dataset = get_LLAMA3_RLAIF_Dataloader(args)
     ppo_trainer = PPOTrainer(
         model=model,
-        ref_model=ref_model,
+        # ref_model=ref_model,
         config=config,
         dataset=dataset,
         tokenizer=tokenizer,

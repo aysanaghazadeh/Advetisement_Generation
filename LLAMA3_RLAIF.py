@@ -44,7 +44,7 @@ def get_model():
     )
     current_device = Accelerator().local_process_index
     # model_id = os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint-4350/')
-    model_id = 'meta-llama/Meta-Llama-3-8B-instruct'
+    model_id = 'meta-llama/Meta-Llama-3-8B-Instruct'
     model = AutoModelForCausalLMWithValueHead.from_pretrained(
         model_id,
         token='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',
@@ -57,7 +57,7 @@ def get_model():
         peft_config=lora_config,
         load_in_4bit=True,
     ).to(device='cuda')
-    tokenizer = AutoTokenizer.from_pretrained('meta-llama/Meta-Llama-3-8B-instruct',
+    tokenizer = AutoTokenizer.from_pretrained('meta-llama/Meta-Llama-3-8B-Instruct',
                                               # os.path.join(args.model_path, 'my_LLAMA3_large_sample_model/checkpoint'
                                               #                               '-4350/'),
                                               token='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')

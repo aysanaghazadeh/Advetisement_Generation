@@ -29,7 +29,7 @@ class RewardModel:
         print('prompt:', prompt.split(':')[-1])
         prompt = 'Generate the described image:\n' + prompt.split(':')[-1]
         image = self.T2I_model(prompt)
-
+        image.save(f'../experiments/generated_images/train/{prompt[-3:]}.png')
         persuasiveness = self.reward_function.get_persuasiveness_alignment(image, action_reason)
         return persuasiveness
         # return 4

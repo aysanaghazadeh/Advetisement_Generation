@@ -294,7 +294,7 @@ def get_RLHF_train_LLAMA3_Dataloader(args):
 
 def get_LLAMA3_RLAIF_training_data(args, image_urls):
     tokenizer = AutoTokenizer.from_pretrained(
-        os.path.join(args.model_path, 'meta-llama/Meta-Llama-3-8B-Instruct'),
+        'meta-llama/Meta-Llama-3-8B-Instruct',
         token='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',
         padding='max_length',
         max_length=512)

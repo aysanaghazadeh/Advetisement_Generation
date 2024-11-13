@@ -132,6 +132,9 @@ def parse_args():
                         default=0.01)
     parser.add_argument('--VLM',
                         type=str)
+    parser.add_argument('--evaluation_type',
+                        type=str,
+                        default='image_reward')
     return parser.parse_args()
 
 

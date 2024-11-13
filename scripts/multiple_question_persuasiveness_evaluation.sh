@@ -1,1 +1,1 @@
-python evaluate.py --config_type=DEFAULT --evaluation_type=llm_multi_question_persuasiveness_ranking --result_file=LLM_input_LLAMA3_instruct_FTFalse_PSA_AuraFlow_20240925_112154.csv  --VLM=InternVL --LLM=LLAMA3_instruct
+python evaluate.py --config_type=DEFAULT --evaluation_type=llm_multi_question_persuasiveness_ranking --result_file=AR_SDXL_20241012_005132.csv  --VLM=InternVL --LLM=LLAMA3_instruct

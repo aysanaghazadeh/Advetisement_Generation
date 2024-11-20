@@ -114,8 +114,8 @@ class Evaluation:
     @staticmethod
     def evaluate_llm_multi_question_persuasiveness_ranking(args):
         score_metrics = Metrics(args)
-        saving_path = os.path.join(args.result_path, f'{args.result_file.replace(".csv", "")}_persuasion_creativity.json')
-        # saving_path = os.path.join(args.result_path, 'real_com_persuasion_creativity.json')
+        # saving_path = os.path.join(args.result_path, f'{args.result_file.replace(".csv", "")}_persuasion_creativity.json')
+        saving_path = os.path.join(args.result_path, 'real_human_eval_persuasion_creativity.json')
         print(saving_path)
         print(args.result_path)
         print(args.result_file)

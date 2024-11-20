@@ -12,6 +12,7 @@ from LLMs.LLM import LLM
 from VLMs.InternVL2 import InternVL
 from VLMs.LLAVA16 import LLAVA16
 
+
 def get_model(args):
     # Load model directly
     if args.description_type == 'combine':
@@ -37,7 +38,8 @@ def get_llm(args):
 
 
 def get_single_description(args, image_url, pipe):
-    image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
+    # image = Image.open(os.path.join(args.data_path, args.test_set_images, image_url))
+    image = Image.open(f'../Data/PittAd/train_images_all/{image_url}')
     env = Environment(loader=FileSystemLoader(args.prompt_path))
     template = env.get_template(args.VLM_prompt)
     prompt = template.render()
@@ -63,7 +65,7 @@ def get_combine_description(args, image_url, pipe):
     T_descriptions = pd.read_csv(os.path.join(args.data_path,
                                               f'train/T_LLAVA16_T_description_generation_LLAVA16_description_PittAd.csv'))
     T_description = T_descriptions.loc[T_descriptions['ID'] == image_url]['description'].values[0]
-    data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'T': T_description, 'token_length':None}
+    data = {'IN': IN_description, 'UH': UH_description, 'v': v_description, 'T': T_description, 'token_length': None}
     env = Environment(loader=FileSystemLoader(args.prompt_path))
     template = env.get_template(args.VLM_prompt)
     prompt = template.render(**data)
@@ -77,7 +79,22 @@ def get_descriptions(args):
     else:
         # images = get_train_data(args)['ID'].values
         # images = list(json.load(open(os.path.join(args.data_path, args.test_set_QA))).keys())
-        images = pd.read_csv(os.path.join(args.result_path, args.test_set_QA)).image_url.values
+        # images = pd.read_csv(os.path.join(args.result_path, args.test_set_QA)).image_url.values
+        images = [
+            "1/11971.jpg",
+            "10/175925.png",
+            "5/23455.jpg",
+            "1/46871.jpg",
+            "0/164620.jpg",
+            "0/159000.jpg",
+            "0/90820.jpg",
+            "2/10062.jpg",
+            "2/116492.jpg",
+            "3/79633.jpg",
+            "4/63754.jpg",
+            "10/171917.jpg"
+        ]
+
     print(f'number of images in the set: {len(images)}')
     print('*' * 100)
     # description_file = os.path.join(args.data_path, 'train',
@@ -91,7 +108,7 @@ def get_descriptions(args):
                                     f'_{args.test_set_QA.replace(".csv", "")}'
                                     f'_description_single_paragraph_full_description.csv')
     description_file = os.path.join(args.result_path,
-                                    'real_ads_com_description_not_text.csv')
+                                    'real_ads_human_annotation_description_not_text.csv')
     if os.path.exists(description_file):
         print(description_file)
         return pd.read_csv(description_file)
@@ -189,10 +206,10 @@ def get_negative_descriptions(args):
             writer = csv.writer(file)
             writer.writerow(pair)
 
+
 if __name__ == '__main__':
     args = get_args()
     test_images = get_test_data(args)['ID'].values[:290]
     descriptions = get_descriptions(args)
     # descriptions = get_llm_generated_prompt(args, test_images)
     # get_negative_descriptions(args)
-

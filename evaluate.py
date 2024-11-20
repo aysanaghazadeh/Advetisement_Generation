@@ -903,28 +903,28 @@ class Evaluation:
 
     @staticmethod
     def evaluate_original_images(args):
-        persuasiveness = PersuasivenessMetric(args)
+        # persuasiveness = PersuasivenessMetric(args)
         QAs = json.load(open(os.path.join(args.data_path, args.test_set_QA)))
         metrics = Metrics(args)
-        saving_path_persuasiveness = os.path.join(args.result_path,
-                                                  'original_images_persuasiveness.json')
-        print(f'persuasiveness: {saving_path_persuasiveness}')
-        saving_path_persuasiveness_alignment = os.path.join(args.result_path,
-                                                            'original_images_persuasiveness_alignment.json')
-        print(f'persuasiveness alignment: {saving_path_persuasiveness_alignment}')
-        saving_path_ar_aware_persuasiveness = os.path.join(args.result_path,
-                                                           'original_images_action_reason_aware_persuasiveness.json')
-        print(f'action-reason aware persuasiveness: {saving_path_ar_aware_persuasiveness}')
+        # saving_path_persuasiveness = os.path.join(args.result_path,
+        #                                           'original_images_persuasiveness.json')
+        # print(f'persuasiveness: {saving_path_persuasiveness}')
+        # saving_path_persuasiveness_alignment = os.path.join(args.result_path,
+        #                                                     'original_images_persuasiveness_alignment.json')
+        # print(f'persuasiveness alignment: {saving_path_persuasiveness_alignment}')
+        # saving_path_ar_aware_persuasiveness = os.path.join(args.result_path,
+        #                                                    'original_images_action_reason_aware_persuasiveness.json')
+        # print(f'action-reason aware persuasiveness: {saving_path_ar_aware_persuasiveness}')
         saving_path_image_text = os.path.join(args.result_path,
                                               'original_images_image_text.json')
         print(f'image-text: {saving_path_image_text}')
-        saving_path_image_action = os.path.join(args.result_path,
-                                                'original_images_image_action.json')
-        print(f'image-action: {saving_path_image_action}')
-        saving_path_image_reason = os.path.join(args.result_path,
-                                                'original_images_image_reason.json')
-        print(f'image-reason: {saving_path_image_reason}')
-        test_images = list(get_test_data(args).ID.values)[:1340]
+        # saving_path_image_action = os.path.join(args.result_path,
+        #                                         'original_images_image_action.json')
+        # print(f'image-action: {saving_path_image_action}')
+        # saving_path_image_reason = os.path.join(args.result_path,
+        #                                         'original_images_image_reason.json')
+        # print(f'image-reason: {saving_path_image_reason}')
+        test_images = list(get_test_data(args).ID.values)
         persuasiveness_scores = {}
         persuasiveness_alignment_scores = {}
         ar_aware_persuasiveness_scores = {}
@@ -934,42 +934,42 @@ class Evaluation:
         for image_url in test_images:
             image_path = os.path.join(args.data_path, args.test_set_images, image_url)
             action_reason_statements = QAs[image_url][0]
-            persuasiveness_score = persuasiveness.get_persuasiveness_score(image_path)
-            ar_aware_persuasiveness_score = persuasiveness.get_action_reason_aware_persuasiveness_score(image_path)
-            persuasiveness_alignment_score = persuasiveness.get_persuasiveness_alignment(image_path)
+            # persuasiveness_score = persuasiveness.get_persuasiveness_score(image_path)
+            # ar_aware_persuasiveness_score = persuasiveness.get_action_reason_aware_persuasiveness_score(image_path)
+            # persuasiveness_alignment_score = persuasiveness.get_persuasiveness_alignment(image_path)
             clip_image_text = metrics.get_text_image_CLIP_score(image_path, action_reason_statements, args)
             image_text_score = clip_image_text['text']
-            image_action_score = clip_image_text['action']
-            image_reason_score = clip_image_text['reason']
-            print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 5')
-            print(
-                f'persuasiveness alignment score of the image {image_url} is {persuasiveness_alignment_score} out of 5')
-            print(
-                f'action-reason aware persuasiveness score of the image {image_url} is {ar_aware_persuasiveness_score} out of 5')
+            # image_action_score = clip_image_text['action']
+            # image_reason_score = clip_image_text['reason']
+            # print(f'persuasiveness score of the image {image_url} is {persuasiveness_score} out of 5')
+            # print(
+            #     f'persuasiveness alignment score of the image {image_url} is {persuasiveness_alignment_score} out of 5')
+            # print(
+            #     f'action-reason aware persuasiveness score of the image {image_url} is {ar_aware_persuasiveness_score} out of 5')
             print(f'image-text score of the image {image_url} is {image_text_score}')
-            print(f'image-action score of the image {image_url} is {image_action_score}')
-            print(f'image-reason score of the image {image_url} is {image_reason_score}')
+            # print(f'image-action score of the image {image_url} is {image_action_score}')
+            # print(f'image-reason score of the image {image_url} is {image_reason_score}')
             print('*' * 80)
-            persuasiveness_scores[image_url] = persuasiveness_score
-            ar_aware_persuasiveness_scores[image_url] = ar_aware_persuasiveness_score
-            persuasiveness_alignment_scores[image_url] = persuasiveness_alignment_score
+            # persuasiveness_scores[image_url] = persuasiveness_score
+            # ar_aware_persuasiveness_scores[image_url] = ar_aware_persuasiveness_score
+            # persuasiveness_alignment_scores[image_url] = persuasiveness_alignment_score
             image_text_scores[image_url] = image_text_score
-            image_reason_scores[image_url] = image_reason_score
-            image_action_scores[image_url] = image_action_score
+            # image_reason_scores[image_url] = image_reason_score
+            # image_action_scores[image_url] = image_action_score
 
             # print(f'average persuasiveness is {sum(persuasiveness_scores) / len(persuasiveness_scores)}')
-            with open(saving_path_persuasiveness, "w") as outfile:
-                json.dump(persuasiveness_scores, outfile)
-            with open(saving_path_ar_aware_persuasiveness, "w") as outfile:
-                json.dump(ar_aware_persuasiveness_scores, outfile)
-            with open(saving_path_persuasiveness_alignment, "w") as outfile:
-                json.dump(persuasiveness_alignment_scores, outfile)
+            # with open(saving_path_persuasiveness, "w") as outfile:
+            #     json.dump(persuasiveness_scores, outfile)
+            # with open(saving_path_ar_aware_persuasiveness, "w") as outfile:
+            #     json.dump(ar_aware_persuasiveness_scores, outfile)
+            # with open(saving_path_persuasiveness_alignment, "w") as outfile:
+            #     json.dump(persuasiveness_alignment_scores, outfile)
             with open(saving_path_image_text, "w") as outfile:
                 json.dump(image_text_scores, outfile)
-            with open(saving_path_image_action, "w") as outfile:
-                json.dump(image_action_scores, outfile)
-            with open(saving_path_image_reason, "w") as outfile:
-                json.dump(image_reason_scores, outfile)
+            # with open(saving_path_image_action, "w") as outfile:
+            #     json.dump(image_action_scores, outfile)
+            # with open(saving_path_image_reason, "w") as outfile:
+            #     json.dump(image_reason_scores, outfile)
 
     @staticmethod
     def evaluate_VQA_score(args):

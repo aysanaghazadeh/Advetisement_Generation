@@ -738,32 +738,32 @@ class Metrics:
             return score/len(action_reasons)
 
         # image_url = '/'.join(generated_image1.split('/')[-2:])
-        # scores = {
-        #     'has_story': evaluate_story(generated_image1, generated_image2, image_url),
-        #     'unusualness': evaluate_unusualness(generated_image1, generated_image2, ),
-        #     'originality': evaluate_originality(generated_image1, generated_image2, ),
-        #     'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
-        #     'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
-        #     'audience': evaluate_audience(generated_image1, generated_image2, image_url),
-        #     'maslow_need': evaluate_maslow_need(generated_image1, generated_image2, image_url),
-        #     'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
-        #     'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
-        # }
-
         scores = {
-            'has_story': 0,
-            'unusualness': 0,
-            'originality': 0,
-            'artistic': 0,
-            'imagination': 0,
-            'audience': 0,
-            'maslow_need': 0,
-            'benefit': 0,
-            'appeal': 0,
-            'persuasion': evaluate_persuasion(generated_image1, generated_image2, image_url),
-            'creativity': evaluate_creativity(generated_image1, generated_image2, image_url),
-            'action_persuasion': evaluate_action_persuasion(generated_image1, generated_image2, image_url)
+            'has_story': evaluate_story(generated_image1, generated_image2, image_url),
+            'unusualness': evaluate_unusualness(generated_image1, generated_image2, ),
+            'originality': evaluate_originality(generated_image1, generated_image2, ),
+            'artistic': evaluate_artistic(generated_image1, generated_image2, image_url),
+            'imagination': evaluate_imagination(generated_image1, generated_image2, image_url),
+            'audience': evaluate_audience(generated_image1, generated_image2, image_url),
+            'maslow_need': evaluate_maslow_need(generated_image1, generated_image2, image_url),
+            'benefit': evaluate_benefit(generated_image1, generated_image2, image_url),
+            'appeal': evaluate_appeal(generated_image1, generated_image2, image_url),
         }
+
+        # scores = {
+        #     'has_story': 0,
+        #     'unusualness': 0,
+        #     'originality': 0,
+        #     'artistic': 0,
+        #     'imagination': 0,
+        #     'audience': 0,
+        #     'maslow_need': 0,
+        #     'benefit': 0,
+        #     'appeal': 0,
+        #     'persuasion': evaluate_persuasion(generated_image1, generated_image2, image_url),
+        #     'creativity': evaluate_creativity(generated_image1, generated_image2, image_url),
+        #     'action_persuasion': evaluate_action_persuasion(generated_image1, generated_image2, image_url)
+        # }
         scores['persuasiveness'] = sum(list(scores.values())) / len(scores)
         persasiveness = scores['persuasiveness']
         print(f'persuasiveness score: {persasiveness}')

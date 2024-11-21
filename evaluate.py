@@ -120,13 +120,13 @@ class Evaluation:
         print(args.result_path)
         print(args.result_file)
         results2 = pd.read_csv(os.path.join(args.result_path,
-                                            'IN_InternVL_AR_SDXL_20241012_005132_description_single_paragraph_no_text.csv'))
+                                            'real_ads_human_annotation_description_not_text.csv'))
         results1 = pd.read_csv(os.path.join(args.result_path,
-                                            'IN_InternVL_AR_SDXL_20241012_005132_description_single_paragraph_no_text.csv'))
+                                            'real_ads_human_annotation_description_not_text.csv'))
         descriptions2 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_AR_SDXL_20241012_005132_description_single_paragraph_no_text.csv'))
+                                                 'real_ads_human_annotation_description_not_text.csv'))
         descriptions1 = pd.read_csv(os.path.join(args.result_path,
-                                                 'IN_InternVL_AR_SDXL_20241012_005132_description_single_paragraph_no_text.csv'))
+                                                 'real_ads_human_annotation_description_not_text.csv'))
         persuasiveness_scores = {}
         for row in descriptions1.values:
             image_url = row[0]

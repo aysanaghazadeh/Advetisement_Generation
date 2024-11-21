@@ -92,7 +92,7 @@ def get_descriptions(args):
             "2/116492.jpg",
             "3/79633.jpg",
             "4/63754.jpg",
-            "10/171917.jpg"
+            "10/171917.png"
         ]
 
     print(f'number of images in the set: {len(images)}')

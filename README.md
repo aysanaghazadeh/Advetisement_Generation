@@ -13,7 +13,7 @@ CAP is a framework for evaluating advertisement images in terms of:
 - [Results](#results)
 - [Pretrained Models](#pretrained-models)
 - [Citations](#citations)
-- [License](#license)>
+- [License](#license) -->
 
 ---
   
